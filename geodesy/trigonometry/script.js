@@ -43,13 +43,13 @@ function onArcfuncChange(e, translator) {
 		let DD = deg + min / 60 + sec / 60 / 60;
 		
 		for (let t of translators) {
-			if (e.target !== translator.degInp) {
+			if (e.target !== t.degInp) {
 				t.degInp.value = deg;
 			}
-			if (e.target !== translator.minInp) {
+			if (e.target !== t.minInp) {
 				t.minInp.value = min;
 			}
-			if (e.target !== translator.secInp) {
+			if (e.target !== t.secInp) {
 				t.secInp.value = sec;
 			}
 			t.DDInp.value = DD;
