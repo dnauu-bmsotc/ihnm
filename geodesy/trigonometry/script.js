@@ -2,15 +2,16 @@
 
 let translators = [];
 
-function ConvertDDToDMS(D, lng){
-    const M=0|(D%1)*60e7;
-
-    return {
-        dir : D<0?lng?'W':'S':lng?'E':'N',
-        deg : 0|(D<0?D=-D:D),
-        min : 0|M/1e7,
-        sec : (0|M/1e6%1*6e4)/100
-    };
+function ConvertDDToDMS(D){
+	let deg = Math.trunc(D);
+	let min = Math.trunc((D - deg) * 60);
+	let sec = (D - deg - min / 60) * 60 * 60;
+	console.log((D - deg - min / 60), sec);
+	return {
+		deg: deg,
+		min: min,
+		sec: sec
+	};
 }
 
 function onFuncChange(e, translator) {
@@ -18,7 +19,7 @@ function onFuncChange(e, translator) {
 		let rad = parseFloat(translator.valInp.value);
 		let DD = translator.arcfunc(rad) * 180 / Math.PI;
 		DD = isNaN(DD) ? 0 : rounded(DD);
-		let DMS = ConvertDDToDMS(DD, false);
+		let DMS = ConvertDDToDMS(DD);
 		
 		for (let t of translators) {
 			if (t !== translator) {
@@ -58,7 +59,7 @@ function onArcfuncChange(e, translator) {
 function onDDChange(e, translator) {
 	if (e.isTrusted) {
 		let DD = parseInt(translator.DDInp.value);
-		let DMS = ConvertDDToDMS(DD, false);
+		let DMS = ConvertDDToDMS(DD);
 		for (let t of translators) {
 			if (t !== translator) {
 				t.DDInp.value = translator.DDInp.value;
