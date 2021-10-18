@@ -6,7 +6,6 @@ function ConvertDDToDMS(D){
 	let deg = Math.trunc(D);
 	let min = Math.trunc((D - deg) * 60);
 	let sec = (D - deg - min / 60) * 60 * 60;
-	console.log((D - deg - min / 60), sec);
 	return {
 		deg: deg,
 		min: min,
@@ -90,6 +89,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	
 	let tVal = document.createElement("td");
 	let tValInp = document.createElement("input");
+	tValInp.type = "number";
 	tValInp.addEventListener("input", (e)=>onFuncChange(e, translator));
 	tVal.appendChild(tValInp);
 	row.appendChild(tVal);
@@ -100,18 +100,21 @@ function addTranslator(name, arcname, func, arcfunc) {
 	
 	let tDeg = document.createElement("td");
 	let tDegInp = document.createElement("input");
+	tDegInp.type = "number";
 	tDegInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tDeg.appendChild(tDegInp);
 	row.appendChild(tDeg);
 	
 	let tMin = document.createElement("td");
 	let tMinInp = document.createElement("input");
+	tMinInp.type = "number";
 	tMinInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tMin.appendChild(tMinInp);
 	row.appendChild(tMin);
 	
 	let tSec = document.createElement("td");
 	let tSecInp = document.createElement("input");
+	tSecInp.type = "number";
 	tSecInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tSec.appendChild(tSecInp);
 	row.appendChild(tSec);
