@@ -40,7 +40,7 @@ function onArcfuncChange(e, translator) {
 		min = isNaN(min) ? 0 : min;
 		let sec = parseInt(translator.secInp.value);
 		sec = isNaN(sec) ? 0 : sec;
-		let DD = deg + min * 60 + sec * 60 * 60;
+		let DD = deg + min / 60 + sec / 60 / 60;
 		console.log(DD, Math.sin(DD * Math.PI / 180));
 		
 		for (let t of translators) {
