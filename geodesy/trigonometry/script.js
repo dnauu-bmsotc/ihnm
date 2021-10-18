@@ -34,19 +34,22 @@ function onFuncChange(e, translator) {
 
 function onArcfuncChange(e, translator) {
 	if (e.isTrusted) {
-		let deg = parseInt(translator.degInp.value);
+		let deg = parseFloat(translator.degInp.value);
 		deg = isNaN(deg) ? 0 : deg;
-		let min = parseInt(translator.minInp.value);
+		let min = parseFloat(translator.minInp.value);
 		min = isNaN(min) ? 0 : min;
-		let sec = parseInt(translator.secInp.value);
+		let sec = parseFloat(translator.secInp.value);
 		sec = isNaN(sec) ? 0 : sec;
 		let DD = deg + min / 60 + sec / 60 / 60;
-		console.log(DD, Math.sin(DD * Math.PI / 180));
 		
 		for (let t of translators) {
-			if (t !== translator) {
+			if (e.target !== translator.degInp) {
 				t.degInp.value = deg;
+			}
+			if (e.target !== translator.minInp) {
 				t.minInp.value = min;
+			}
+			if (e.target !== translator.secInp) {
 				t.secInp.value = sec;
 			}
 			t.DDInp.value = DD;
@@ -57,7 +60,7 @@ function onArcfuncChange(e, translator) {
 
 function onDDChange(e, translator) {
 	if (e.isTrusted) {
-		let DD = parseInt(translator.DDInp.value);
+		let DD = parseFloat(translator.DDInp.value);
 		let DMS = ConvertDDToDMS(DD);
 		for (let t of translators) {
 			if (t !== translator) {
@@ -90,7 +93,6 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tVal = document.createElement("td");
 	let tValInp = document.createElement("input");
 	tValInp.type = "number";
-	tValInp.step = "any";
 	tValInp.addEventListener("input", (e)=>onFuncChange(e, translator));
 	tVal.appendChild(tValInp);
 	row.appendChild(tVal);
@@ -102,7 +104,6 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tDeg = document.createElement("td");
 	let tDegInp = document.createElement("input");
 	tDegInp.type = "number";
-	tDegInp.step = "any";
 	tDegInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tDeg.appendChild(tDegInp);
 	row.appendChild(tDeg);
@@ -110,7 +111,6 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tMin = document.createElement("td");
 	let tMinInp = document.createElement("input");
 	tMinInp.type = "number";
-	tMinInp.step = "any";
 	tMinInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tMin.appendChild(tMinInp);
 	row.appendChild(tMin);
@@ -118,7 +118,6 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tSec = document.createElement("td");
 	let tSecInp = document.createElement("input");
 	tSecInp.type = "number";
-	tSecInp.step = "any";
 	tSecInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tSec.appendChild(tSecInp);
 	row.appendChild(tSec);
@@ -126,7 +125,6 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tDD = document.createElement("td");
 	let tDDInp = document.createElement("input");
 	tDDInp.type = "number";
-	tDDInp.step = "any";
 	tDDInp.addEventListener("input", (e)=>onDDChange(e, translator));
 	tDD.appendChild(tDDInp);
 	row.appendChild(tDD);
@@ -147,9 +145,9 @@ function sinfunc(x) { return rounded(Math.sin(x)); }
 function asinfunc(x) { return rounded(Math.asin(x)); }
 function cosfunc(x) { return rounded(Math.cos(x)); }
 function acosfunc(x) { return rounded(Math.acos(x)); }
-function tanfunc(x) { return sinfunc(x) / cosfunc(x); }
+function tanfunc(x) { return cosfunc(x) === 0 ? "" : sinfunc(x) / cosfunc(x); }
 function atanfunc(x) { return rounded(Math.atan(x)); }
-function ctgfunc(x) { return cosfunc(x) / sinfunc(x); }
+function ctgfunc(x) { return sinfunc(x) === 0 ? "" : cosfunc(x) / sinfunc(x); }
 function actgfunc(x) { return Math.PI / 2 - atanfunc(x); }
 
 document.addEventListener("DOMContentLoaded", function() {
