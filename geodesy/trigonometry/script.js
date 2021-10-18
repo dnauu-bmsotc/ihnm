@@ -90,6 +90,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tVal = document.createElement("td");
 	let tValInp = document.createElement("input");
 	tValInp.type = "number";
+	tValInp.step = "any";
 	tValInp.addEventListener("input", (e)=>onFuncChange(e, translator));
 	tVal.appendChild(tValInp);
 	row.appendChild(tVal);
@@ -101,6 +102,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tDeg = document.createElement("td");
 	let tDegInp = document.createElement("input");
 	tDegInp.type = "number";
+	tDegInp.step = "any";
 	tDegInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tDeg.appendChild(tDegInp);
 	row.appendChild(tDeg);
@@ -108,6 +110,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tMin = document.createElement("td");
 	let tMinInp = document.createElement("input");
 	tMinInp.type = "number";
+	tMinInp.step = "any";
 	tMinInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tMin.appendChild(tMinInp);
 	row.appendChild(tMin);
@@ -115,6 +118,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tSec = document.createElement("td");
 	let tSecInp = document.createElement("input");
 	tSecInp.type = "number";
+	tSecInp.step = "any";
 	tSecInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
 	tSec.appendChild(tSecInp);
 	row.appendChild(tSec);
@@ -122,6 +126,7 @@ function addTranslator(name, arcname, func, arcfunc) {
 	let tDD = document.createElement("td");
 	let tDDInp = document.createElement("input");
 	tDDInp.type = "number";
+	tDDInp.step = "any";
 	tDDInp.addEventListener("input", (e)=>onDDChange(e, translator));
 	tDD.appendChild(tDDInp);
 	row.appendChild(tDD);
