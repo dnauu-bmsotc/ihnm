@@ -1,5 +1,7 @@
-let btn, questionEl;
-let questions = [
+let questionEl;
+
+let introductionToAnalysisButton;
+let introductionToAnalysis = [
 	"Кванторы",
 	"Множества чисел",
 	"Определение функции",
@@ -39,7 +41,11 @@ let questions = [
 	"Таблица эквивалентных бесконечно малых",
 	"Непрерывная функция",
 	"Непрерывная на интервале функция, непрерывная на отрезке функция",
-	"Точка разрыва функции. Классификация точек разрыва",
+	"Точка разрыва функции. Классификация точек разрыва"
+];
+
+let differentiationOfAFunctionOfOneVariableButton;
+let differentiationOfAFunctionOfOneVariable = [
 	"Производная функции",
 	"Дифференцируемая на интервале функция",
 	"Физический смысл производной",
@@ -78,24 +84,41 @@ let questions = [
 	"Достаточное условие существования точек перегиба",
 	"Определение асимптоты",
 	"Определение вертикальных наклонных и горизонтальных асимптот",
-	"Схема исследования графика функции",
+	"Схема исследования графика функции"
 ];
 
-function getQuestion() {
-	return questions[Math.floor(Math.random()*questions.length)];
+let indefiniteIntegralButton;
+let indefiniteIntegral = [
+	"Определение первообразной",
+	"Определение неопределённого интеграла",
+	"Подынтегральная функция, подынтегральное выражение",
+	"Теорема о существовании неопределённого интеграла. Без доказательства",
+	"Свойства неопределённого интеграла",
+	"Таблица основных интегралов",
+	"Методы интегрирования",
+];
+
+function getQuestion(questions) {
+	return questions[Math.floor(Math.random() * questions.length)];
 }
 
 function showQuestion(question) {
 	questionEl.innerHTML = question;
 }
 
-function onClick() {
-	showQuestion(getQuestion());
+function ask(questions) {
+	showQuestion(getQuestion(questions));
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-	btn = document.getElementById("question-btn");
-	questionEl = document.getElementById("question");
+	questionEl = document.getElementById("question"); 
 	
-	btn.addEventListener("click", onClick);
+	introductionToAnalysisButton = document.getElementById("introduction-to-analysis-btn");
+	introductionToAnalysisButton.addEventListener("click", ()=>ask(introductionToAnalysis));
+	
+	differentiationOfAFunctionOfOneVariableButton = document.getElementById("differentiation-of-a-function-of-one-variable-btn");
+	differentiationOfAFunctionOfOneVariableButton.addEventListener("click", ()=>ask(differentiationOfAFunctionOfOneVariable));
+	
+	indefiniteIntegralButton = document.getElementById("indefinite-integral-btn");
+	indefiniteIntegralButton.addEventListener("click", ()=>ask(indefiniteIntegral));
 });

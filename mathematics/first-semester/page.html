@@ -4,11 +4,41 @@
 		<title>Первый семестр</title>
 		<link rel="stylesheet" href="../../style.css">
 		<script src="script.js"></script>
+		<style>
+			#question-section {
+				width: 40em;
+				height: 2em;
+				line-height: 2em;
+				padding: 0.5em;
+				border-radius: 0.5em;
+				text-align: center;
+				margin: 0 0 1em 0;
+				font-family: roman;
+				font-size: 2em;
+				background-color: #f3eeed;
+			}
+			#themes-section {
+				display: flex;
+				flex-flow: column nowrap;
+				margin: auto;
+				width: 20em;
+			}
+			#themes-section button {
+				margin: 0.5em 0;
+				padding: 0.5em;
+			}
+		</style>
 	</head>
 	<body>
 		<main>
-			<button id="question-btn" style="display: block; margin: auto;">А расскажи-ка про...</button>
-			<p id="question"></p>
+			<section id="question-section"/>
+				<span id="question">А расскажи-ка про...</span>
+			</section>
+			<section id="themes-section">
+				<button id="introduction-to-analysis-btn">Введение в анализ</button>
+				<button id="differentiation-of-a-function-of-one-variable-btn">Дифференцирование функции одной переменной</button>
+				<button id="indefinite-integral-btn">Неопределённый интеграл</button>
+			</section>
 		</main>
 	</body>
 </html>
