@@ -2,6 +2,7 @@
 <html lang="ru">
 	<head>
 		<title>Первый семестр</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="../../style.css">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.20/dist/katex.min.css" integrity="sha384-cRxb1HsKSl8bTfU9fBcGsjktUfQa6w+fwvkYnU8XjFH4Qg8To1+/9OXv5iRzrKX4" crossorigin="anonymous">
 		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.20/dist/katex.min.js" integrity="sha384-ov99pRO2tAc0JuxTVzf63RHHeQTJ0CIawbDZFiFTzB07aqFZwEu2pz4uzqL+5OPG" crossorigin="anonymous"></script>
@@ -10,13 +11,15 @@
 			#question-section {
 				width: 100%;
 				height: 2em;
-				line-height: 2em;
+				margin: 1em 0;
 				padding: 0.5em;
 				text-align: center;
-				margin: 1em 0;
 				font-family: roman;
 				font-size: 1.5em;
 				background-color: #f3eeed;
+			}
+			#question-section .katex {
+				font-size: 1em;
 			}
 			#themes-section {
 				display: grid;
@@ -26,6 +29,18 @@
 			#themes-section button {
 				margin: 0.5em;
 				padding: 0.5em;
+			}
+			@media (max-width: 512px)
+			{
+				#themes-section {
+					grid-template-columns: 50% 50%;
+				}
+			}
+			@media (max-width: 384px)
+			{
+				#themes-section {
+					grid-template-columns: 100%;
+				}
 			}
 		</style>
 	</head>
