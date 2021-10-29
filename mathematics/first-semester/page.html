@@ -3,24 +3,25 @@
 	<head>
 		<title>Первый семестр</title>
 		<link rel="stylesheet" href="../../style.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.20/dist/katex.min.css" integrity="sha384-cRxb1HsKSl8bTfU9fBcGsjktUfQa6w+fwvkYnU8XjFH4Qg8To1+/9OXv5iRzrKX4" crossorigin="anonymous">
+		<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.20/dist/katex.min.js" integrity="sha384-ov99pRO2tAc0JuxTVzf63RHHeQTJ0CIawbDZFiFTzB07aqFZwEu2pz4uzqL+5OPG" crossorigin="anonymous"></script>
 		<script src="script.js"></script>
 		<style>
 			#question-section {
-				width: 40em;
+				width: 100%;
 				height: 2em;
 				line-height: 2em;
 				padding: 0.5em;
-				border-radius: 0.5em;
 				text-align: center;
-				margin: 0 0 1em 0;
+				margin: 1em 0;
 				font-family: roman;
-				font-size: 2em;
+				font-size: 1.5em;
 				background-color: #f3eeed;
 			}
 			#themes-section {
 				display: flex;
 				flex-flow: column nowrap;
-				margin: auto;
+				margin: 1em auto;
 				width: 20em;
 			}
 			#themes-section button {
@@ -32,12 +33,17 @@
 	<body>
 		<main>
 			<section id="question-section"/>
-				<span id="question">А расскажи-ка про...</span>
+				<div id="question">А расскажи-ка про...</div>
 			</section>
 			<section id="themes-section">
 				<button id="introduction-to-analysis-btn">Введение в анализ</button>
 				<button id="differentiation-of-a-function-of-one-variable-btn">Дифференцирование функции одной переменной</button>
 				<button id="indefinite-integral-btn">Неопределённый интеграл</button>
+				<button id="trigonometry-btn">Тригонометрия</button>
+				<button id="abbreviated-multiplication-formulas-btn">Формулы сокращённого умножения</button>
+				<button id="derivative-table-btn">Таблица производных</button>
+				<button id="integral-table-btn">Таблица интегралов</button>
+				<button id="equivalent-infinitely-small-functions-btn">Эквивалентные бесконечное малые</button>
 			</section>
 		</main>
 	</body>

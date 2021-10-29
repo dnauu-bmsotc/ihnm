@@ -1,5 +1,3 @@
-let questionEl;
-
 let introductionToAnalysisButton;
 let introductionToAnalysis = [
 	"Кванторы",
@@ -41,7 +39,7 @@ let introductionToAnalysis = [
 	"Таблица эквивалентных бесконечно малых",
 	"Непрерывная функция",
 	"Непрерывная на интервале функция, непрерывная на отрезке функция",
-	"Точка разрыва функции. Классификация точек разрыва"
+	"Точка разрыва функции. Классификация точек разрыва",
 ];
 
 let differentiationOfAFunctionOfOneVariableButton;
@@ -59,7 +57,7 @@ let differentiationOfAFunctionOfOneVariable = [
 	"Таблица производных",
 	"Явное и параметрическое задание функции. Нахождение их производных",
 	"Логарифмическое дифференцирование",
-	"Дифференцирование функции вида u(x)^v(x)",
+	"Дифференцирование функции вида $u(x)^{v(x)}$",
 	"Производная n-го порядка",
 	"Механический смысл второй производной",
 	"Производная второго порядка неявно заданной функции",
@@ -84,7 +82,7 @@ let differentiationOfAFunctionOfOneVariable = [
 	"Достаточное условие существования точек перегиба",
 	"Определение асимптоты",
 	"Определение вертикальных наклонных и горизонтальных асимптот",
-	"Схема исследования графика функции"
+	"Схема исследования графика функции",
 ];
 
 let indefiniteIntegralButton;
@@ -98,12 +96,54 @@ let indefiniteIntegral = [
 	"Методы интегрирования",
 ];
 
+let trigonometryButton;
+let trigonometry = [
+	"$\\tan^2\\alpha+1$",
+	"$\\cot^2\\alpha+1$",
+	"$\\sin{2\\alpha}$",
+	"$\\cos{2\\alpha}$",
+	"$\\tan{2\\alpha}$",
+];
+
+let abbreviatedMultiplicationFormulasButton;
+let abbreviatedMultiplicationFormulas = [
+	"",
+];
+
+let derivativeTableButton;
+let derivativeTable = [
+	"",
+];
+
+let integralTableButton;
+let integralTable = [
+	"",
+];
+
+let equivalentInfinitelySmallFunctionsButton;
+let equivalentInfinitelySmallFunctions = [
+	"",
+];
+
 function getQuestion(questions) {
 	return questions[Math.floor(Math.random() * questions.length)];
 }
 
+function removeElementsKeepChildren(b) {
+	while(b.length) {
+    let parent = b[ 0 ].parentNode;
+    while( b[ 0 ].firstChild ) {
+        parent.insertBefore(  b[ 0 ].firstChild, b[ 0 ] );
+    }
+     parent.removeChild( b[ 0 ] );
+}
+}
+
 function showQuestion(question) {
-	questionEl.innerHTML = question;
+	console.log(question);
+	katex.render("\\text{" + question + "}", questionEl, {
+    throwOnError: true
+	});
 }
 
 function ask(questions) {
@@ -121,4 +161,19 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	indefiniteIntegralButton = document.getElementById("indefinite-integral-btn");
 	indefiniteIntegralButton.addEventListener("click", ()=>ask(indefiniteIntegral));
+	
+	trigonometryButton = document.getElementById("trigonometry-btn");
+	trigonometryButton.addEventListener("click", ()=>ask(trigonometry));
+	
+	abbreviatedMultiplicationFormulasButton = document.getElementById("abbreviated-multiplication-formulas-btn");
+	abbreviatedMultiplicationFormulasButton.addEventListener("click", ()=>ask(abbreviatedMultiplicationFormulas));
+	
+	derivativeTableButton = document.getElementById("derivative-table-btn");
+	derivativeTableButton.addEventListener("click", ()=>ask(derivativeTable));
+	
+	integralTableButton = document.getElementById("integral-table-btn");
+	integralTableButton.addEventListener("click", ()=>ask(integralTable));
+	
+	equivalentInfinitelySmallFunctionsButton = document.getElementById("equivalent-infinitely-small-functions-btn");
+	equivalentInfinitelySmallFunctionsButton.addEventListener("click", ()=>ask(equivalentInfinitelySmallFunctions));
 });
