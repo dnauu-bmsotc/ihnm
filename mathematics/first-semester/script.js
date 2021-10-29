@@ -140,7 +140,6 @@ function removeElementsKeepChildren(b) {
 }
 
 function showQuestion(question) {
-	console.log(question);
 	katex.render("\\text{" + question + "}", questionEl, {
     throwOnError: true
 	});
