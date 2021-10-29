@@ -1,7 +1,5 @@
 "use strict"
 
-let translators = [];
-
 function ConvertDDToDMS(D){
 	let deg = math.fix(D);
 	let min = math.fix((D - deg) * 60);
@@ -13,168 +11,140 @@ function ConvertDDToDMS(D){
 	};
 }
 
-function onFuncChange(e, translator) {
-	if (e.isTrusted) {
-		let rad = 0;
-		try {
-			rad = math.evaluate(translator.valInp.value);
-		}
-		catch {
-			rad = 0;
-		}
-		
-		let DD = 0;
-		try {
-			DD = translator.arcfunc(rad) * 180 / math.PI;
-		}
-		catch {
-		}
-		
-		let DMS = ConvertDDToDMS(DD);
-		
-		for (let t of translators) {
-			if (t !== translator) {
-				t.valInp.value = t.func(DD / 180 * math.PI);
-			}
-			t.degInp.value = DMS.deg;
-			t.minInp.value = DMS.min;
-			t.secInp.value = DMS.sec;
-			t.DDInp.value = DD;
-		}
+function evaluate(expression) {
+	let value = 0;
+	try {
+		value = math.evaluate(expression);
 	}
+	catch {
+		value = 0;
+	}
+	if (typeof value !== "number") {
+		value = 0;
+	}
+	return value;
 }
 
-function onArcfuncChange(e, translator) {
-	if (e.isTrusted) {
-		let deg, min, sec, DD;
-		
-		try {
-			deg = math.evaluate(translator.degInp.value);
-			deg = isNaN(deg) ? 0 : deg;
-		}
-		catch {
-			deg = 0;
-		}
-		
-		try {
-			min = math.evaluate(translator.minInp.value);
-			min = isNaN(min) ? 0 : min;
-		}
-		catch {
-			min = 0;
-		}
-		
-		try {
-			sec = math.evaluate(translator.secInp.value);
-			sec = isNaN(sec) ? 0 : sec;
-		}
-		catch {
-			sec = 0;
-		}
-		
-		DD = deg + min / 60 + sec / 60 / 60;
-		
-		for (let t of translators) {
-			if (e.target !== t.degInp) {
-				t.degInp.value = deg;
-			}
-			if (e.target !== t.minInp) {
-				t.minInp.value = min;
-			}
-			if (e.target !== t.secInp) {
-				t.secInp.value = sec;
-			}
-			t.DDInp.value = DD;
-			t.valInp.value = t.func(DD * math.PI / 180);
-		}
-	}
-}
-
-function onDDChange(e, translator) {
-	if (e.isTrusted) {
-		let DD = 0;
-		try {
-			DD = math.evaluate(translator.DDInp.value);
-		}
-		catch {
-			DD = 0;
-		}
-		let DMS = ConvertDDToDMS(DD);
-		for (let t of translators) {
-			if (t !== translator) {
-				t.DDInp.value = translator.DDInp.value;
-			}
-			t.degInp.value = DMS.deg;
-			t.minInp.value = DMS.min;
-			t.secInp.value = DMS.sec;
-			t.valInp.value = t.func(DD / 180 * math.PI);
-		}
-	}
-}
-
-function addTranslator(name, arcname, func, arcfunc) {
-	let translator = {};
-	translator.name = name;
-	translator.arcname = arcname;
-	translator.func = func;
-	translator.arcfunc = arcfunc;
-	
-	let table = document.getElementById("table");
-	
-	let row = document.createElement("tr");
-	table.appendChild(row);
-	
-	let tName = document.createElement("td");
-	tName.appendChild(document.createTextNode(name));
-	row.appendChild(tName);
-	
-	let tVal = document.createElement("td");
-	let tValInp = document.createElement("input");
-	tValInp.addEventListener("input", (e)=>onFuncChange(e, translator));
-	tVal.appendChild(tValInp);
-	row.appendChild(tVal);
-	
-	let tArc = document.createElement("td");
-	tArc.appendChild(document.createTextNode(arcname));
-	row.appendChild(tArc);
-	
-	let tDeg = document.createElement("td");
-	let tDegInp = document.createElement("input");
-	tDegInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
-	tDeg.appendChild(tDegInp);
-	row.appendChild(tDeg);
-	
-	let tMin = document.createElement("td");
-	let tMinInp = document.createElement("input");
-	tMinInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
-	tMin.appendChild(tMinInp);
-	row.appendChild(tMin);
-	
-	let tSec = document.createElement("td");
-	let tSecInp = document.createElement("input");
-	tSecInp.addEventListener("input", (e)=>onArcfuncChange(e, translator));
-	tSec.appendChild(tSecInp);
-	row.appendChild(tSec);
-	
-	let tDD = document.createElement("td");
-	let tDDInp = document.createElement("input");
-	tDDInp.addEventListener("input", (e)=>onDDChange(e, translator));
-	tDD.appendChild(tDDInp);
-	row.appendChild(tDD);
-	
-	translator.valInp = tValInp;
-	translator.degInp = tDegInp;
-	translator.minInp = tMinInp;
-	translator.secInp = tSecInp;
-	translator.DDInp = tDDInp;
-	
-	translators.push(translator);
-	return translator;
+function humanNotation(number) {
+	return number.toLocaleString('fullwide', {useGrouping:false});
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-	let sin = addTranslator("sin", "arcsin", math.sin, math.asin);
-	let cos = addTranslator("cos", "arccos", math.cos, math.acos);
-	let tan = addTranslator("tg", "arctn", math.tan, math.atan);
-	let ctan = addTranslator("ctg", "arcctg", math.cot, math.acot);
+	const table = {
+		data() {
+			return {
+				dd: 0,
+				leader: null,
+				translators: [
+					{name: "sin", func: math.sin, arcname: "arcsin", arcfunc: math.asin},
+					{name: "cos", func: math.cos, arcname: "arccos", arcfunc: math.acos},
+					{name: "tan", func: math.tan, arcname: "arctan", arcfunc: math.atan},
+					{name: "cot", func: math.cot, arcname: "arcctg", arcfunc: math.acot},
+				],
+			};
+		},
+		methods: {
+			onDdInput(value, e) {
+				this.leader = e.target;
+				this.dd = value;
+			},
+		},
+	};
+
+	const app = Vue.createApp(table);
+	
+	app.component("trigonometry-input", {
+		template: `<input v-on:input="onInput"/>`,
+		props: ["value", "leader", "source"],
+		methods: {
+			onInput(e) {
+				let value = evaluate(this.$el.value);
+				if (value > 1000000) {
+					value = Infinity;
+				}
+				let DD = this.source.arcfunc(value) * 180 / math.PI;
+				this.$emit("dd-input", DD, e);
+			},
+		},
+		watch: {
+			value: function(newVal, oldVal) {
+				if (this.leader !== this.$el) {
+					let value = this.source.func(newVal * math.PI / 180);
+					if (value > 1000000) {
+						value = Infinity;
+					}
+					this.$el.value = humanNotation(value);
+				}
+			},
+		},
+	});
+	
+	app.component("arc-input", {
+		template: `
+			<div style="display: contents;">
+				<div><input class="degInp" v-on:input="onDegInput"/></div>
+				<div><input class="minInp" v-on:input="onMinInput"/></div>
+				<div><input class="secInp" v-on:input="onSecInput"/></div>
+			</div>
+		`,
+		props: ["value", "leader", "source"],
+		methods: {
+			onDegInput(e) {
+				let deg = evaluate(this.degInp.value);
+				this.$emit("dd-input", deg + this.minInp.value / 60 + this.secInp.value / 60 / 60, e);
+			},
+			onMinInput(e) {
+				let min = evaluate(this.minInp.value);
+				console.log(min);
+				this.$emit("dd-input", this.degInp.value + min / 60 + this.secInp.value / 60 / 60, e);
+			},
+			onSecInput(e) {
+				let sec = evaluate(this.secInp.value);
+				this.$emit("dd-input", this.degInp.value + this.minInp.value / 60 + sec / 60 / 60, e);
+			},
+		},
+		watch: {
+			value: function(newVal, oldVal) {
+				if (this.leader !== this.degInp &&
+				    this.leader !== this.minInp &&
+						this.leader !== this.secInp) {
+					let DMS = ConvertDDToDMS(newVal);
+					this.degInp.value = humanNotation(DMS.deg);
+					this.minInp.value = humanNotation(DMS.min);
+					this.secInp.value = humanNotation(DMS.sec);
+				}
+			},
+		},
+		computed: {
+			degInp: function() {
+				return this.$el.querySelector(".degInp");
+			},
+			minInp: function() {
+				return this.$el.querySelector(".minInp");
+			},
+			secInp: function() {
+				return this.$el.querySelector(".secInp");
+			},
+		},
+	});
+
+	app.component("dd-input", {
+		template: `<input v-on:input="onInput"/>`,
+		props: ["value", "leader", "source"],
+		methods: {
+			onInput(e) {
+				let DD = evaluate(this.$el.value);
+				this.$emit("dd-input", DD, e);
+			},
+		},
+		watch: {
+			value: function(newVal, oldVal) {
+				if (this.leader !== this.$el) {
+					this.$el.value = humanNotation(newVal);
+				}
+			},
+		},
+	});
+	
+	app.mount("#table");
 });
