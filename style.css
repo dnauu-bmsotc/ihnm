@@ -41,9 +41,22 @@ table {
 }
 
 th, td {
-  padding: 8px;
+  padding: 1em;
 }
 
 tr:nth-child(even) {
   background-color: #f3eeed;
+}
+
+button {
+	-webkit-appearance: none;
+	border: 2px solid #c2a79e;
+	border-top: 2px solid #f3eeed;
+	border-left: 2px solid #f3eeed;
+	background-color: #f3eeed;
+	color: #56261f;
+}
+
+button:active {
+	background-color: #ebdddb;
 }
