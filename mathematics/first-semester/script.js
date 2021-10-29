@@ -36,7 +36,6 @@ let introductionToAnalysis = [
 	"Теорема о связи бесконечно малых и бесконечно больших",
 	"Сравнимые бесконечно малые",
 	"Теорема о пределах эквивалентных функций",
-	"Таблица эквивалентных бесконечно малых",
 	"Непрерывная функция",
 	"Непрерывная на интервале функция, непрерывная на отрезке функция",
 	"Точка разрыва функции. Классификация точек разрыва",
@@ -51,10 +50,8 @@ let differentiationOfAFunctionOfOneVariable = [
 	"Уравнения кастельной и нормали к функции",
 	"Связь дифференцируемости и непрерывности",
 	"Связь дифференцируемости и существования касательной",
-	"Правила дифференцирования",
 	"Производная сложной функции",
 	"Производная обратной функции",
-	"Таблица производных",
 	"Явное и параметрическое задание функции. Нахождение их производных",
 	"Логарифмическое дифференцирование",
 	"Дифференцирование функции вида $u(x)^{v(x)}$",
@@ -92,37 +89,100 @@ let indefiniteIntegral = [
 	"Подынтегральная функция, подынтегральное выражение",
 	"Теорема о существовании неопределённого интеграла. Без доказательства",
 	"Свойства неопределённого интеграла",
-	"Таблица основных интегралов",
 	"Методы интегрирования",
 ];
 
 let trigonometryButton;
 let trigonometry = [
-	"$\\tan^2\\alpha+1$",
-	"$\\cot^2\\alpha+1$",
-	"$\\sin{2\\alpha}$",
-	"$\\cos{2\\alpha}$",
-	"$\\tan{2\\alpha}$",
+	"$\\tan^2\\alpha+1=?$",
+	"$\\cot^2\\alpha+1=?$",
+	"$\\sin{2\\alpha}=?$",
+	"$\\cos{2\\alpha}=?$",
+	"$\\tan{2\\alpha}=?$",
+	"$\\sin(\\alpha+\\beta)=?$",
+	"$\\sin(\\alpha-\\beta)=?$",
+	"$\\cos(\\alpha+\\beta)=?$",
+	"$\\cos(\\alpha-\\beta)=?$",
+	"$\\sin\\alpha+\\sin\\alpha=?$",
+	"$\\sin\\alpha-\\sin\\alpha=?$",
+	"$\\sin\\alpha+\\cos\\alpha=?$",
+	"$\\cos\\alpha+\\cos\\alpha=?$",
+	"$\\cos\\alpha-\\cos\\alpha=?$",
+	"$2\\cos\\alpha\\cos\\beta=?$",
+	"$2\\sin\\alpha\\sin\\beta=?$",
+	"$2\\sin\\alpha\\cos\\beta=?$",
 ];
 
 let abbreviatedMultiplicationFormulasButton;
 let abbreviatedMultiplicationFormulas = [
-	"",
+	"$a^2-b^2=?$",
+	"$(a+b)^2=?$",
+	"$(a-b)^2=?$",
+	"$a^3+b^3=?$",
+	"$a^3-b^3=?$",
+	"$(a+b)^3=?$",
+	"$(a-b)^3=?$",
 ];
 
 let derivativeTableButton;
 let derivativeTable = [
-	"",
+	"$c'=?$",
+	"$(u^n)'=?$",
+	"$(a^u)'=?$",
+	"$(\\log_au)'=?$",
+	"$(\\sin u)'=?$",
+	"$(\\cos u)'=?$",
+	"$(\\tan u)'=?$",
+	"$(\\cot u)'=?$",
+	"$(\\arcsin u)'=?$",
+	"$(\\arccos u)'=?$",
+	"$(\\arccot u)'=?$",
+	"$(\\tan u)'=?$",
+	"$(\\arctan u)'=?$",
+	"$(\\sh u)'=?$",
+	"$(\\ch u)'=?$",
+	"$(\\th u)'=?$",
+	"$(\\cth u)'=?$",
+];
+
+let differentiatioRulesButton;
+let differentiatioRules = [
+	"$(c\\cdot f)'=?$",
+	"$(u\\pm v)'=?$",
+	"$(uv)'=?$",
+	"$(\\frac uv)'=?$",
+	"$(f(g))'=?$",
 ];
 
 let integralTableButton;
 let integralTable = [
-	"",
+	"$\\int u^\\alpha\\,du$=?",
+	"$\\int\\frac{du}{u}=?$",
+	"$\\int a^u\\,du=?$",
+	"$\\int\\sin u\\,du=?$",
+	"$\\int\\cos u\\,du=?$",
+	"$\\int\\frac{du}{\\cos^2u}=?$",
+	"$\\int\\frac{du}{\\sin^2u}=?$",
+	"$\\int\\sh u\\,du=?$",
+	"$\\int\\ch u\\,du=?$",
+	"$\\int\\frac{du}{\\ch^2u}=?$",
+	"$\\int\\frac{du}{\\sh^2u}=?$",
+	"$\\int\\frac{du}{u^2+a^2}=?$",
+	"$\\int\\frac{du}{u^2-a^2}=?$",
+	"$\\int\\frac{du}{\\sqrt{u^2-a^2}}=?$",
+	"$\\int\\frac{du}{\\sqrt{a^2+u^2}}=?$",
 ];
 
 let equivalentInfinitelySmallFunctionsButton;
 let equivalentInfinitelySmallFunctions = [
-	"",
+	"$\\sin x\\sim?\\quad(x\\to0)$",
+	"$\\arcsin x\\sim?\\quad(x\\to0)$",
+	"$\\tan x\\sim?\\quad(x\\to0)$",
+	"$1-\\cos x\\sim?\\quad(x\\to0)$",
+	"$\\ln(1+x)\\sim?\\quad(x\\to0)$",
+	"$\\log_ax\\sim?\\quad(x\\to0)$",
+	"$a^x-1\\sim?\\quad(x\\to0)$",
+	"$(1+x)^m\\sim?\\quad(x\\to0)$",
 ];
 
 function getQuestion(questions) {
@@ -141,7 +201,8 @@ function removeElementsKeepChildren(b) {
 
 function showQuestion(question) {
 	katex.render("\\text{" + question + "}", questionEl, {
-    throwOnError: true
+    throwOnError: true,
+		macros: {'\\arccot': '\\operatorname{arccot}'},
 	});
 }
 
@@ -169,6 +230,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	
 	derivativeTableButton = document.getElementById("derivative-table-btn");
 	derivativeTableButton.addEventListener("click", ()=>ask(derivativeTable));
+	
+	differentiatioRulesButton = document.getElementById("differentiatio-rules-btn");
+	differentiatioRulesButton.addEventListener("click", ()=>ask(differentiatioRules));
 	
 	integralTableButton = document.getElementById("integral-table-btn");
 	integralTableButton.addEventListener("click", ()=>ask(integralTable));
