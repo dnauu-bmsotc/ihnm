@@ -26,7 +26,7 @@ function evaluate(expression) {
 }
 
 function humanNotation(number) {
-	return number.toLocaleString('fullwide', {useGrouping:false});
+	return parseFloat(number.toFixed(12));
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -83,19 +83,21 @@ document.addEventListener("DOMContentLoaded", function() {
 		template: `
 			<div style="display: contents;">
 				<div><input class="degInp" v-on:input="onDegInput"/></div>
-				<div><input class="minInp" v-on:input="onMinInput"/></div>
-				<div><input class="secInp" v-on:input="onSecInput"/></div>
+				<div><input class="minInp" v-on:input="onDegInput"/></div>
+				<div><input class="secInp" v-on:input="onDegInput"/></div>
 			</div>
 		`,
 		props: ["value", "leader", "source"],
 		methods: {
 			onDegInput(e) {
-				let deg = evaluate(this.degInp.value);
-				this.$emit("dd-input", deg + this.minInp.value / 60 + this.secInp.value / 60 / 60, e);
+				let deg = evaluate(this.$el.querySelector(".degInp").value);
+				let min = evaluate(this.$el.querySelector(".minInp").value);
+				let sec = evaluate(this.$el.querySelector(".secInp").value);
+				this.$emit("dd-input", deg + min / 60 + sec / 60 / 60, e);
 			},
 			onMinInput(e) {
 				let min = evaluate(this.minInp.value);
-				console.log(min);
+				console.log(min, this.degInp.value + min / 60 + this.secInp.value / 60 / 60);
 				this.$emit("dd-input", this.degInp.value + min / 60 + this.secInp.value / 60 / 60, e);
 			},
 			onSecInput(e) {
@@ -109,21 +111,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				    this.leader !== this.minInp &&
 						this.leader !== this.secInp) {
 					let DMS = ConvertDDToDMS(newVal);
-					this.degInp.value = humanNotation(DMS.deg);
-					this.minInp.value = humanNotation(DMS.min);
-					this.secInp.value = humanNotation(DMS.sec);
+					this.$el.querySelector(".degInp").value = humanNotation(DMS.deg);
+					this.$el.querySelector(".minInp").value = humanNotation(DMS.min);
+					this.$el.querySelector(".secInp").value = humanNotation(DMS.sec);
 				}
-			},
-		},
-		computed: {
-			degInp: function() {
-				return this.$el.querySelector(".degInp");
-			},
-			minInp: function() {
-				return this.$el.querySelector(".minInp");
-			},
-			secInp: function() {
-				return this.$el.querySelector(".secInp");
 			},
 		},
 	});

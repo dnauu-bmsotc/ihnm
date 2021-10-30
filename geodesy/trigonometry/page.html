@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="../../style.css">
 		<script src="https://unpkg.com/vue@next"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/textfit/2.4.0/textFit.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.5.1/math.js"></script>
 		<script src="script.js"></script>
 		<style>
@@ -12,6 +13,7 @@
 				display: grid;
 				grid-template-columns: 1fr 3fr 1fr repeat(4, 3fr);
 				width: 80%;
+				max-width: 1024px;
 				justify-items: stretch;
 				grid-column-gap: 0.5em;
 				grid-row-gap: 0.5em;
@@ -21,21 +23,29 @@
 			}
 			#table input {
 				flex: 1 1 128px;
-				width: 64px;
+				width: 32px;
 				max-width: 256px;
 			}
+			@media (max-width: 600px) {
+				#table .th {
+					text-orientation: mixed;
+					writing-mode: vertical-lr;
+					text-align: left;
+				}
+			}
+
 		</style>
 	</head>
 	<body>
 		<main>
 			<section id="table">
-				<div>Функция</div>
-				<div>Значение</div>
-				<div>Аркфункция</div>
-				<div>Градусы</div>
-				<div>Минуты</div>
-				<div>Секунды</div>
-				<div>DD</div>
+				<div class="th">Функция</div>
+				<div class="th">Значение</div>
+				<div class="th">Аркфункция</div>
+				<div class="th">Градусы</div>
+				<div class="th">Минуты</div>
+				<div class="th">Секунды</div>
+				<div class="th">DD</div>
 				<template v-for="item in translators">
 					<div>{{item.name}}</div>
 					<div><trigonometry-input :value="dd" :leader="leader" :source="item" @dd-input="onDdInput" /></div>
