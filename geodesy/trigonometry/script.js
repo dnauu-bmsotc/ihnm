@@ -25,8 +25,8 @@ function evaluate(expression) {
 	return value;
 }
 
-function humanNotation(number) {
-	return parseFloat(number.toFixed(12));
+function humanNotation(number, precision=12) {
+	return parseFloat(number.toFixed(precision));
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					let DMS = ConvertDDToDMS(newVal);
 					this.$el.querySelector(".degInp").value = humanNotation(DMS.deg);
 					this.$el.querySelector(".minInp").value = humanNotation(DMS.min);
-					this.$el.querySelector(".secInp").value = humanNotation(DMS.sec);
+					this.$el.querySelector(".secInp").value = humanNotation(DMS.sec, 8);
 				}
 			},
 		},
