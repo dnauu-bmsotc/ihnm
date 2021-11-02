@@ -1,5 +1,34 @@
-let introductionToAnalysisButton;
-let introductionToAnalysis = [
+let topics = {};
+
+function addTopic(name, questions) {
+	topics[name] = {
+		name: name,
+		questions: questions,
+		btn: null,
+	};
+}
+
+function askQuestion(question) {
+	katex.render("\\text{" + question + "}", document.getElementById("question"), {
+    throwOnError: true,
+		macros: {'\\arccot': '\\operatorname{arccot}'},
+	});
+}
+
+function askTopic(topic) {
+	askQuestion(topic.questions[Math.floor(Math.random() * topic.questions.length)]);
+}
+
+function initTopics() {
+	for (const [key, value] of Object.entries(topics)) {
+		value.btn = document.createElement("button");
+		value.btn.innerHTML = value.name;
+		value.btn.addEventListener("click", () => askTopic(value));
+		document.getElementById("themes-section").append(value.btn);
+	}
+}
+
+addTopic("Введение в математический анализ", [
 	"Кванторы",
 	"Множества чисел",
 	"Определение функции",
@@ -41,10 +70,9 @@ let introductionToAnalysis = [
 	"Непрерывная функция",
 	"Непрерывная на интервале функция, непрерывная на отрезке функция",
 	"Точка разрыва функции. Классификация точек разрыва",
-];
+]);
 
-let differentiationOfAFunctionOfOneVariableButton;
-let differentiationOfAFunctionOfOneVariable = [
+addTopic("Дифференцирование функций одной переменной", [
 	"Производная функции",
 	"Дифференцируемая на интервале функция",
 	"Физический смысл производной",
@@ -82,20 +110,18 @@ let differentiationOfAFunctionOfOneVariable = [
 	"Определение асимптоты",
 	"Определение вертикальных наклонных и горизонтальных асимптот",
 	"Схема исследования графика функции",
-];
+]);
 
-let indefiniteIntegralButton;
-let indefiniteIntegral = [
+addTopic("Неопределённый интеграл", [
 	"Определение первообразной",
 	"Определение неопределённого интеграла",
 	"Подынтегральная функция, подынтегральное выражение",
 	"Теорема о существовании неопределённого интеграла. Без доказательства",
 	"Свойства неопределённого интеграла",
 	"Методы интегрирования",
-];
+]);
 
-let trigonometryButton;
-let trigonometry = [
+addTopic("Тригонометрия", [
 	"$\\tan^2\\alpha+1=?$",
 	"$\\cot^2\\alpha+1=?$",
 	"$\\sin{2\\alpha}=?$",
@@ -113,10 +139,9 @@ let trigonometry = [
 	"$2\\cos\\alpha\\cos\\beta=?$",
 	"$2\\sin\\alpha\\sin\\beta=?$",
 	"$2\\sin\\alpha\\cos\\beta=?$",
-];
+]);
 
-let abbreviatedMultiplicationFormulasButton;
-let abbreviatedMultiplicationFormulas = [
+addTopic("Формулы сокращённого умножения", [
 	"$a^2-b^2=?$",
 	"$(a+b)^2=?$",
 	"$(a-b)^2=?$",
@@ -124,10 +149,9 @@ let abbreviatedMultiplicationFormulas = [
 	"$a^3-b^3=?$",
 	"$(a+b)^3=?$",
 	"$(a-b)^3=?$",
-];
+]);
 
-let derivativeTableButton;
-let derivativeTable = [
+addTopic("Таблица производных", [
 	"$c'=?$",
 	"$(u^n)'=?$",
 	"$(a^u)'=?$",
@@ -145,19 +169,17 @@ let derivativeTable = [
 	"$(\\ch u)'=?$",
 	"$(\\th u)'=?$",
 	"$(\\cth u)'=?$",
-];
+]);
 
-let differentiatioRulesButton;
-let differentiatioRules = [
+addTopic("Правила дифференцирования", [
 	"$(c\\cdot f)'=?$",
 	"$(u\\pm v)'=?$",
 	"$(uv)'=?$",
 	"$(\\frac uv)'=?$",
 	"$(f(g))'=?$",
-];
+]);
 
-let integralTableButton;
-let integralTable = [
+addTopic("Таблица интералов", [
 	"$\\int u^\\alpha\\,du$=?",
 	"$\\int\\frac{du}{u}=?$",
 	"$\\int a^u\\,du=?$",
@@ -173,10 +195,9 @@ let integralTable = [
 	"$\\int\\frac{du}{u^2-a^2}=?$",
 	"$\\int\\frac{du}{\\sqrt{u^2-a^2}}=?$",
 	"$\\int\\frac{du}{\\sqrt{a^2+u^2}}=?$",
-];
+]);
 
-let equivalentInfinitelySmallFunctionsButton;
-let equivalentInfinitelySmallFunctions = [
+addTopic("Эквивалентные бесконечно малые функции", [
 	"$\\sin x\\sim?\\quad(x\\to0)$",
 	"$\\arcsin x\\sim?\\quad(x\\to0)$",
 	"$\\tan x\\sim?\\quad(x\\to0)$",
@@ -185,60 +206,8 @@ let equivalentInfinitelySmallFunctions = [
 	"$\\log_ax\\sim?\\quad(x\\to0)$",
 	"$a^x-1\\sim?\\quad(x\\to0)$",
 	"$(1+x)^m\\sim?\\quad(x\\to0)$",
-];
-
-function getQuestion(questions) {
-	return questions[Math.floor(Math.random() * questions.length)];
-}
-
-function removeElementsKeepChildren(b) {
-	while(b.length) {
-    let parent = b[ 0 ].parentNode;
-    while( b[ 0 ].firstChild ) {
-        parent.insertBefore(  b[ 0 ].firstChild, b[ 0 ] );
-    }
-     parent.removeChild( b[ 0 ] );
-}
-}
-
-function showQuestion(question) {
-	katex.render("\\text{" + question + "}", questionEl, {
-    throwOnError: true,
-		macros: {'\\arccot': '\\operatorname{arccot}'},
-	});
-}
-
-function ask(questions) {
-	showQuestion(getQuestion(questions));
-}
+]);
 
 document.addEventListener("DOMContentLoaded", function() {
-	questionEl = document.getElementById("question"); 
-	
-	introductionToAnalysisButton = document.getElementById("introduction-to-analysis-btn");
-	introductionToAnalysisButton.addEventListener("click", ()=>ask(introductionToAnalysis));
-	
-	differentiationOfAFunctionOfOneVariableButton = document.getElementById("differentiation-of-a-function-of-one-variable-btn");
-	differentiationOfAFunctionOfOneVariableButton.addEventListener("click", ()=>ask(differentiationOfAFunctionOfOneVariable));
-	
-	indefiniteIntegralButton = document.getElementById("indefinite-integral-btn");
-	indefiniteIntegralButton.addEventListener("click", ()=>ask(indefiniteIntegral));
-	
-	trigonometryButton = document.getElementById("trigonometry-btn");
-	trigonometryButton.addEventListener("click", ()=>ask(trigonometry));
-	
-	abbreviatedMultiplicationFormulasButton = document.getElementById("abbreviated-multiplication-formulas-btn");
-	abbreviatedMultiplicationFormulasButton.addEventListener("click", ()=>ask(abbreviatedMultiplicationFormulas));
-	
-	derivativeTableButton = document.getElementById("derivative-table-btn");
-	derivativeTableButton.addEventListener("click", ()=>ask(derivativeTable));
-	
-	differentiatioRulesButton = document.getElementById("differentiatio-rules-btn");
-	differentiatioRulesButton.addEventListener("click", ()=>ask(differentiatioRules));
-	
-	integralTableButton = document.getElementById("integral-table-btn");
-	integralTableButton.addEventListener("click", ()=>ask(integralTable));
-	
-	equivalentInfinitelySmallFunctionsButton = document.getElementById("equivalent-infinitely-small-functions-btn");
-	equivalentInfinitelySmallFunctionsButton.addEventListener("click", ()=>ask(equivalentInfinitelySmallFunctions));
+	initTopics();
 });
