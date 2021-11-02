@@ -5,6 +5,7 @@ function addTopic(name, questions) {
 		name: name,
 		questions: questions,
 		btn: null,
+		notAsked: [],
 	};
 }
 
@@ -16,15 +17,19 @@ function askQuestion(question) {
 }
 
 function askTopic(topic) {
-	askQuestion(topic.questions[Math.floor(Math.random() * topic.questions.length)]);
+	if (topic.notAsked.length === 0) {
+		topic.notAsked = [...topic.questions];
+	}
+	let n = Math.floor(Math.random() * topic.notAsked.length);
+	askQuestion(topic.notAsked.splice(n, 1)[0]);
 }
 
 function initTopics() {
-	for (const [key, value] of Object.entries(topics)) {
-		value.btn = document.createElement("button");
-		value.btn.innerHTML = value.name;
-		value.btn.addEventListener("click", () => askTopic(value));
-		document.getElementById("themes-section").append(value.btn);
+	for (const [name, topic] of Object.entries(topics)) {
+		topic.btn = document.createElement("button");
+		topic.btn.innerHTML = topic.name;
+		topic.btn.addEventListener("click", () => askTopic(topic));
+		document.getElementById("themes-section").append(topic.btn);
 	}
 }
 
