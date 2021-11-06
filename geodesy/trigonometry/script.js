@@ -2,8 +2,8 @@
 
 function ConvertDDToDMS(D){
 	let deg = math.fix(D);
-	let min = math.fix((D - deg) * 60);
-	let sec = (D - deg - min / 60) * 60 * 60;
+	let min = math.fix(math.multiply(math.subtract(D, deg), 60));
+	let sec = math.chain(D).subtract(deg).subtract(math.divide(min, 60)).multiply(60 * 60).done();
 	return {
 		deg: deg,
 		min: min,
@@ -13,129 +13,86 @@ function ConvertDDToDMS(D){
 
 function evalExpr(expression) {
 	let value = 0;
-	try {
-		value = math.evaluate(expression);
-	}
-	catch {
-		value = 0;
-	}
-	if (typeof value !== "number") {
-		value = 0;
-	}
+	try { value = math.evaluate(expression); }
+	catch { value = 0; }
+	(value === undefined) && (value = 0);
 	return value;
 }
 
-function humanNotation(number, precision=12) {
-	return parseFloat(number.toFixed(precision));
+function format(x, precision=16) {
+	return math.format(x, { notation: "fixed", precision: precision });
+}
+
+function onInput(e) {
+	let $input = $(e.target);
+	let value = 0; // radians
+	let dms;
+	
+	// Scanning if it is trigonometry input
+	if ($input.hasClass("trigonometry-input")) {
+		value = $input.data("translator").arcfunc(evalExpr($input.val()));
+	}
+	
+	// Scanning if it is degrees minutes or seconds input
+	if ($input.hasClass("geodesy-input")) {
+		value = math.add(value, math.divide(evalExpr($input.data("translator").$degrees.val()), 60 ** 0));
+		value = math.add(value, math.divide(evalExpr($input.data("translator").$minutes.val()), 60 ** 1));
+		value = math.add(value, math.divide(evalExpr($input.data("translator").$seconds.val()), 60 ** 2));
+		value = math.multiply(value, math.PI / 180);
+	}
+	
+	// Scanning if it is DD input
+	if ($input.hasClass("dd-input")) {
+		value = math.multiply(evalExpr($input.val()), math.PI / 180);
+	}
+	
+	dms = ConvertDDToDMS(math.multiply(value, 180 / math.PI));
+	
+	// Updating trigonometry values
+	$(".trigonometry-input").each(function() {
+		if (this !== e.target) {
+			let trigonometryValue = $(this).data("translator").func(value);
+			(trigonometryValue > Number.MAX_SAFE_INTEGER)  && (trigonometryValue =  math.Infinity);
+			(trigonometryValue < Number.MIN_SAFE_INTEGER) && (trigonometryValue = -math.Infinity);
+			$(this).val(format(trigonometryValue));
+		}
+	});
+	
+	// Updating degrees minutes and seconds
+	$(".degrees-input").each(function() {
+		let t = $(this).data("translator");
+		(e.target !== t.$degrees[0]) && (t.$degrees.val(dms.deg));
+		(e.target !== t.$minutes[0]) && (t.$minutes.val(dms.min));
+		(e.target !== t.$seconds[0]) && (t.$seconds.val(format(dms.sec, 8)));
+	});
+	
+	// Updating DD values
+	$(".dd-input").each(function() {
+		if (this !== e.target) {
+			$(this).val(format(math.multiply(value, 180 / math.PI)));
+		}
+	});
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-	const table = {
-		data() {
-			return {
-				dd: 0,
-				leader: null,
-				translators: [
-					{name: "sin", func: math.sin, arcname: "arcsin", arcfunc: math.asin},
-					{name: "cos", func: math.cos, arcname: "arccos", arcfunc: math.acos},
-					{name: "tan", func: math.tan, arcname: "arctan", arcfunc: math.atan},
-					{name: "cot", func: math.cot, arcname: "arcctg", arcfunc: math.acot},
-				],
-			};
-		},
-		methods: {
-			onDdInput(value, e) {
-				this.leader = e.target;
-				this.dd = value;
-			},
-		},
-	};
-
-	const app = Vue.createApp(table);
+	let translators = [
+		{name: "sin", func: math.sin, arcname: "arcsin", arcfunc: math.asin},
+		{name: "cos", func: math.cos, arcname: "arccos", arcfunc: math.acos},
+		{name: "tan", func: math.tan, arcname: "arctan", arcfunc: math.atan},
+		{name: "cot", func: math.cot, arcname: "arcctg", arcfunc: math.acot},
+	];
 	
-	app.component("trigonometry-input", {
-		template: `<input v-on:input="onInput"/>`,
-		props: ["value", "leader", "source"],
-		methods: {
-			onInput(e) {
-				let value = evalExpr(this.$el.value);
-				if (value > 1000000) {
-					value = Infinity;
-				}
-				let DD = this.source.arcfunc(value) * 180 / math.PI;
-				this.$emit("dd-input", DD, e);
-			},
-		},
-		watch: {
-			value: function(newVal, oldVal) {
-				if (this.leader !== this.$el) {
-					let value = this.source.func(newVal * math.PI / 180);
-					if (value > 1000000) {
-						value = Infinity;
-					}
-					this.$el.value = humanNotation(value);
-				}
-			},
-		},
-	});
+	for (let translator of translators) {
+		translator.$name         = $(`<span class="name">${translator.name}</span>`);
+		translator.$trigonometry = $(`<input class="trigonometry-input"/>`);
+		translator.$degrees      = $(`<input class="geodesy-input degrees-input"/>`);
+		translator.$minutes      = $(`<input class="geodesy-input minutes-input"/>`);
+		translator.$seconds      = $(`<input class="geodesy-input seconds-input"/>`);
+		translator.$dd           = $(`<input class="dd-input"/>`);
+		
+		[translator.$name, translator.$trigonometry, translator.$degrees, translator.$minutes, translator.$seconds, translator.$dd].map(x => x.data("translator", translator));
+		[translator.$name, translator.$trigonometry, translator.$degrees, translator.$minutes, translator.$seconds, translator.$dd].map(x => $("#table").append($("<div>").append(x)));
+	}
 	
-	app.component("arc-input", {
-		template: `
-			<div style="display: contents;">
-				<div><input class="degInp" v-on:input="onDegInput"/></div>
-				<div><input class="minInp" v-on:input="onDegInput"/></div>
-				<div><input class="secInp" v-on:input="onDegInput"/></div>
-			</div>
-		`,
-		props: ["value", "leader", "source"],
-		methods: {
-			onDegInput(e) {
-				let deg = evalExpr(this.$el.querySelector(".degInp").value);
-				let min = evalExpr(this.$el.querySelector(".minInp").value);
-				let sec = evalExpr(this.$el.querySelector(".secInp").value);
-				this.$emit("dd-input", deg + min / 60 + sec / 60 / 60, e);
-			},
-			onMinInput(e) {
-				let min = evalExpr(this.minInp.value);
-				console.log(min, this.degInp.value + min / 60 + this.secInp.value / 60 / 60);
-				this.$emit("dd-input", this.degInp.value + min / 60 + this.secInp.value / 60 / 60, e);
-			},
-			onSecInput(e) {
-				let sec = evalExpr(this.secInp.value);
-				this.$emit("dd-input", this.degInp.value + this.minInp.value / 60 + sec / 60 / 60, e);
-			},
-		},
-		watch: {
-			value: function(newVal, oldVal) {
-				if (this.leader !== this.degInp &&
-						this.leader !== this.minInp &&
-						this.leader !== this.secInp) {
-					let DMS = ConvertDDToDMS(newVal);
-					this.$el.querySelector(".degInp").value = humanNotation(DMS.deg);
-					this.$el.querySelector(".minInp").value = humanNotation(DMS.min);
-					this.$el.querySelector(".secInp").value = humanNotation(DMS.sec, 8);
-				}
-			},
-		},
-	});
-
-	app.component("dd-input", {
-		template: `<input v-on:input="onInput"/>`,
-		props: ["value", "leader", "source"],
-		methods: {
-			onInput(e) {
-				let DD = evalExpr(this.$el.value);
-				this.$emit("dd-input", DD, e);
-			},
-		},
-		watch: {
-			value: function(newVal, oldVal) {
-				if (this.leader !== this.$el) {
-					this.$el.value = humanNotation(newVal);
-				}
-			},
-		},
-	});
-	
-	app.mount("#table");
+	$("#table").on("input", onInput);
 });

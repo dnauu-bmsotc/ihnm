@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="../../style.css">
-		<script src="https://unpkg.com/vue@next"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.min.js"></script>
 		<script src="script.js"></script>
 		<style>
@@ -45,12 +45,6 @@
 				<div class="th">Минуты</div>
 				<div class="th">Секунды</div>
 				<div class="th">DD</div>
-				<template v-for="item in translators">
-					<div>{{item.name}}</div>
-					<div><trigonometry-input :value="dd" :leader="leader" :source="item" @dd-input="onDdInput" /></div>
-					<div style="display: contents;"><arc-input dd-input :value="dd" :leader="leader" :source="item" @dd-input="onDdInput" /></div>
-					<div><dd-input :value="dd" :leader="leader" :source="item" @dd-input="onDdInput" /></div>
-				</template>
 			</section>
 		</main>
 	</body>
