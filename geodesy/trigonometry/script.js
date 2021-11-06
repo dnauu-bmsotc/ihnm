@@ -90,18 +90,18 @@ document.addEventListener("DOMContentLoaded", function() {
 		props: ["value", "leader", "source"],
 		methods: {
 			onDegInput(e) {
-				let deg = evaluate(this.$el.querySelector(".degInp").value);
-				let min = evaluate(this.$el.querySelector(".minInp").value);
-				let sec = evaluate(this.$el.querySelector(".secInp").value);
+				let deg = evalExpr(this.$el.querySelector(".degInp").value);
+				let min = evalExpr(this.$el.querySelector(".minInp").value);
+				let sec = evalExpr(this.$el.querySelector(".secInp").value);
 				this.$emit("dd-input", deg + min / 60 + sec / 60 / 60, e);
 			},
 			onMinInput(e) {
-				let min = evaluate(this.minInp.value);
+				let min = evalExpr(this.minInp.value);
 				console.log(min, this.degInp.value + min / 60 + this.secInp.value / 60 / 60);
 				this.$emit("dd-input", this.degInp.value + min / 60 + this.secInp.value / 60 / 60, e);
 			},
 			onSecInput(e) {
-				let sec = evaluate(this.secInp.value);
+				let sec = evalExpr(this.secInp.value);
 				this.$emit("dd-input", this.degInp.value + this.minInp.value / 60 + sec / 60 / 60, e);
 			},
 		},
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		props: ["value", "leader", "source"],
 		methods: {
 			onInput(e) {
-				let DD = evaluate(this.$el.value);
+				let DD = evalExpr(this.$el.value);
 				this.$emit("dd-input", DD, e);
 			},
 		},
