@@ -11,7 +11,7 @@ function ConvertDDToDMS(D){
 	};
 }
 
-function evaluate(expression) {
+function evalExpr(expression) {
 	let value = 0;
 	try {
 		value = math.evaluate(expression);
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		props: ["value", "leader", "source"],
 		methods: {
 			onInput(e) {
-				let value = evaluate(this.$el.value);
+				let value = evalExpr(this.$el.value);
 				if (value > 1000000) {
 					value = Infinity;
 				}
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		watch: {
 			value: function(newVal, oldVal) {
 				if (this.leader !== this.degInp &&
-				    this.leader !== this.minInp &&
+						this.leader !== this.minInp &&
 						this.leader !== this.secInp) {
 					let DMS = ConvertDDToDMS(newVal);
 					this.$el.querySelector(".degInp").value = humanNotation(DMS.deg);
