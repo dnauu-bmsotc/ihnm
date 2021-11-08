@@ -40,4 +40,5 @@ document.addEventListener("DOMContentLoaded", async function() {
 			}
 		}
 	}
+	document.getElementById("disciplines").firstChild.dispatchEvent(new Event("click"));
 });
