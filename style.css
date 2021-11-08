@@ -62,3 +62,7 @@ button {
 button:active {
 	background-color: #ebdddb;
 }
+
+ul, ol {
+	margin: 1em;
+}
