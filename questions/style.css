@@ -1,0 +1,41 @@
+#question-section {
+	width: 100%;
+	height: 4em;
+	margin: 1em 0;
+	padding: 1.5em;
+	text-align: center;
+	font-family: roman;
+	font-size: 1.5em;
+	background-color: #f3eeed;
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+#question-section .katex {
+	font-size: 1em;
+}
+
+#themes-section {
+	display: grid;
+	grid-template-columns: 33% 33% 33%;
+	margin: 1em auto;
+}
+
+#themes-section button {
+	margin: 0.5em;
+}
+
+@media (max-width: 512px)
+{
+	#themes-section {
+		grid-template-columns: 50% 50%;
+	}
+}
+
+@media (max-width: 384px)
+{
+	#themes-section {
+		grid-template-columns: 100%;
+	}
+}
