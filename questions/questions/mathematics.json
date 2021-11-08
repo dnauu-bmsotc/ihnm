@@ -1,0 +1,38 @@
+{	
+	"name": "Математика",
+	"topics": [
+		{
+			"name": "Таблица интералов",
+			"questions": [
+				"$\\int u^\\alpha\\,du$=?",
+				"$\\int\\frac{du}{u}=?$",
+				"$\\int a^u\\,du=?$",
+				"$\\int\\sin u\\,du=?$",
+				"$\\int\\cos u\\,du=?$",
+				"$\\int\\frac{du}{\\cos^2u}=?$",
+				"$\\int\\frac{du}{\\sin^2u}=?$",
+				"$\\int\\sh u\\,du=?$",
+				"$\\int\\ch u\\,du=?$",
+				"$\\int\\frac{du}{\\ch^2u}=?$",
+				"$\\int\\frac{du}{\\sh^2u}=?$",
+				"$\\int\\frac{du}{u^2+a^2}=?$",
+				"$\\int\\frac{du}{u^2-a^2}=?$",
+				"$\\int\\frac{du}{\\sqrt{u^2-a^2}}=?$",
+				"$\\int\\frac{du}{\\sqrt{a^2+u^2}}=?$"
+			]
+		},
+		{
+			"name": "Эквивалентные бесконечно малые функции",
+			"questions": [
+				"$\\sin x\\sim?\\quad(x\\to0)$",
+				"$\\arcsin x\\sim?\\quad(x\\to0)$",
+				"$\\tan x\\sim?\\quad(x\\to0)$",
+				"$1-\\cos x\\sim?\\quad(x\\to0)$",
+				"$\\ln(1+x)\\sim?\\quad(x\\to0)$",
+				"$\\log_ax\\sim?\\quad(x\\to0)$",
+				"$a^x-1\\sim?\\quad(x\\to0)$",
+				"$(1+x)^m\\sim?\\quad(x\\to0)$"
+			]
+		}
+	]
+}
