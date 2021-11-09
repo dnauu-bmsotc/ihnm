@@ -3,6 +3,7 @@
 	flex-flow: row nowrap;
 	width: 100%;
 	background-color: #fcf6f5;
+	overflow-x: auto;
 }
 
 #disciplines button {

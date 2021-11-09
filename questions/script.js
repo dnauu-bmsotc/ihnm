@@ -21,24 +21,35 @@ function appendButton(containerId, name, func) {
 }
 
 function addDiscipline(discipline) {
-	appendButton("disciplines", discipline.name, () => {
+	let disciplineName = discipline.name;
+	delete discipline.name;
+	
+	appendButton("disciplines", disciplineName, () => {
 		document.getElementById("themes-section").innerHTML = "";
-		for (let topic of discipline.topics) {
-			topic.notAsked = [];
-			appendButton("themes-section", topic.name, () => askTopic(topic));
+		for (const [name, questions] of Object.entries(discipline)) {
+			let topic = {
+				questions: questions,
+				notAsked: [],
+			}
+			appendButton("themes-section", name, () => askTopic(topic));
 		}
 	});
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+	// Получение файла со списком путей к файлам с вопросами.
 	let disciplinesFile = await fetch("./disciplines.json");
 	if (disciplinesFile.ok) {
+		// Чтение каждого адреса из файла
 		for (let url of await disciplinesFile.json()) {
+			// Чтение файлов с вопросами
 			let topicsFile = await fetch(url);
 			if (topicsFile.ok) {
 				addDiscipline(await topicsFile.json());
 			}
 		}
 	}
+	
+	// 
 	document.getElementById("disciplines").firstChild.dispatchEvent(new Event("click"));
 });

@@ -1,4 +1,4 @@
 [
-	"./mathematics.json",
-	"./geodesy.json"
+	"./data/mathematics.json",
+	"./data/geodesy.json"
 ]
