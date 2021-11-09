@@ -19,7 +19,7 @@ function evalExpr(expression) {
 	return value;
 }
 
-function format(x, precision=16) {
+function format(x, precision=15) {
 	return math.format(x, { notation: "fixed", precision: precision });
 }
 
