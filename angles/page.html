@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Тригонометрия</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+	</head>
+	<body>
+		<main>
+			<ul id="list">
+				<li id="li-g">
+					<input id="gdeg" type="number">градусов,
+					<input id="gmin" type="number">минут,
+					<input id="gsec" type="number">секунд.
+				</li>
+				<li id="li-deg">Только в градусах: <input id="deg" type="number"></li>
+				<li id="li-min">Только в минутах: <input id="min" type="number"></li>
+				<li id="li-sec">Только в секундах: <input id="sec" type="number"></li>
+				<li id="li-gon">В градах: <input id="gon" type="number"></li>
+				<li id="li-rad">В радианах: <input id="rad" type="number"></li>
+				<li id="li-rum">Северо-запад румб равен...</li>
+				<li id="li-sin">sin: <input id="sin" type="number"></li>
+				<li id="li-cos">cos: <input id="cos" type="number"></li>
+				<li id="li-tg" >tg: <input id="tg" type="number"></li>
+				<li id="li-ctg">ctg: <input id="ctg" type="number"></li>
+			</ul>
+		</main>
+		<script>
+			numeral.register("locale", "ihnm", {
+				delimiters: { thousands: " ", decimal: "." },
+				abbreviations: { thousand: "тыс.", million: "млн.", billion: "млрд.", trillion: "трлн." },
+				ordinal: function() { return "." },
+				currency: { symbol: "руб." }
+			});
+			numeral.locale("ihnm");
+			numeral.defaultFormat("0[.][00000]");
+			
+			function setValues(degrees, sourceId) {
+				let setValue = (id, value, exceptionId) => {
+					if (document.getElementById(id).closest("li").id !== exceptionId) {
+						document.getElementById(id).value = numeral(value).format();
+					}
+				};
+				let dd = degrees.value();
+				let d = Math.trunc(dd);
+				let m = Math.trunc((dd - d) * 60);
+				let s = ((dd - d) * 60 - m) * 60;
+				setValue("gdeg", d, sourceId);
+				setValue("gmin", m, sourceId);
+				setValue("gsec", s, sourceId); 
+				setValue("deg", dd, sourceId);
+				setValue("min", dd * 60, sourceId);
+				setValue("sec", dd * 60 * 60, sourceId);
+				setValue("gon", dd / 0.9, sourceId);
+				setValue("rad", dd / 180 * Math.PI, sourceId);
+				setValue("sin", Math.sin(dd / 180 * Math.PI), sourceId);
+				setValue("cos", Math.cos(dd / 180 * Math.PI), sourceId);
+				setValue("tg", Math.tan(dd / 180 * Math.PI), sourceId);
+				setValue("ctg", 1 / Math.tan(dd / 180 * Math.PI), sourceId);
+			}
+			
+			document.getElementById("list").addEventListener("input", function(e) {
+				let numeralById = (id) => {
+					return numeral(document.getElementById(id).value);
+				};
+				let degrees;
+				if (e.isTrusted) {
+					switch (e.target.id) {
+						case "gdeg":
+						case "gmin":
+						case "gsec":
+							degrees = numeralById("gdeg");
+							degrees.add(numeralById("gmin").value() / 60);
+							degrees.add(numeralById("gsec").value() / 60 / 60);
+						break;
+						case "deg": degrees = numeralById("deg"); break;
+						case "min": degrees = numeralById("min").divide(60); break;
+						case "sec": degrees = numeralById("sec").divide(3600); break;
+						case "gon": degrees = numeralById("gon").multiply(0.9); break;
+						case "rad": degrees = numeralById("rad").multiply(180 / Math.PI); break;
+						case "sin": degrees = numeral(Math.asin(numeralById("sin").value()) / Math.PI * 180); break;
+						case "cos": degrees = numeral(Math.acos(numeralById("cos").value()) / Math.PI * 180); break;
+						case "tg":  degrees = numeral(Math.atan(numeralById("tg").value()) / Math.PI * 180); break;
+						case "ctg": degrees = numeral(Math.atan(1 / numeralById("ctg").value()) / Math.PI * 180); break;
+					}
+					setValues(degrees, e.target.closest("li").id);
+				}
+			});
+			
+			setValues(numeral(0), null);
+		</script>
+	</body>
+</html>
