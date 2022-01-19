@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 	<head>
-		<title>Тригонометрия</title>
+		<title>Углы</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
@@ -19,7 +19,7 @@
 				<li id="li-sec">Только в секундах: <input id="sec" type="number"></li>
 				<li id="li-gon">В градах: <input id="gon" type="number"></li>
 				<li id="li-rad">В радианах: <input id="rad" type="number"></li>
-				<li id="li-rum">Северо-запад румб равен...</li>
+				<li id="li-rum">Направление <input id="rdir">, румб <input id="rval" type="number"></li>
 				<li id="li-sin">sin: <input id="sin" type="number"></li>
 				<li id="li-cos">cos: <input id="cos" type="number"></li>
 				<li id="li-tg" >tg: <input id="tg" type="number"></li>
@@ -37,9 +37,9 @@
 			numeral.defaultFormat("0[.][00000]");
 			
 			function setValues(degrees, sourceId) {
-				let setValue = (id, value, exceptionId) => {
+				let setValue = (id, value, exceptionId, format=true) => {
 					if (document.getElementById(id).closest("li").id !== exceptionId) {
-						document.getElementById(id).value = numeral(value).format();
+						document.getElementById(id).value = format ? numeral(value).format() : value;
 					}
 				};
 				let dd = degrees.value();
@@ -54,6 +54,11 @@
 				setValue("sec", dd * 60 * 60, sourceId);
 				setValue("gon", dd / 0.9, sourceId);
 				setValue("rad", dd / 180 * Math.PI, sourceId);
+				     if (0   <= (dd % 360) && (dd % 360) < 90)  { setValue("rdir", "СВ", sourceId, false); setValue("rval", dd, sourceId); }
+				else if (90  <= (dd % 360) && (dd % 360) < 180) { setValue("rdir", "ЮВ", sourceId, false); setValue("rval", 180 - dd, sourceId); }
+				else if (180 <= (dd % 360) && (dd % 360) < 270) { setValue("rdir", "ЮЗ", sourceId, false); setValue("rval", 180 + dd, sourceId); }
+				else if (270 <= (dd % 360) && (dd % 360) < 360) { setValue("rdir", "СЗ", sourceId, false); setValue("rval", 360 - dd, sourceId); }
+				else { setValue("rdir", "", sourceId, false); setValue("rval", dd, sourceId); }
 				setValue("sin", Math.sin(dd / 180 * Math.PI), sourceId);
 				setValue("cos", Math.cos(dd / 180 * Math.PI), sourceId);
 				setValue("tg", Math.tan(dd / 180 * Math.PI), sourceId);
@@ -79,6 +84,17 @@
 						case "sec": degrees = numeralById("sec").divide(3600); break;
 						case "gon": degrees = numeralById("gon").multiply(0.9); break;
 						case "rad": degrees = numeralById("rad").multiply(180 / Math.PI); break;
+						case "rdir":
+						case "rval":
+							degrees = numberalById("rval");
+							switch (document.getElementById("rdir").value) {
+								case "СВ": degrees = degrees; break;
+								case "ЮВ": degrees = numeral(180).minus(degrees); break;
+								case "ЮЗ": degrees = numeral(180).plus(degrees); break;
+								case "СЗ": degrees = numeral(360).minus(degrees); break;
+								default: degrees = numeral(0); break;
+							}
+							break;
 						case "sin": degrees = numeral(Math.asin(numeralById("sin").value()) / Math.PI * 180); break;
 						case "cos": degrees = numeral(Math.acos(numeralById("cos").value()) / Math.PI * 180); break;
 						case "tg":  degrees = numeral(Math.atan(numeralById("tg").value()) / Math.PI * 180); break;
