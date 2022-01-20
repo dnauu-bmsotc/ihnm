@@ -4,28 +4,195 @@
 		<title>Углы</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.4/numeral.min.js"></script>
 	</head>
 	<body>
 		<main>
 			<ul id="list">
-				<li id="li-g">
-					<input id="gdeg" type="number">градусов,
-					<input id="gmin" type="number">минут,
-					<input id="gsec" type="number">секунд.
-				</li>
-				<li id="li-deg">Только в градусах: <input id="deg" type="number"></li>
-				<li id="li-min">Только в минутах: <input id="min" type="number"></li>
-				<li id="li-sec">Только в секундах: <input id="sec" type="number"></li>
-				<li id="li-gon">В градах: <input id="gon" type="number"></li>
-				<li id="li-rad">В радианах: <input id="rad" type="number"></li>
-				<li id="li-rum">Направление <input id="rdir">, румб <input id="rval" type="number"></li>
-				<li id="li-sin">sin: <input id="sin" type="number"></li>
-				<li id="li-cos">cos: <input id="cos" type="number"></li>
-				<li id="li-tg" >tg: <input id="tg" type="number"></li>
-				<li id="li-ctg">ctg: <input id="ctg" type="number"></li>
+				<!-- Заполняется скриптом -->
 			</ul>
 		</main>
+		<script>
+			representations = [];
+		
+			function addRepresentation({groupName, html, getValue, setValue}) {
+				let li = document.createElement("li");
+				li.innerHTML = html;
+				li.id = groupName;
+				li.addEventListener("input", ()=>updateRepresentations(getValue(), groupName));
+				document.getElementById("list").appendChild(li);
+				representations.push({
+					groupName: groupName,
+					getValue: getValue,
+					setValue: setValue
+				});
+			}
+			
+			function updateRepresentations(dd, exception) {
+				for (let representation of representations) {
+					if (representation.groupName !== exception) {
+						representation.setValue(dd);
+					}
+				}
+			}
+			
+			function numberIn(id) {
+				return +document.getElementById(id).value.replace(/\,/g, ".");
+			}
+			
+			function setNumber(id, value) {
+				document.getElementById(id).value = (Math.abs(value) > 10**8) ? "" : numeral(value).format();
+			}
+		</script>
+		
+		<script>
+			// Градусы, минуты, секунды
+			addRepresentation({
+				groupName: "li-g",
+				html: `
+					<input id="gdeg" type="text">градусов,
+					<input id="gmin" type="text">минут,
+					<input id="gsec" type="text">секунд.
+				`,
+				getValue: () => numberIn("gdeg") + numberIn("gmin") / 60 + numberIn("gsec") / 3600,
+				setValue: dd => {
+					let d, m, s;
+					setNumber("gdeg", d = Math.trunc(dd));
+					setNumber("gmin", m = Math.trunc((dd - d) * 60));
+					setNumber("gsec", s = ((dd - d) * 60 - m) * 60);
+				},
+			});
+			
+			// Только в градусах
+			addRepresentation({
+				groupName: "li-dd",
+				html: `Только в градусах: <input id="dd" type="text">`,
+				getValue: () => numberIn("dd"),
+				setValue: dd => setNumber("dd", dd),
+			});
+			
+			// Только в минутах
+			addRepresentation({
+				groupName: "li-mm",
+				html: `Только в минутах: <input id="mm" type="text">`,
+				getValue: () => numberIn("mm") / 60,
+				setValue: dd => setNumber("mm", dd * 60),
+			});
+			
+			// Только в секундах
+			addRepresentation({
+				groupName: "li-ss",
+				html: `Только в секундах: <input id="ss" type="text">`,
+				getValue: () => numberIn("ss") / 3600,
+				setValue: dd => setNumber("ss", dd * 3600),
+			});
+			
+			// В градах
+			addRepresentation({
+				groupName: "li-gon",
+				html: `В градах: <input id="gon" type="text">`,
+				getValue: () => numberIn("gon") / 0.9,
+				setValue: dd => setNumber("gon", dd * 0.9),
+			});
+			
+			// В радианах
+			addRepresentation({
+				groupName: "li-rad",
+				html: `В радианах: <input id="rad" type="text">`,
+				getValue: () => numberIn("rad") / Math.PI * 180,
+				setValue: dd => setNumber("rad", dd * Math.PI / 180),
+			});
+			
+			// Синус
+			addRepresentation({
+				groupName: "li-sin",
+				html: `sin: <input id="sin" type="text">`,
+				getValue: () => Math.asin(numberIn("sin")) / Math.PI * 180,
+				setValue: dd => setNumber("sin", Math.sin(dd * Math.PI / 180)),
+			});
+			
+			// Косинус
+			addRepresentation({
+				groupName: "li-cos",
+				html: `cos: <input id="cos" type="text">`,
+				getValue: () => Math.acos(numberIn("cos")) / Math.PI * 180,
+				setValue: dd => setNumber("cos", Math.cos(dd * Math.PI / 180)),
+			});
+			
+			// Тангенс
+			addRepresentation({
+				groupName: "li-tan",
+				html: `tg: <input id="tan" type="text">`,
+				getValue: () => Math.atan(numberIn("tan")) / Math.PI * 180,
+				setValue: dd => setNumber("tan", Math.tan(dd * Math.PI / 180)),
+			});
+			
+			// Котангенс
+			addRepresentation({
+				groupName: "li-ctg",
+				html: `ctg: <input id="ctg" type="text">`,
+				getValue: () => Math.atan(1 / numberIn("ctg")) / Math.PI * 180,
+				setValue: dd => setNumber("ctg", 1 / Math.tan(dd * Math.PI / 180)),
+			});
+			
+			// Румб
+			addRepresentation({
+				groupName: "li-rum",
+				html: `
+					Направление
+					<select id="rdir">
+						<option>СВ</option>
+						<option>ЮВ</option>
+						<option>ЮЗ</option>
+						<option>СЗ</option>
+					</select>,
+					Румб <input id="rval" type="text">
+				`,
+				getValue: () => {
+					switch(document.getElementById("rdir").selectedIndex) {
+						case 0: return (numberIn("rval"));
+						case 1: return (180 - numberIn("rval"));
+						case 2: return (180 + numberIn("rval"));
+						case 3: return (360 - numberIn("rval"));
+					};
+				},
+				setValue: dd => {
+				       if (0   <= (dd % 360) && (dd % 360) < 90)  { document.getElementById("rdir").selectedIndex = 0; setNumber("rval", dd); }
+					else if (90  <= (dd % 360) && (dd % 360) < 180) { document.getElementById("rdir").selectedIndex = 1; setNumber("rval", 180 - dd); }
+					else if (180 <= (dd % 360) && (dd % 360) < 270) { document.getElementById("rdir").selectedIndex = 2; setNumber("rval", 180 + dd); }
+					else if (270 <= (dd % 360) && (dd % 360) < 360) { document.getElementById("rdir").selectedIndex = 3; setNumber("rval", 360 - dd); }
+				},
+			});
+			
+			// Истинный азимут по сближению меридианов
+			addRepresentation({
+				groupName: "li-ta-convergence",
+				html: `Сближение меридианов: <input id="ta-convergence" type="text">, Истинный азимут: <input id="ta-value" type="text">`,
+				getValue: () => (numberIn("ta-value") - numberIn("ta-convergence")),
+				setValue: dd => setNumber("ta-value", dd + numberIn("ta-convergence")),
+			});
+			
+			// Магнитный азимут по поправке
+			addRepresentation({
+				groupName: "li-ma1-correction",
+				html: `Поправка направления: <input id="ma1-correction" type="text">, Магнитный азимут: <input id="ma1-value" type="text">`,
+				getValue: () => (numberIn("ma1-value") + numberIn("ma1-correction")),
+				setValue: dd => setNumber("ma1-value", dd - numberIn("ma1-correction")),
+			});
+			
+			// Магнитный азимут по сближению меридианов и магнитному склонению
+			addRepresentation({
+				groupName: "li-ma2-convergence-declination",
+				html: `
+					Сближение меридианов: <input id="ma2-convergence" type="text">,
+					Магнитное склонение: <input id="ma2-declination" type="text">,
+					Магнитный азимут: <input id="ma2-value" type="text">
+				`,
+				getValue: () => (numberIn("ma2-value") + numberIn("ma2-declination") - numberIn("ma2-convergence")),
+				setValue: dd => setNumber("ma2-value", dd + numberIn("ma2-convergence") - numberIn("ma2-declination")),
+			});
+		</script>
+		
 		<script>
 			numeral.register("locale", "ihnm", {
 				delimiters: { thousands: " ", decimal: "." },
@@ -34,77 +201,9 @@
 				currency: { symbol: "руб." }
 			});
 			numeral.locale("ihnm");
-			numeral.defaultFormat("0[.][00000]");
+			numeral.defaultFormat("0[.][0000000]");
 			
-			function setValues(degrees, sourceId) {
-				let setValue = (id, value, exceptionId, format=true) => {
-					if (document.getElementById(id).closest("li").id !== exceptionId) {
-						document.getElementById(id).value = format ? numeral(value).format() : value;
-					}
-				};
-				let dd = degrees.value();
-				let d = Math.trunc(dd);
-				let m = Math.trunc((dd - d) * 60);
-				let s = ((dd - d) * 60 - m) * 60;
-				setValue("gdeg", d, sourceId);
-				setValue("gmin", m, sourceId);
-				setValue("gsec", s, sourceId); 
-				setValue("deg", dd, sourceId);
-				setValue("min", dd * 60, sourceId);
-				setValue("sec", dd * 60 * 60, sourceId);
-				setValue("gon", dd / 0.9, sourceId);
-				setValue("rad", dd / 180 * Math.PI, sourceId);
-				     if (0   <= (dd % 360) && (dd % 360) < 90)  { setValue("rdir", "СВ", sourceId, false); setValue("rval", dd, sourceId); }
-				else if (90  <= (dd % 360) && (dd % 360) < 180) { setValue("rdir", "ЮВ", sourceId, false); setValue("rval", 180 - dd, sourceId); }
-				else if (180 <= (dd % 360) && (dd % 360) < 270) { setValue("rdir", "ЮЗ", sourceId, false); setValue("rval", 180 + dd, sourceId); }
-				else if (270 <= (dd % 360) && (dd % 360) < 360) { setValue("rdir", "СЗ", sourceId, false); setValue("rval", 360 - dd, sourceId); }
-				else { setValue("rdir", "", sourceId, false); setValue("rval", dd, sourceId); }
-				setValue("sin", Math.sin(dd / 180 * Math.PI), sourceId);
-				setValue("cos", Math.cos(dd / 180 * Math.PI), sourceId);
-				setValue("tg", Math.tan(dd / 180 * Math.PI), sourceId);
-				setValue("ctg", 1 / Math.tan(dd / 180 * Math.PI), sourceId);
-			}
-			
-			document.getElementById("list").addEventListener("input", function(e) {
-				let numeralById = (id) => {
-					return numeral(document.getElementById(id).value);
-				};
-				let degrees;
-				if (e.isTrusted) {
-					switch (e.target.id) {
-						case "gdeg":
-						case "gmin":
-						case "gsec":
-							degrees = numeralById("gdeg");
-							degrees.add(numeralById("gmin").value() / 60);
-							degrees.add(numeralById("gsec").value() / 60 / 60);
-						break;
-						case "deg": degrees = numeralById("deg"); break;
-						case "min": degrees = numeralById("min").divide(60); break;
-						case "sec": degrees = numeralById("sec").divide(3600); break;
-						case "gon": degrees = numeralById("gon").multiply(0.9); break;
-						case "rad": degrees = numeralById("rad").multiply(180 / Math.PI); break;
-						case "rdir":
-						case "rval":
-							degrees = numberalById("rval");
-							switch (document.getElementById("rdir").value) {
-								case "СВ": degrees = degrees; break;
-								case "ЮВ": degrees = numeral(180).minus(degrees); break;
-								case "ЮЗ": degrees = numeral(180).plus(degrees); break;
-								case "СЗ": degrees = numeral(360).minus(degrees); break;
-								default: degrees = numeral(0); break;
-							}
-							break;
-						case "sin": degrees = numeral(Math.asin(numeralById("sin").value()) / Math.PI * 180); break;
-						case "cos": degrees = numeral(Math.acos(numeralById("cos").value()) / Math.PI * 180); break;
-						case "tg":  degrees = numeral(Math.atan(numeralById("tg").value()) / Math.PI * 180); break;
-						case "ctg": degrees = numeral(Math.atan(1 / numeralById("ctg").value()) / Math.PI * 180); break;
-					}
-					setValues(degrees, e.target.closest("li").id);
-				}
-			});
-			
-			setValues(numeral(0), null);
+			updateRepresentations(0, null);
 		</script>
 	</body>
 </html>
