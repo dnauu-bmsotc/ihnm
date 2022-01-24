@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Прямоугольник в секторе</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+	</head>
+	<body>
+		<script>
+			const w = 400;
+			const h = 400;
+			const r = 200;
+		
+			function setup() {
+				createCanvas(w, h);
+			}
+			
+			function draw() {
+				let mousex = (1 + mouseX / w) % 1; // Значение из полуинтервала [0; 1)
+				let mousey = (1 + mouseY / h) % 1; // Значение из полуинтервала [0; 1)
+				// Функцию y = 1 / (1 - x) - 1 подбирал тыком. Функция имеет вертикальную асимптоту x=1.
+				// График проходит через точки (0,0), (0.5,1), (1,Infinity)
+				let rectRatio = 1 / (1 - mousey) - 1;
+				let sectorAngle = mousex * TWO_PI;
+				// Расчёт угла b образованного центром окружности и внешними точками прямоугольника
+				let tg1 = rectRatio / 2;
+				let tg2 = Math.tan(Math.min(sectorAngle, Math.PI) / 2);
+				let b = 2 * Math.atan((tg1 * tg2) / (tg1 + tg2));
+				// Ширина и высота отображаемого прямоугольника
+				let rectW = 2 * r * Math.sin(b / 2);
+				let rectH = rectW / rectRatio;
+				
+				background(200, 200, 200);
+				translate(w / 2, h / 2);
+				arc(0, 0, r * 2, r * 2, -sectorAngle, 0, PIE);
+				rotate(-sectorAngle / 2 - PI / 2);
+				rect(-rectW / 2, r * Math.cos(b / 2) - rectH, rectW, rectH);
+			}
+		</script>
+	</body>
+</html>
