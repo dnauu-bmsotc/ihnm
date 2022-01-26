@@ -7,6 +7,9 @@
 		<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
 	</head>
 	<body>
+		<main>
+			<p>Geogebra applet: <a href="https://www.geogebra.org/m/fzzbw9sw">https://www.geogebra.org/m/fzzbw9sw</a><p>
+		</main>
 		<script>
 			const w = 400;
 			const h = 400;
@@ -31,11 +34,13 @@
 				let rectW = 2 * r * Math.sin(b / 2);
 				let rectH = rectW / rectRatio;
 				
+				push();
 				background(200, 200, 200);
 				translate(w / 2, h / 2);
 				arc(0, 0, r * 2, r * 2, -sectorAngle, 0, PIE);
 				rotate(-sectorAngle / 2 - PI / 2);
 				rect(-rectW / 2, r * Math.cos(b / 2) - rectH, rectW, rectH);
+				pop();
 			}
 		</script>
 	</body>
