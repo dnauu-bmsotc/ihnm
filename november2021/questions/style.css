@@ -1,0 +1,42 @@
+#disciplines {
+	display: flex;
+	flex-flow: row nowrap;
+	width: 100%;
+	background-color: #fcf6f5;
+	overflow-x: auto;
+}
+
+#disciplines button {
+	margin: 0.5em;
+}
+
+#question-section {
+	width: 100%;
+	height: 4em;
+	margin: 1em 0;
+	padding: 1.5em;
+	text-align: center;
+	font-family: roman;
+	font-size: 1.5em;
+	background-color: #f3eeed;
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+#question-section .katex {
+	font-size: 1em;
+}
+
+#themes-section {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(16em, 1fr));
+	margin: 1em auto;
+	max-width: 64em;
+	width: 80%;
+	justify-items: stretch;
+}
+
+#themes-section button {
+	margin: 0.5em;
+}
