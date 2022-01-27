@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Минимальное остовное дерево</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+	</head>
+	<body>
+		<script>
+			const w = 400;
+			const h = 400;
+			let reached = [];
+			let unreached = [];
+			let edges = [];
+			
+			class Vertex {
+				constructor(x, y) {
+					this.x = x;
+					this.y = y;
+				}
+			}
+			
+			class Edge {
+				constructor(v1, v2) {
+					this.v1 = v1;
+					this.v2 = v2;
+				}
+			}
+		
+			function setup() {
+				createCanvas(w, h);
+				for (let i = 0; i < 10; i++) {
+					unreached.push(new Vertex(
+						map(random(), 0, 1, w*0.1, w*0.9),
+						map(random(), 0, 1, h*0.1, h*0.9)
+					));
+				}
+				connect();
+			}
+			
+			function draw() {
+				background(200, 200, 200);
+				for (let e of edges) {
+					line(e.v1.x, e.v1.y, e.v2.x, e.v2.y);
+				}
+				for (let v of reached) {
+					circle(v.x, v.y, 16);
+				}
+			}
+			
+			function connect() {
+				unreached = unreached.concat(reached);
+				reached = unreached.splice(0, 1);
+				edges = [];
+			
+				while (unreached.length) {
+					let r_ind = null;
+					let u_ind = null;
+					let d = Number.POSITIVE_INFINITY;
+					for (let i = 0; i < reached.length; i++) {
+						for (let j = 0; j < unreached.length; j++) {
+							let tr = reached[i];
+							let tu = unreached[j];
+							let td = dist(tr.x, tr.y, tu.x, tu.y);
+							if (td < d) {
+								r_ind = i;
+								u_ind = j;
+								d = td;
+							}
+						}
+					}
+					edges.push(new Edge(reached[r_ind], unreached[u_ind]));
+					reached.push(...unreached.splice(u_ind, 1));
+				}
+			}
+			
+			function mousePressed() {
+				if (mouseX > 0 && mouseX < w && mouseY > 0 && mouseY < h) {
+					unreached.push(new Vertex(mouseX, mouseY));
+					connect();
+				}
+			}
+		</script>
+	</body>
+</html>
