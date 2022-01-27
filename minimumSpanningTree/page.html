@@ -47,6 +47,7 @@
 				for (let v of reached) {
 					circle(v.x, v.y, 16);
 				}
+				noLoop();
 			}
 			
 			function connect() {
@@ -80,6 +81,7 @@
 					unreached.push(new Vertex(mouseX, mouseY));
 					connect();
 				}
+				redraw();
 			}
 		</script>
 	</body>
