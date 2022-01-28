@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Карта землетрясений</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+	</head>
+	<body>
+    <p>Данные о землетрясениях: <a href="https://www.usgs.gov/">https://www.usgs.gov/</a></p>
+    <p>Карта Земли: <a href="https://www.mapbox.com/">https://www.mapbox.com/</a></p>
+		<p>
+			<select oninput="changePeriod(this.value)">
+				<option value="none">Выберите период</option>
+				<option value="hour">За прошедший час</option>
+				<option value="day">За прошедший день</option>
+				<option value="month">За прошедший месяц</option>
+			</select>
+		</p>
+		<script>
+			const w = 512;
+			const h = 512;
+      const zoom = 1;
+      const clat = 0;
+      const clon = 0;
+      let mapimg = null;
+      let earthquakes = [];
+
+      function preload() {
+        mapimg = loadImage("worldmap.png");
+      }
+
+			function setup() {
+				createCanvas(w, h);
+			}
+
+			function draw() {
+        image(mapimg, 0, 0, w, h);
+        for (let i = 0; i < earthquakes.length; i++) {
+          let data = earthquakes[i].split(/,/);
+          drawPoint(+data[1], +data[2], +data[4]);
+        }
+        noLoop();
+			}
+
+      function drawPoint(lat, lon, mag) {
+        push();
+        fill(255, 0, 255);
+        stroke(255, 0, 255);
+        circle(
+          (w / 4) / PI * (2**zoom) * ((lon * PI / 180) + PI),
+          (h / 4) / PI * (2**zoom) * (PI - log(tan((PI / 4) + ((lat * PI / 180) / 2)))),
+          map(sqrt(pow(10, mag)), 0, sqrt(pow(10, 10)), 1, 300)
+        );
+        pop();
+      }
+
+			function changePeriod(period) {
+				if (period !== "none") {
+					earthquakes = loadStrings("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_" + period + ".csv", redraw);
+				}
+				else {
+					earthquakes = [];
+					redraw();
+				}
+			}
+		</script>
+	</body>
+</html>
