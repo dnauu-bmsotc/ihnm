@@ -9,16 +9,17 @@
 	<body>
 		<main>
 			<p>Geogebra applet: <a href="https://www.geogebra.org/m/fzzbw9sw">https://www.geogebra.org/m/fzzbw9sw</a><p>
+			<p>libraries: <a href="https://p5js.org/">p5.js</a></p>
 		</main>
 		<script>
 			const w = 400;
 			const h = 400;
 			const r = 200;
-		
+
 			function setup() {
 				createCanvas(w, h);
 			}
-			
+
 			function draw() {
 				let mousex = (1 + mouseX / w) % 1; // Значение из полуинтервала [0; 1)
 				let mousey = (1 + mouseY / h) % 1; // Значение из полуинтервала [0; 1)
@@ -33,7 +34,7 @@
 				// Ширина и высота отображаемого прямоугольника
 				let rectW = 2 * r * Math.sin(b / 2);
 				let rectH = rectW / rectRatio;
-				
+
 				push();
 				background(200, 200, 200);
 				translate(w / 2, h / 2);
