@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+    <title>Системы счисления</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/9.0.2/bignumber.min.js"></script>
+    <script src="script.js"></script>
+	</head>
+	<body>
+    <main>
+      <p>libraries: <a href="https://github.com/MikeMcl/bignumber.js">bignumber.js</a></p>
+      <button onClick="updateTranslators(window.value = window.value.plus(1))">+</button>
+      <button onClick="updateTranslators(window.value = window.value.minus(1))">-</button>
+      <button onClick="addTranslator(10)">Добавить переводчик</button>
+      <ul id="ns-list">
+        <!-- Заполняется скриптом -->
+      </ul>
+    </main>
+    <template id="ns-template">
+      <input class="ns-rad" type="number" min="2" max="36" step="1"></input>
+      <input class="ns-num"></input>
+    </template>
+    <script>
+      for (let i of [10, 2, 3, 4, 8, 16]) {
+        addTranslator(i);
+      }
+    </script>
+	</body>
+</html>
