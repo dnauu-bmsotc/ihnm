@@ -1,5 +1,15 @@
 'use strict'
 
+// Configuring numeral.js
+numeral.register("locale", "ihnm", {
+	delimiters: { thousands: " ", decimal: "." },
+	abbreviations: { thousand: "тыс.", million: "млн.", billion: "млрд.", trillion: "трлн." },
+	ordinal: function() { return "." },
+	currency: { symbol: "руб." }
+});
+numeral.locale("ihnm");
+numeral.defaultFormat("0[.][0000000]");
+
 // Каждый пункт на странице создаётся с помощью функции addRepresentation,
 // которая принимает объект со следующими свойствами:
 // groupName -- идентификатор пункта списка
@@ -9,9 +19,10 @@
 // setValue -- функция, принимающая количество градусов и устанавливающая это
 //     значение в пункт списка.
 // В объекте могут быть и другие свойства, обратиться к ним можно
-// через this, или через representations[groupName].func.
+// через this, или через allRepresentations[groupName].func.
 
-let representations = {};
+const allRepresentations = {};
+const startValue = 0;
 
 // representation = {groupName, html, getValue, setValue};
 function addRepresentation(representation) {
@@ -19,20 +30,19 @@ function addRepresentation(representation) {
 	li.innerHTML = representation.html;
 	li.id = representation.groupName;
 	li.addEventListener("input", () => {
-		let v = representation.getValue();
-		if (typeof v !== "number" || isNaN(v)) v = 0;
-		updateRepresentations(v, representation.groupName)
+		let dd = representation.getValue();
+		if (typeof dd !== "number" || isNaN(dd)) {
+			dd = 0;
+		}
+		for (let key in allRepresentations) {
+			if (allRepresentations[key].groupName !== representation.groupName) {
+				allRepresentations[key].setValue(dd);
+			}
+		}
 	});
 	document.getElementById("list").appendChild(li);
-	representations[representation.groupName] = representation;
-}
-
-function updateRepresentations(dd, exception) {
-	for (let key in representations) {
-		if (representations[key].groupName !== exception) {
-				representations[key].setValue(dd);
-		}
-	}
+	allRepresentations[representation.groupName] = representation;
+	representation.setValue(startValue);
 }
 
 function numberIn(id) {
@@ -137,7 +147,7 @@ addRepresentation({
 	groupName: "li-tcm",
 	html: `
 		<span>Тригонометрический круг</span>
-		<svg id="tcm" viewBox="0 0 100 100" style="width: 120px; height: 120px; vertical-align: middle" onClick="representations['li-tcm'].tcmClick(event)">
+		<svg id="tcm" viewBox="0 0 100 100" style="width: 120px; height: 120px; vertical-align: middle" onClick="allRepresentations['li-tcm'].tcmClick(event)">
 			<line x1="0" y1="50" x2="100" y2="50" stroke="black"></line>
 			<line x1="50" y1="100" x2="50" y2="0" stroke="black"></line>
 			<circle cx="50" cy="50" r="20" stroke="black" fill="none"></circle>
@@ -238,7 +248,7 @@ addRepresentation({
 	groupName: "li-tcg",
 	html: `
 		<span>Дирекционный угол</span>
-		<svg id="tcg" viewBox="0 0 100 100" style="width: 100px; height: 100px; vertical-align: middle" onClick="representations['li-tcg'].tcgClick(event)">
+		<svg id="tcg" viewBox="0 0 100 100" style="width: 100px; height: 100px; vertical-align: middle" onClick="allRepresentations['li-tcg'].tcgClick(event)">
 			<line x1="0" y1="50" x2="100" y2="50" stroke="black"></line>
 			<line x1="50" y1="100" x2="50" y2="0" stroke="black"></line>
 			<circle cx="50" cy="50" r="40" stroke="black" fill="none"></circle>
@@ -282,13 +292,13 @@ addRepresentation({
 });
 
 // https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-function polarToCartesian(centerX, centerY, radius, radians) {
-  return {
-    x: centerX + (radius * Math.cos(radians)),
-    y: centerY + (radius * Math.sin(radians))
-  };
-}
-function createSvgArc(x, y, radius, startRadians, endRadians){
+function createSvgArc(x, y, radius, startRadians, endRadians) {
+		function polarToCartesian(centerX, centerY, radius, radians) {
+		  return {
+		    x: centerX + (radius * Math.cos(radians)),
+		    y: centerY + (radius * Math.sin(radians))
+		  };
+		}
     var start = polarToCartesian(x, y, radius, endRadians);
     var end = polarToCartesian(x, y, radius, startRadians);
     var largeArcFlag = Math.abs(endRadians - startRadians) <= Math.PI ? "0" : "1";
@@ -299,16 +309,3 @@ function createSvgArc(x, y, radius, startRadians, endRadians){
     ].join(" ");
     return d;
 }
-
-//
-
-numeral.register("locale", "ihnm", {
-	delimiters: { thousands: " ", decimal: "." },
-	abbreviations: { thousand: "тыс.", million: "млн.", billion: "млрд.", trillion: "трлн." },
-	ordinal: function() { return "." },
-	currency: { symbol: "руб." }
-});
-numeral.locale("ihnm");
-numeral.defaultFormat("0[.][0000000]");
-
-updateRepresentations(0, null);

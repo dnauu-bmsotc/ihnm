@@ -2,7 +2,6 @@ const w = 200;
 const h = 200;
 const penSize = 16;
 let canvas28x28 = null;
-let clearButton = null;
 let resultP = null;
 let model = null;
 
@@ -10,8 +9,7 @@ async function setup() {
   pixelDensity(1);
   createCanvas(w, h);
   resetCanvas();
-  clearButton = createButton("Очистить");
-  clearButton.mousePressed(resetCanvas);
+  createButton("Очистить").mousePressed(resetCanvas);
   resultP = createP("");
   canvas28x28 = createGraphics(28, 28);
   model = await tf.loadLayersModel('./modelb4096e64.json');
