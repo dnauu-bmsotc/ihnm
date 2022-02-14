@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Минералы</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<p>Страница скоро будет удалена</p>
+		<button onclick="nextStage()">Далее</button>
+		<img id="mineral-img" style="width: 256px; height: auto; vertical-align: top"></img>
+		<p id="answer"></p>
+		<script>
+			const START = 0;
+			const SHOWED = 1;
+			const REVEALED = 2;
+			let stage = START;
+			let mineral = "";
+			let mineralNumber = 0;
+			const minerals = [
+				"графит",
+				"сера",
+				"галенит",
+				"пирит",
+				"халькопирит",
+				"галит",
+				"сильвин",
+				"флюорит",
+				"кварц",
+				"халцедон",
+				"кремень",
+				"корунд",
+				"магнетит",
+				"гематит",
+				"лимонит",
+				"кальцит",
+				"доломит",
+				"малахит",
+				"ангидрит",
+				"гипс",
+				"апатит",
+				"оливин",
+				"топаз",
+				"авгит",
+				"роговая обманка",
+				"тальк",
+				"мусковит",
+				"биотит",
+				"ортоклаз",
+				"олигоклаз",
+				"лабрадор"
+			];
+
+			function getRandomInt(min, max) {
+				return min + Math.floor(Math.random() * max);
+			}
+
+			function nextStage() {
+				if (stage === START || stage === REVEALED) {
+					mineral = minerals[getRandomInt(0, minerals.length)];
+					mineralNumber = getRandomInt(1, 4);
+					let path = "./изображения/" + mineral + "/" + mineral + " " + mineralNumber + ".jpg";
+					document.getElementById("mineral-img").src = path;
+					document.getElementById("answer").innerHTML = "";
+					stage = SHOWED;
+				}
+				else if (stage === SHOWED) {
+					document.getElementById("answer").innerHTML = mineral;
+					stage = REVEALED;
+				}
+			}
+		</script>
+	</body>
+</html>
