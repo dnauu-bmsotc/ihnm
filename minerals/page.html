@@ -4,12 +4,59 @@
 		<title>Минералы</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
+		<style>
+			#mineral-img {
+				width: 256px;
+				height: auto;
+				vertical-align: top;
+			}
+			#options {
+				margin-top: 64px;
+			}
+			#options > span::after {
+		    content:"\a";
+		    white-space: pre;
+			}
+		</style>
 	</head>
 	<body>
 		<p>Страница скоро будет удалена</p>
 		<button onclick="nextStage()">Далее</button>
-		<img id="mineral-img" style="width: 256px; height: auto; vertical-align: top"></img>
+		<img id="mineral-img"></img>
 		<p id="answer"></p>
+		<div id="options">
+			<input type="checkbox" name="авгит" checked></input><span>авгит</span>
+			<input type="checkbox" name="ангидрит" checked></input><span>ангидрит</span>
+			<input type="checkbox" name="апатит" checked></input><span>апатит</span>
+			<input type="checkbox" name="биотит" checked></input><span>биотит</span>
+			<input type="checkbox" name="галенит" checked></input><span>галенит</span>
+			<input type="checkbox" name="галит" checked></input><span>галит</span>
+			<input type="checkbox" name="гематит" checked></input><span>гематит</span>
+			<input type="checkbox" name="гипс" checked></input><span>гипс</span>
+			<input type="checkbox" name="графит" checked></input><span>графит</span>
+			<input type="checkbox" name="доломит" checked></input><span>доломит</span>
+			<input type="checkbox" name="кальцит" checked></input><span>кальцит</span>
+			<input type="checkbox" name="кварц" checked></input><span>кварц</span>
+			<input type="checkbox" name="корунд" checked></input><span>корунд</span>
+			<input type="checkbox" name="кремень" checked></input><span>кремень</span>
+			<input type="checkbox" name="лабрадор" checked></input><span>лабрадор</span>
+			<input type="checkbox" name="лимонит" checked></input><span>лимонит</span>
+			<input type="checkbox" name="магнетит" checked></input><span>магнетит</span>
+			<input type="checkbox" name="малахит" checked></input><span>малахит</span>
+			<input type="checkbox" name="мусковит" checked></input><span>мусковит</span>
+			<input type="checkbox" name="оливин" checked></input><span>оливин</span>
+			<input type="checkbox" name="олигоклаз" checked></input><span>олигоклаз</span>
+			<input type="checkbox" name="ортоклаз" checked></input><span>ортоклаз</span>
+			<input type="checkbox" name="пирит" checked></input><span>пирит</span>
+			<input type="checkbox" name="роговая обманка" checked></input><span>роговая обманка</span>
+			<input type="checkbox" name="сера" checked></input><span>сера</span>
+			<input type="checkbox" name="сильвин" checked></input><span>сильвин</span>
+			<input type="checkbox" name="тальк" checked></input><span>тальк</span>
+			<input type="checkbox" name="топаз" checked></input><span>топаз</span>
+			<input type="checkbox" name="флюорит" checked></input><span>флюорит</span>
+			<input type="checkbox" name="халцедон" checked></input><span>халцедон</span>
+			<input type="checkbox" name="халькопирит" checked></input><span>халькопирит</span>
+		</div>
 		<script>
 			const START = 0;
 			const SHOWED = 1;
@@ -17,39 +64,39 @@
 			let stage = START;
 			let mineral = "";
 			let mineralNumber = 0;
-			const minerals = [
-				"графит",
-				"сера",
-				"галенит",
-				"пирит",
-				"халькопирит",
-				"галит",
-				"сильвин",
-				"флюорит",
-				"кварц",
-				"халцедон",
-				"кремень",
-				"корунд",
-				"магнетит",
-				"гематит",
-				"лимонит",
-				"кальцит",
-				"доломит",
-				"малахит",
-				"ангидрит",
-				"гипс",
-				"апатит",
-				"оливин",
-				"топаз",
-				"авгит",
-				"роговая обманка",
-				"тальк",
-				"мусковит",
-				"биотит",
-				"ортоклаз",
-				"олигоклаз",
-				"лабрадор"
-			];
+			// const minerals = [
+			// 	"графит",
+			// 	"сера",
+			// 	"галенит",
+			// 	"пирит",
+			// 	"халькопирит",
+			// 	"галит",
+			// 	"сильвин",
+			// 	"флюорит",
+			// 	"кварц",
+			// 	"халцедон",
+			// 	"кремень",
+			// 	"корунд",
+			// 	"магнетит",
+			// 	"гематит",
+			// 	"лимонит",
+			// 	"кальцит",
+			// 	"доломит",
+			// 	"малахит",
+			// 	"ангидрит",
+			// 	"гипс",
+			// 	"апатит",
+			// 	"оливин",
+			// 	"топаз",
+			// 	"авгит",
+			// 	"роговая обманка",
+			// 	"тальк",
+			// 	"мусковит",
+			// 	"биотит",
+			// 	"ортоклаз",
+			// 	"олигоклаз",
+			// 	"лабрадор"
+			// ];
 
 			function getRandomInt(min, max) {
 				return min + Math.floor(Math.random() * max);
@@ -57,9 +104,16 @@
 
 			function nextStage() {
 				if (stage === START || stage === REVEALED) {
-					mineral = minerals[getRandomInt(0, minerals.length)];
-					mineralNumber = getRandomInt(1, 4);
+					let checkedMinerals = [];
+					for (let checkbox of document.querySelectorAll("#options > input")) {
+						if (checkbox.checked) {
+							checkedMinerals.push(checkbox.name);
+						}
+					}
+					mineral = checkedMinerals[getRandomInt(0, checkedMinerals.length - 1)];
+					mineralNumber = getRandomInt(1, 7);
 					let path = "./изображения/" + mineral + "/" + mineral + " " + mineralNumber + ".jpg";
+					console.log("generated " + path);
 					document.getElementById("mineral-img").src = path;
 					document.getElementById("answer").innerHTML = "";
 					stage = SHOWED;
