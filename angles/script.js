@@ -1,5 +1,7 @@
 'use strict'
 
+// А как насчёт переписать это с использованием кастомных html-элементов? 
+
 // Configuring numeral.js
 numeral.register("locale", "ihnm", {
 	delimiters: { thousands: " ", decimal: "." },
@@ -18,6 +20,7 @@ numeral.defaultFormat("0[.][0000000]");
 //     getValue, которая должна вернуть значение угла в градусах
 // setValue -- функция, принимающая количество градусов и устанавливающая это
 //     значение в пункт списка.
+// hidded -- булево значение, говорящее, спрятать ли данное представление угла.
 // В объекте могут быть и другие свойства, обратиться к ним можно
 // через this, или через allRepresentations[groupName].func.
 
@@ -40,7 +43,7 @@ function addRepresentation(representation) {
 			}
 		}
 	});
-	document.getElementById("list").appendChild(li);
+	document.getElementById(representation.hidden ? "hidden-list" : "list").appendChild(li);
 	allRepresentations[representation.groupName] = representation;
 	representation.setValue(startValue);
 }
@@ -57,13 +60,23 @@ function setNumber(id, value) {
 addRepresentation({
 	groupName: "li-g",
 	html: `
+		<select id="gsign">
+			<option value="+">+</option>
+			<option value="-">-</option>
+		</select>
 		Градусы: <input id="gdeg" type="text">,
 		минуты: <input id="gmin" type="text">,
 		секунды: <input id="gsec" type="text">.
 	`,
-	getValue: () => numberIn("gdeg") + numberIn("gmin") / 60 + numberIn("gsec") / 3600,
+	getValue: () => {
+		let abs = numberIn("gdeg") + numberIn("gmin") / 60 + numberIn("gsec") / 3600;
+		let sign = (document.getElementById("gsign").value === "-" ? -1 : +1);
+		return sign * abs;
+	},
 	setValue: dd => {
 		let d, m, s;
+		document.getElementById("gsign").value = (dd >= 0 ? "+" : "-");
+		dd = Math.abs(dd);
 		setNumber("gdeg", d = Math.trunc(dd));
 		setNumber("gmin", m = Math.trunc((dd - d) * 60));
 		setNumber("gsec", s = ((dd - d) * 60 - m) * 60);
@@ -126,9 +139,45 @@ addRepresentation({
 	setValue: dd => setNumber("ss", dd * 3600),
 });
 
+// Сумма двух углов
+addRepresentation({
+	groupName: "li-residual",
+	html: `
+		<select id="gsign">
+			<option value="+">+</option>
+			<option value="-">-</option>
+		</select>
+		<input id="residual-minued-g" type="text"><input id="residual-minued-m" type="text"><input id="residual-minued-s" type="text">
+		-
+		<select id="gsign">
+			<option value="+">+</option>
+			<option value="-">-</option>
+		</select>
+		<input id="residual-subtrahend-g" type="text"><input id="residual-subtrahend-m" type="text"><input id="residual-subtrahend-s" type="text">
+		=
+		<select id="gsign">
+			<option value="+">+</option>
+			<option value="-">-</option>
+		</select>
+		<input id="residual-result-g" type="text"><input id="residual-result-m" type="text"><input id="residual-result-s" type="text">
+	`,
+	getValue: () => {
+		const minuedGG = numberIn("residual-minued-g") + numberIn("residual-minued-m") / 60 + numberIn("residual-minued-s") / 3600;
+		const subtrahendGG = numberIn("residual-subtrahend-g") + numberIn("residual-subtrahend-m") / 60 + numberIn("residual-subtrahend-s") / 3600;
+
+	},
+	setValue: dd => {
+		let d, m, s;
+		setNumber("gdeg", d = Math.trunc(dd));
+		setNumber("gmin", m = Math.trunc((dd - d) * 60));
+		setNumber("gsec", s = ((dd - d) * 60 - m) * 60);
+	},
+});
+
 // В градах
 addRepresentation({
 	groupName: "li-gon",
+	hidden: true,
 	html: `В градах: <input id="gon" type="text">`,
 	getValue: () => numberIn("gon") / 0.9,
 	setValue: dd => setNumber("gon", dd * 0.9),
@@ -137,6 +186,7 @@ addRepresentation({
 // В радианах
 addRepresentation({
 	groupName: "li-rad",
+	hidden: true,
 	html: `В радианах: <input id="rad" type="text">`,
 	getValue: () => numberIn("rad") / Math.PI * 180,
 	setValue: dd => setNumber("rad", dd * Math.PI / 180),
@@ -145,6 +195,7 @@ addRepresentation({
 // Тригонометрический круг (tcm - trigonometric circle mathematical)
 addRepresentation({
 	groupName: "li-tcm",
+	hidden: true,
 	html: `
 		<span>Тригонометрический круг</span>
 		<svg id="tcm" viewBox="0 0 100 100" style="width: 120px; height: 120px; vertical-align: middle" onClick="allRepresentations['li-tcm'].tcmClick(event)">
@@ -188,6 +239,7 @@ addRepresentation({
 // Истинный азимут по сближению меридианов
 addRepresentation({
 	groupName: "li-ta-convergence",
+	hidden: true,
 	html: `Сближение меридианов: <input id="ta-convergence" type="text" value="0">, Истинный азимут: <input id="ta-value" type="text">`,
 	getValue: () => (numberIn("ta-value") - numberIn("ta-convergence")),
 	setValue: dd => setNumber("ta-value", dd + numberIn("ta-convergence")),
@@ -196,6 +248,7 @@ addRepresentation({
 // Магнитный азимут по поправке
 addRepresentation({
 	groupName: "li-ma1-correction",
+	hidden: true,
 	html: `Поправка направления: <input id="ma1-correction" type="text" value="0">, Магнитный азимут: <input id="ma1-value" type="text">`,
 	getValue: () => (numberIn("ma1-value") + numberIn("ma1-correction")),
 	setValue: dd => setNumber("ma1-value", dd - numberIn("ma1-correction")),
@@ -204,6 +257,7 @@ addRepresentation({
 // Магнитный азимут по сближению меридианов и магнитному склонению
 addRepresentation({
 	groupName: "li-ma2-convergence-declination",
+	hidden: true,
 	html: `
 		Сближение меридианов: <input id="ma2-convergence" type="text" value="0">,
 		Магнитное склонение: <input id="ma2-declination" type="text" value="0">,
@@ -216,6 +270,7 @@ addRepresentation({
 // Румб
 addRepresentation({
 	groupName: "li-rum",
+	hidden: true,
 	html: `
 		Направление
 		<select id="rdir">
@@ -246,6 +301,7 @@ addRepresentation({
 // Дирекционный угол (tcg - trigonometric circle geodesic)
 addRepresentation({
 	groupName: "li-tcg",
+	hidden: true,
 	html: `
 		<span>Дирекционный угол</span>
 		<svg id="tcg" viewBox="0 0 100 100" style="width: 100px; height: 100px; vertical-align: middle" onClick="allRepresentations['li-tcg'].tcgClick(event)">
