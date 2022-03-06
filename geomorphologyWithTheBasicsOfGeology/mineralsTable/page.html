@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+    <title>Таблица минералов</title>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+		<style>
+			.mineral-class {
+				margin: 16px;
+				padding: 8px;
+			}
+			.mineral-class-name {
+			}
+			.mineral {
+				display: inline-block;
+				border: 1px solid black;
+				margin: 8px;
+				padding: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<script>
+			let data = {
+				"Самородные элементы": {
+					"Графит": "C",
+					"Сера": "S",
+				},
+				"Сульфиды": {
+					"Галенит (свинцовый блеск": "PbS",
+					"Пирит (серный колчедан)": "FeS_2",
+					"Халькопирит (медный колчеан)": "CuFeS_2",
+				},
+				"Галогены": {
+					"Галит": "NaCl",
+					"Сильвин": "KCl",
+					"Флюорит (плавиковый шпат)": "CaF_2",
+				},
+				"Оксиды и гидроксиды": {
+					"Кварц": "SiO_2",
+					"Халцедон": "SiO_2",
+					"Кремень": "SiO_2",
+					"Корунд": "Al_2O_3",
+					"Магнетит (магнитный железняк)": "Fe_3O_4",
+					"Гематит (красный железняк)": "Fe_2O_3",
+					"Лимонит (бурый железняк)": "Fe_2O_3\\cdot nH_2O",
+				},
+				"Карбонаты": {
+					"Кальцит (известковый шпат)": "Ca[CO_3]",
+					"Доломит": "CaMg[CO_3]_2",
+					"Малахит": "Cu_2[CO_3](OH)_2",
+				},
+				"Сульфаты": {
+					"Ангидрит": "Ca[SO_4]",
+					"Гипс": "Ca[SO_4]\\cdot 2H_2O",
+				},
+				"Фосфаты": {
+					"Апатит": "Ca_5[PO_4]_3[F,Cl,OH]_2",
+				},
+				"Силикаты": {
+					"Топаз": "",
+					"Авгит": "",
+					"Роговая обманка": "",
+					"Тальк": "",
+					"Мусковит (белая кальциевая слюда)": "",
+					"Биотит (чёрная железомагнезиальная слюда)": "",
+					"Ортоклаз": "",
+					"Олигоклаз (группа плагиоклазов)": "",
+					"Лабрадор (группа плагиоклазов)": "",
+				},
+			};
+
+			for (const mineralClassName in data) {
+				const mineralClassDiv = document.createElement("div");
+				mineralClassDiv.className = "mineral-class";
+				const mineralClassNameDiv = document.createElement("div");
+				mineralClassNameDiv.className = "mineral-class-name";
+				mineralClassNameDiv.innerHTML = mineralClassName;
+				mineralClassDiv.appendChild(mineralClassNameDiv);
+
+				for (const mineralName in data[mineralClassName]) {
+					const mineralDiv = document.createElement("div");
+					mineralDiv.className = "mineral";
+					const mineralNameDiv = document.createElement("div");
+					mineralNameDiv.innerHTML = mineralName;
+					const mineralFormulaDiv = document.createElement("div");
+					mineralFormulaDiv.innerHTML = "$$" + data[mineralClassName][mineralName] + "$$";
+					mineralDiv.appendChild(mineralNameDiv);
+					mineralDiv.appendChild(mineralFormulaDiv);
+					mineralClassDiv.appendChild(mineralDiv);
+				}
+
+				document.body.appendChild(mineralClassDiv);
+			}
+
+			//MathJax.typesetPromise()
+		</script>
+	</body>
+</html>
