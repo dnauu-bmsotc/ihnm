@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Журнал тахеометрического хода</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.4/numeral.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+		<script src="script.js"></script>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<main>
+			<p>libraries: <a href="http://numeraljs.com/">numeral.js</a></p>
+			<div>P100 = <input id="p100" value="-0.1" oninput="pUpdate()"></input></div>
+			<div>P150 = <input id="p150" value="-0.2" oninput="pUpdate()"></input></div>
+			<div>P200 = <input id="p200" value="-0.2" oninput="pUpdate()"></input></div>
+			<div id="journal">
+
+			</div>
+		</main>
+	</body>
+</html>
