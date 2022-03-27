@@ -1,7 +1,5 @@
 'use strict'
 
-// А как насчёт переписать это с использованием кастомных html-элементов? 
-
 // Configuring numeral.js
 numeral.register("locale", "ihnm", {
 	delimiters: { thousands: " ", decimal: "." },
@@ -10,186 +8,180 @@ numeral.register("locale", "ihnm", {
 	currency: { symbol: "руб." }
 });
 numeral.locale("ihnm");
-numeral.defaultFormat("0[.][0000000]");
+numeral.defaultFormat("0[.][000000]");
 
-// Каждый пункт на странице создаётся с помощью функции addRepresentation,
-// которая принимает объект со следующими свойствами:
-// groupName -- идентификатор пункта списка
-// html -- содержимое пункта списка
-// getValue -- когда в пункте списка возникает событие input, вызывается функция
-//     getValue, которая должна вернуть значение угла в градусах
-// setValue -- функция, принимающая количество градусов и устанавливающая это
-//     значение в пункт списка.
-// hidded -- булево значение, говорящее, спрятать ли данное представление угла.
-// В объекте могут быть и другие свойства, обратиться к ним можно
-// через this, или через allRepresentations[groupName].func.
+// Setting some functions
+function numberIn($el) {
+	let val = +$el.val().replace(/\,/g, ".");
+	return (typeof val !== "number" || isNaN(val) ? 0 : val);
+}
 
-const allRepresentations = {};
-const startValue = 0;
+function setNumber($el, value) {
+	$el.val((Math.abs(value) > 10**8) ? "" : numeral(value).format());
+}
 
-// representation = {groupName, html, getValue, setValue};
-function addRepresentation(representation) {
-	let li = document.createElement("li");
-	li.innerHTML = representation.html;
-	li.id = representation.groupName;
-	li.addEventListener("input", () => {
-		let dd = representation.getValue();
-		if (typeof dd !== "number" || isNaN(dd)) {
-			dd = 0;
-		}
+// https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+function createSvgArc(x, y, radius, startRadians, endRadians) {
+	function polarToCartesian(centerX, centerY, radius, radians) {
+	  return {
+	    x: centerX + (radius * Math.cos(radians)),
+	    y: centerY + (radius * Math.sin(radians))
+	  };
+	}
+  var start = polarToCartesian(x, y, radius, endRadians);
+  var end = polarToCartesian(x, y, radius, startRadians);
+  var largeArcFlag = Math.abs(endRadians - startRadians) <= Math.PI ? "0" : "1";
+  var d = [
+      "M", start.x, start.y,
+      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+			"L", x, y
+  ].join(" ");
+  return d;
+}
+
+// Идея: сделать кастомные элементы для каждого представления углов, чтобы
+// можно было потом подключить скрипт с каждым представлением.
+
+// Custom sign input element
+class InputSign extends HTMLElement {
+	connectedCallback() {
+		$(this).html(`
+			<select>
+				<option value="+">+</option>
+				<option value="-">-</option>
+			</select>
+		`);
+	}
+	get value() {
+		return ($(this).find("select").value === "-" ? -1 : +1).toString();
+	}
+	set value(sign) {
+		$(this).find("select").value = (+sign >= 0 ? "+" : "-");
+	}
+}
+customElements.define("input-sign", InputSign);
+
+// custom angle input element
+class InputDMS extends HTMLElement {
+	connectedCallback() {
+		$(this).html(`
+			<input-sign class="input-dms--sign"></input-sign>
+			<input class="input-dms--d"></input>&#176;
+			<input class="input-dms--m"></input>'
+			<input class="input-dms--s"></input>"
+		`);
+	}
+	get value() {
+		return numberIn($(this).find(".input-dms--sign")) * (
+				numberIn($(this).find(".input-dms--d"))
+			+ numberIn($(this).find(".input-dms--m")) / 60
+			+ numberIn($(this).find(".input-dms--s")) / 60 / 60).toString();
+	}
+	set value(dd) {
+		let d, m, s;
+		setNumber($(this).find(".input-dms--sign"), dd = +dd);
+		dd = Math.abs(dd);
+		setNumber($(this).find(".input-dms--d"), d = Math.trunc(dd));
+		setNumber($(this).find(".input-dms--m"), m = Math.trunc((dd - d) * 60));
+		setNumber($(this).find(".input-dms--s"), s = ((dd - d) * 60 - m) * 60);
+	}
+}
+customElements.define("input-dms", InputDMS);
+
+// Angle representations
+const allRepresentations = [];
+function addRepresentation(r) {
+	let $li = $(`<li id="${r.groupName}">${r.html}</li>`);
+	allRepresentations[r.groupName] = r;
+	// Closure for updating other representations
+	$li.on("input", () => {
 		for (let key in allRepresentations) {
-			if (allRepresentations[key].groupName !== representation.groupName) {
-				allRepresentations[key].setValue(dd);
+			if (allRepresentations[key].groupName !== r.groupName) {
+				allRepresentations[key].setValue(r.getValue());
 			}
 		}
 	});
-	document.getElementById(representation.hidden ? "hidden-list" : "list").appendChild(li);
-	allRepresentations[representation.groupName] = representation;
-	representation.setValue(startValue);
-}
-
-function numberIn(id) {
-	return +document.getElementById(id).value.replace(/\,/g, ".");
-}
-
-function setNumber(id, value) {
-	document.getElementById(id).value = (Math.abs(value) > 10**8) ? "" : numeral(value).format();
+	$("#list").append($li);
 }
 
 // Градусы, минуты, секунды
 addRepresentation({
 	groupName: "li-g",
-	html: `
-		<select id="gsign">
-			<option value="+">+</option>
-			<option value="-">-</option>
-		</select>
-		Градусы: <input id="gdeg" type="text">,
-		минуты: <input id="gmin" type="text">,
-		секунды: <input id="gsec" type="text">.
-	`,
-	getValue: () => {
-		let abs = numberIn("gdeg") + numberIn("gmin") / 60 + numberIn("gsec") / 3600;
-		let sign = (document.getElementById("gsign").value === "-" ? -1 : +1);
-		return sign * abs;
-	},
-	setValue: dd => {
-		let d, m, s;
-		document.getElementById("gsign").value = (dd >= 0 ? "+" : "-");
-		dd = Math.abs(dd);
-		setNumber("gdeg", d = Math.trunc(dd));
-		setNumber("gmin", m = Math.trunc((dd - d) * 60));
-		setNumber("gsec", s = ((dd - d) * 60 - m) * 60);
-	},
+	html: `<input-dms></input-dms>`,
+	getValue: () => $("#li-g input-dms").val(),
+	setValue: dd => $("#li-g input-dms").val(dd),
 });
 
 // Только в градусах
 addRepresentation({
 	groupName: "li-dd",
-	html: `Только в градусах: <input id="dd" type="text">`,
-	getValue: () => numberIn("dd"),
-	setValue: dd => setNumber("dd", dd),
+	html: `Только в градусах: <input type="text">`,
+	getValue: () => numberIn($("#li-dd input")),
+	setValue: dd => setNumber($("#li-dd input"), dd),
 });
 
 // Синус
 addRepresentation({
 	groupName: "li-sin",
-	html: `sin: <input id="sin" type="text">`,
-	getValue: () => Math.asin(numberIn("sin")) / Math.PI * 180,
-	setValue: dd => setNumber("sin", Math.sin(dd * Math.PI / 180)),
+	html: `sin: <input type="text">`,
+	getValue: () => Math.asin(numberIn($("#li-sin input"))) / Math.PI * 180,
+	setValue: dd => setNumber($("#li-sin input"), Math.sin(dd * Math.PI / 180)),
 });
 
 // Косинус
 addRepresentation({
 	groupName: "li-cos",
-	html: `cos: <input id="cos" type="text">`,
-	getValue: () => Math.acos(numberIn("cos")) / Math.PI * 180,
-	setValue: dd => setNumber("cos", Math.cos(dd * Math.PI / 180)),
+	html: `cos: <input type="text">`,
+	getValue: () => Math.acos(numberIn($("#li-cos input"))) / Math.PI * 180,
+	setValue: dd => setNumber($("#li-cos input"), Math.cos(dd * Math.PI / 180)),
 });
 
 // Тангенс
 addRepresentation({
 	groupName: "li-tan",
-	html: `tg: <input id="tan" type="text">`,
-	getValue: () => Math.atan(numberIn("tan")) / Math.PI * 180,
-	setValue: dd => setNumber("tan", Math.tan(dd * Math.PI / 180)),
+	html: `tg: <input type="text">`,
+	getValue: () => Math.atan(numberIn($("#li-tan input"))) / Math.PI * 180,
+	setValue: dd => setNumber($("#li-tan input"), Math.tan(dd * Math.PI / 180)),
 });
 
 // Котангенс
 addRepresentation({
 	groupName: "li-ctg",
-	html: `ctg: <input id="ctg" type="text">`,
-	getValue: () => Math.atan(1 / numberIn("ctg")) / Math.PI * 180,
-	setValue: dd => setNumber("ctg", 1 / Math.tan(dd * Math.PI / 180)),
+	html: `ctg: <input type="text">`,
+	getValue: () => Math.atan(1 / numberIn($("#li-ctg input"))) / Math.PI * 180,
+	setValue: dd => setNumber($("#li-ctg input"), 1 / Math.tan(dd * Math.PI / 180)),
 });
 
 // Только в минутах
 addRepresentation({
 	groupName: "li-mm",
-	html: `Только в минутах: <input id="mm" type="text">`,
-	getValue: () => numberIn("mm") / 60,
-	setValue: dd => setNumber("mm", dd * 60),
+	html: `Только в минутах: <input type="text">`,
+	getValue: () => numberIn($("#li-mm input")) / 60,
+	setValue: dd => setNumber($("#li-mm input"), dd * 60),
 });
 
 // Только в секундах
 addRepresentation({
 	groupName: "li-ss",
-	html: `Только в секундах: <input id="ss" type="text">`,
-	getValue: () => numberIn("ss") / 3600,
-	setValue: dd => setNumber("ss", dd * 3600),
-});
-
-// Сумма двух углов
-addRepresentation({
-	groupName: "li-residual",
-	html: `
-		<select id="gsign">
-			<option value="+">+</option>
-			<option value="-">-</option>
-		</select>
-		<input id="residual-minued-g" type="text"><input id="residual-minued-m" type="text"><input id="residual-minued-s" type="text">
-		-
-		<select id="gsign">
-			<option value="+">+</option>
-			<option value="-">-</option>
-		</select>
-		<input id="residual-subtrahend-g" type="text"><input id="residual-subtrahend-m" type="text"><input id="residual-subtrahend-s" type="text">
-		=
-		<select id="gsign">
-			<option value="+">+</option>
-			<option value="-">-</option>
-		</select>
-		<input id="residual-result-g" type="text"><input id="residual-result-m" type="text"><input id="residual-result-s" type="text">
-	`,
-	getValue: () => {
-		const minuedGG = numberIn("residual-minued-g") + numberIn("residual-minued-m") / 60 + numberIn("residual-minued-s") / 3600;
-		const subtrahendGG = numberIn("residual-subtrahend-g") + numberIn("residual-subtrahend-m") / 60 + numberIn("residual-subtrahend-s") / 3600;
-
-	},
-	setValue: dd => {
-		let d, m, s;
-		setNumber("gdeg", d = Math.trunc(dd));
-		setNumber("gmin", m = Math.trunc((dd - d) * 60));
-		setNumber("gsec", s = ((dd - d) * 60 - m) * 60);
-	},
+	html: `Только в секундах: <input type="text">`,
+	getValue: () => numberIn($("#li-ss input")) / 3600,
+	setValue: dd => setNumber($("#li-ss input"), dd * 3600),
 });
 
 // В градах
 addRepresentation({
 	groupName: "li-gon",
-	hidden: true,
-	html: `В градах: <input id="gon" type="text">`,
-	getValue: () => numberIn("gon") / 0.9,
-	setValue: dd => setNumber("gon", dd * 0.9),
+	html: `В градах: <input type="text">`,
+	getValue: () => numberIn($("#li-gon input")) / 0.9,
+	setValue: dd => setNumber($("#li-gon input"), dd * 0.9),
 });
 
 // В радианах
 addRepresentation({
 	groupName: "li-rad",
-	hidden: true,
-	html: `В радианах: <input id="rad" type="text">`,
-	getValue: () => numberIn("rad") / Math.PI * 180,
-	setValue: dd => setNumber("rad", dd * Math.PI / 180),
+	html: `В радианах: <input type="text">`,
+	getValue: () => numberIn($("#li-rad input")) / Math.PI * 180,
+	setValue: dd => setNumber($("#li-rad input"), dd * Math.PI / 180),
 });
 
 // Тригонометрический круг (tcm - trigonometric circle mathematical)
@@ -233,68 +225,6 @@ addRepresentation({
 		document.getElementById("tcm-arrow").setAttribute("x2", 50 + 20*Math.cos(radians));
 		document.getElementById("tcm-arrow").setAttribute("y2", 50 - 20*Math.sin(radians));
 		document.getElementById("tcm-angle").setAttribute("d", createSvgArc(50, 50, 8, radians > 0 ? -radians : 0, radians > 0 ? 0 : -radians));
-	},
-});
-
-// Истинный азимут по сближению меридианов
-addRepresentation({
-	groupName: "li-ta-convergence",
-	hidden: true,
-	html: `Сближение меридианов: <input id="ta-convergence" type="text" value="0">, Истинный азимут: <input id="ta-value" type="text">`,
-	getValue: () => (numberIn("ta-value") - numberIn("ta-convergence")),
-	setValue: dd => setNumber("ta-value", dd + numberIn("ta-convergence")),
-});
-
-// Магнитный азимут по поправке
-addRepresentation({
-	groupName: "li-ma1-correction",
-	hidden: true,
-	html: `Поправка направления: <input id="ma1-correction" type="text" value="0">, Магнитный азимут: <input id="ma1-value" type="text">`,
-	getValue: () => (numberIn("ma1-value") + numberIn("ma1-correction")),
-	setValue: dd => setNumber("ma1-value", dd - numberIn("ma1-correction")),
-});
-
-// Магнитный азимут по сближению меридианов и магнитному склонению
-addRepresentation({
-	groupName: "li-ma2-convergence-declination",
-	hidden: true,
-	html: `
-		Сближение меридианов: <input id="ma2-convergence" type="text" value="0">,
-		Магнитное склонение: <input id="ma2-declination" type="text" value="0">,
-		Магнитный азимут: <input id="ma2-value" type="text">
-	`,
-	getValue: () => (numberIn("ma2-value") + numberIn("ma2-declination") - numberIn("ma2-convergence")),
-	setValue: dd => setNumber("ma2-value", dd + numberIn("ma2-convergence") - numberIn("ma2-declination")),
-});
-
-// Румб
-addRepresentation({
-	groupName: "li-rum",
-	hidden: true,
-	html: `
-		Направление
-		<select id="rdir">
-			<option>СВ</option>
-			<option>ЮВ</option>
-			<option>ЮЗ</option>
-			<option>СЗ</option>
-		</select>,
-		Румб <input id="rval" type="text">
-	`,
-	getValue: () => {
-		switch(document.getElementById("rdir").selectedIndex) {
-			case 0: return (numberIn("rval"));
-			case 1: return (180 - numberIn("rval"));
-			case 2: return (180 + numberIn("rval"));
-			case 3: return (360 - numberIn("rval"));
-		};
-	},
-	setValue: dd => {
-		dd = (360 + (dd % 360)) % 360;
-				 if (0   <= (dd % 360) && (dd % 360) < 90)  { document.getElementById("rdir").selectedIndex = 0; setNumber("rval", dd); }
-		else if (90  <= (dd % 360) && (dd % 360) < 180) { document.getElementById("rdir").selectedIndex = 1; setNumber("rval", 180 - dd); }
-		else if (180 <= (dd % 360) && (dd % 360) < 270) { document.getElementById("rdir").selectedIndex = 2; setNumber("rval", dd - 180); }
-		else if (270 <= (dd % 360) && (dd % 360) < 360) { document.getElementById("rdir").selectedIndex = 3; setNumber("rval", 360 - dd); }
 	},
 });
 
@@ -347,21 +277,33 @@ addRepresentation({
 	},
 });
 
-// https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-function createSvgArc(x, y, radius, startRadians, endRadians) {
-		function polarToCartesian(centerX, centerY, radius, radians) {
-		  return {
-		    x: centerX + (radius * Math.cos(radians)),
-		    y: centerY + (radius * Math.sin(radians))
-		  };
-		}
-    var start = polarToCartesian(x, y, radius, endRadians);
-    var end = polarToCartesian(x, y, radius, startRadians);
-    var largeArcFlag = Math.abs(endRadians - startRadians) <= Math.PI ? "0" : "1";
-    var d = [
-        "M", start.x, start.y,
-        "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
-				"L", x, y
-    ].join(" ");
-    return d;
-}
+// Румб
+addRepresentation({
+	groupName: "li-rum",
+	hidden: true,
+	html: `
+		Направление
+		<select id="rdir">
+			<option>СВ</option>
+			<option>ЮВ</option>
+			<option>ЮЗ</option>
+			<option>СЗ</option>
+		</select>,
+		Румб <input id="rval" type="text">
+	`,
+	getValue: () => {
+		switch(document.getElementById("rdir").selectedIndex) {
+			case 0: return (numberIn($("#rval")));
+			case 1: return (180 - numberIn($("#rval")));
+			case 2: return (180 + numberIn($("#rval")));
+			case 3: return (360 - numberIn($("#rval")));
+		};
+	},
+	setValue: dd => {
+		dd = (360 + (dd % 360)) % 360;
+				 if (0   <= (dd % 360) && (dd % 360) < 90)  { document.getElementById("rdir").selectedIndex = 0; setNumber($("#rval"), dd); }
+		else if (90  <= (dd % 360) && (dd % 360) < 180) { document.getElementById("rdir").selectedIndex = 1; setNumber($("#rval"), 180 - dd); }
+		else if (180 <= (dd % 360) && (dd % 360) < 270) { document.getElementById("rdir").selectedIndex = 2; setNumber($("#rval"), dd - 180); }
+		else if (270 <= (dd % 360) && (dd % 360) < 360) { document.getElementById("rdir").selectedIndex = 3; setNumber($("#rval"), 360 - dd); }
+	},
+});
