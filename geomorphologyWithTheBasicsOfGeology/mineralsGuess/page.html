@@ -7,33 +7,26 @@
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<button onclick="next()">Кнопка</button>
-		<img id="img" style="width:256px;height:256px;display:block"></img>
+		<button onclick="takeCollection('img')">Другие ящики</button>
+		<button onclick="takeCollection('collection5')">Ящик 5</button>
+		<img id="img" style="width:256px;height:256px;display:block" width="256px" height="256px"></img>
 		<p id="answer"></p>
 		<script>
-			let ls = null;
-			let imgpath = null;
-
-		  $.ajax({
-		    url: "ls.txt", // in terminal: ls >> ls.txt
-		    success: function (data) {
-					ls = data.match(/[^\s]*.jpg/g);
-					showMineral();
-		    }
-		  });
-
-			function showMineral() {
-				imgpath = ls[Math.floor(Math.random() * ls.length)];
-				$("#img").attr("src", "img/"+imgpath);
-				$("#answer").text("");
-			}
-
-			function showAnswer() {
-				$("#answer").text(imgpath);
-			}
-
-			function next() {
-				if ($("#answer").text()) { showMineral(); } else { showAnswer(); }
+			function takeCollection(folder) {
+				if ($("#answer").text() || !$("#img").attr("src")) {
+					$.ajax({
+						url: folder + "/ls.txt",
+						success: function (data) {
+							const ls = data.match(/[^\s]*.jpg/g);
+							const imgname = ls[Math.floor(Math.random() * ls.length)];
+							$("#img").attr("src", folder + "/" + imgname);
+							$("#answer").text("");
+						}
+					});
+				}
+				else {
+					$("#answer").text($("#img").attr("src").match(/[^//]*.jpg/));
+				}
 			}
 		</script>
 	</body>
