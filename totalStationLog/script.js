@@ -197,7 +197,7 @@ $(document).ready(function() {
     totalStation.iii = new Station("III", "II", "ПП68", new Angle(0, 2.5), new Angle(306, 39.5), new Angle(182, 23.0), new Angle(128, 59.0),
       new Angle(1, 8.5, -1), new Angle(1, 9.0), new Angle(1, 56.0, -1), new Angle(1, 57.0), 1.52, 1.50, 2.00, 196.6, 196.6, 189.7, 189.3, totalStation.pp68);
     totalStation.ii = new Station("II", "I", "III", new Angle(0, 3.0), new Angle(98, 2.0), new Angle(181, 23.5), new Angle(279, 22.0),
-      new Angle(1, 40.0, -1), new Angle(1, 39.0), new Angle(1, 19.5), new Angle(1, 20.5, -1), 1.35, 2.00, 2.00, 110.2, 110.0, 197.0, 196.4, totalStation.iii);
+      new Angle(1, 40.0, -1), new Angle(1, 39.0), new Angle(1, 19.5), new Angle(1, 20.5, -1), 1.36, 2.00, 2.00, 110.2, 110.0, 197.0, 196.4, totalStation.iii);
     totalStation.i = new Station("I", "ПП26", "II", new Angle(0, 2.0), new Angle(130, 24.0), new Angle(182, 22.5), new Angle(312, 43.5),
       new Angle(1, 14.0, -1), new Angle(1, 15.0), new Angle(2, 17.0), new Angle(2, 18.0, -1), 1.45, 2.00, 2.00, 101.5, 101.2, 110.5, 110.5, totalStation.ii);
     totalStation.pp26 = new Station("ПП26", "ПП25", "I", new Angle(0, 1.5), new Angle(168, 14.5), new Angle(181, 31.0), new Angle(349, 44.5),
