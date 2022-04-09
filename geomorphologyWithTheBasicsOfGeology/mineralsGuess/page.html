@@ -5,28 +5,56 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+		<style>
+			button {
+				margin: 1em;
+			}
+			#img {
+				display: block;
+				height: 256px;
+		    background-repeat: no-repeat;
+		    background-size: contain;
+			}
+			#buttons {
+				display: inline-flex;
+				flex-flow: column;
+			}
+			#placeholder {
+				position: relative;
+			}
+			#placeholder #loading {
+				position: absolute;
+				z-index: -1;
+			}
+		</style>
 	</head>
 	<body>
-		<button onclick="takeCollection('img')">Минералы (другие ящики)</button>
-		<button onclick="takeCollection('collection5')">Минералы (ящик №5)</button>
-		<button onclick="takeCollection('rocks5')">Горные породы (ящик №5)</button>
-		<img id="img" style="height:256px;display:block";height="256px;"></img>
+		<div id="buttons">
+			<button onclick="takeCollection('img')">Минералы (другие ящики)</button>
+			<button onclick="takeCollection('collection5')">Минералы (ящик №5)</button>
+			<button onclick="takeCollection('rocks5')">Горные породы (ящик №5)</button>
+		</div>
+		<div id="placeholder">
+			<div id="loading" hidden>Загрузка</div>
+	    <div id="img"></div>
+		</div>
 		<p id="answer"></p>
 		<script>
 			function takeCollection(folder) {
-				if ($("#answer").text() || !$("#img").attr("src")) {
+				if ($("#answer").text() || ($("#img").css("background-image") === "none")) {
+					$("#loading").show();
 					$.ajax({
 						url: folder + "/ls.txt",
 						success: function (data) {
 							const ls = data.match(/[^\s]*.jpg/g);
 							const imgname = ls[Math.floor(Math.random() * ls.length)];
-							$("#img").attr("src", folder + "/" + imgname);
+							$("#img").css("background-image", `url(${folder}/${imgname})`);
 							$("#answer").text("");
 						}
 					});
 				}
 				else {
-					$("#answer").text($("#img").attr("src").match(/[^//]*.jpg/));
+					$("#answer").text(decodeURI($("#img").css("background-image")).match(/[^//]*.jpg/));
 				}
 			}
 		</script>
