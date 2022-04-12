@@ -31,20 +31,27 @@
 		</div>
 		<p id="answer"></p>
 		<script>
-			let lastRock = null;
+			let collectionsMap = new Map();
 			function takeCollection(folder) {
 				if ($("#answer").text() || !$("#img").attr("src")) {
 					$.ajax({
 						url: folder + "/ls.txt",
 						success: function (data) {
-							let imgname, ls = data.match(/[^\s]*.jpg/g);
-							do {
-								imgname = ls[Math.floor(Math.random() * ls.length)];
+							if (!collectionsMap.has(folder)) {
+								collectionsMap.set(folder, {
+									past: [],
+									future: data.match(/[^\s]*.jpg/g),
+								});
 							}
-							while (imgname === lastRock);
-							lastRock = imgname;
+							if (collectionsMap.get(folder).future.length === 0) {
+								collectionsMap.get(folder).future = collectionsMap.get(folder).past;
+								collectionsMap.get(folder).past = [];
+							}
+							const randomId = Math.floor(Math.random() * collectionsMap.get(folder).future.length);
+							collectionsMap.get(folder).past.push(collectionsMap.get(folder).future[randomId]);
+							collectionsMap.get(folder).future.splice(randomId, 1);
 							$("#img").attr("src", ``); // remove image
-							$("#img").attr("src", `${folder}/${imgname}`);
+							$("#img").attr("src", `${folder}/${collectionsMap.get(folder).past[collectionsMap.get(folder).past.length - 1]}`);
 							$("#img").css("transform", `
 								scaleX(${1 - Math.floor(Math.random()*2)*2})
 								scaleY(${1 - Math.floor(Math.random()*2)*2})
@@ -53,8 +60,8 @@
 								skewY(${Math.random()*10}deg)
 							`);
 							$("#img").css("filter", `
-								brightness(${0.5+Math.random()})
-								contrast(${0.5+Math.random()})
+								brightness(${0.7+Math.random()*0.5})
+								contrast(${0.7+Math.random()*0.5})
 							`);
 							$("#answer").text("");
 						}
