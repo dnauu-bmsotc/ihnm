@@ -9,22 +9,11 @@
 			button {
 				margin: 1em;
 			}
+			#imgdiv {
+				overflow:hidden;
+			}
 			#img {
-				display: block;
 				height: 256px;
-		    background-repeat: no-repeat;
-		    background-size: contain;
-			}
-			#buttons {
-				display: inline-flex;
-				flex-flow: column;
-			}
-			#placeholder {
-				position: relative;
-			}
-			#placeholder #loading {
-				position: absolute;
-				z-index: -1;
 			}
 		</style>
 	</head>
@@ -33,28 +22,46 @@
 			<button onclick="takeCollection('img')">Минералы (другие ящики)</button>
 			<button onclick="takeCollection('collection5')">Минералы (ящик №5)</button>
 			<button onclick="takeCollection('rocks5')">Горные породы (ящик №5)</button>
+			<button onclick="takeCollection('rocks5Magma')">Магматические (ящик №5)</button>
+			<button onclick="takeCollection('rocks5Osad')">Осадочные (ящик №5)</button>
+			<button onclick="takeCollection('rocks5Meta')">Метаморфические(ящик №5)</button>
 		</div>
-		<div id="placeholder">
-			<div id="loading" hidden>Загрузка</div>
-	    <div id="img"></div>
+		<div id="imgdiv">
+			<img id="img"></img>
 		</div>
 		<p id="answer"></p>
 		<script>
+			let lastRock = null;
 			function takeCollection(folder) {
-				if ($("#answer").text() || ($("#img").css("background-image") === "none")) {
-					$("#loading").show();
+				if ($("#answer").text() || !$("#img").attr("src")) {
 					$.ajax({
 						url: folder + "/ls.txt",
 						success: function (data) {
-							const ls = data.match(/[^\s]*.jpg/g);
-							const imgname = ls[Math.floor(Math.random() * ls.length)];
-							$("#img").css("background-image", `url(${folder}/${imgname})`);
+							let imgname, ls = data.match(/[^\s]*.jpg/g);
+							do {
+								imgname = ls[Math.floor(Math.random() * ls.length)];
+							}
+							while (imgname === lastRock);
+							lastRock = imgname;
+							$("#img").attr("src", ``); // remove image
+							$("#img").attr("src", `${folder}/${imgname}`);
+							$("#img").css("transform", `
+								scaleX(${1 - Math.floor(Math.random()*2)*2})
+								scaleY(${1 - Math.floor(Math.random()*2)*2})
+								rotate(${Math.floor(Math.random()*5)*90}deg)
+								skewX(${Math.random()*10}deg)
+								skewY(${Math.random()*10}deg)
+							`);
+							$("#img").css("filter", `
+								brightness(${0.5+Math.random()})
+								contrast(${0.5+Math.random()})
+							`);
 							$("#answer").text("");
 						}
 					});
 				}
 				else {
-					$("#answer").text(decodeURI($("#img").css("background-image")).match(/[^//]*.jpg/));
+					$("#answer").text($("#img").attr("src").match(/[^//]*.jpg/));
 				}
 			}
 		</script>
