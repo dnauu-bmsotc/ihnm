@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>ihnm</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+    <link href="./lib/sandbox.css" rel="stylesheet" />
+    <style>
+      #drawing {
+        display: inline-block;
+        text-align: center;
+        margin: 30px;
+      }
+      #svgdrawing {
+        border: 2px solid brown;
+        border-radius: 9px;
+        margin: auto;
+      }
+      #documentation > ol > li {
+        margin-top: 1em;
+      }
+      .row {
+        display: inline-flex;
+        flex-flow: row nowrap;
+      }
+      #sandbox {
+        min-width: 512px;
+        display: inline-block;
+      }
+    </style>
+	</head>
+	<body>
+		<main>
+      <div class="row">
+        <div id="sandbox">sandbox loading...</div>
+        <div id="drawing">
+          <svg id="svgdrawing" width="400" height="400" viewBox="0 0 100 100"></svg>
+        </div>
+      </div>
+      <div id="documentation">
+        <h3>Документация</h3>
+        <ol>
+          <li>class Angle(angle | d=0, m=0, s=0) --- класс угла, для отрицательных углов нужно каждый аргумент записывать с минусом
+            <ol>
+              <li>plus(angle | dd) --- возвращает новый угол, равный сумме данного и указанного</li>
+              <li>minus(angle | dd) --- возвращает новый угол, равный разности данного и указанного</li>
+              <li>times(n)</li>
+              <li>divide(n)</li>
+              <li>get radians --- возвращает значение угла в радианах</li>
+            </ol>
+          </li>
+          <li>function ground(n, decimalPlaces) --- округление по Гауссу;</li>
+          <li>function InitP(p30, p60, p90, p120, p150) --- установление поправок</li>
+          <li>function P(n) --- внесение поправки</li>
+          <li>function drawTraverse(angle|d, s, b, scale=1/20) --- отрисовка схемы тахеометрического хода по начальному дирекционному углу, массиву расстояний и массиву углов. Например: drawTraverse(288, [101.2,110.0,196.4,188.9], [168, 130, 98, 306.5, 218.5])</li>
+          <li>function traverseStation(i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback) Вычисления на станции тахеометрического хода.
+            <p>i --- высота инструмента; hl1, hl2, hr1, hr2 --- горизонтальные отсчёты; Vl, Vr --- высоты реек; vl1, vl2, vr1, vr2 --- вертикальные отсчёты; ll1, ll2, lr1, lr2 --- отсчёты по дальномеру; hback --- h обратное.</p>
+            <p>Например: traverseStation(1.30, new Angle(0, 1.5), new Angle(168, 14.5), new Angle(181, 31), new Angle(349, 44.5), 0, 1, 0, 0, new Angle(1, 23), new Angle(-1, -24), -2.74);</p></li>
+        <ol>
+      </div>
+		</main>
+
+    <!-- The sandbox template -->
+    <script type="text/template" id="tplSandbox">
+    	<pre class="output"></pre>
+    	<div class="input">
+    		<textarea rows="1" placeholder="<%= placeholder %>"></textarea>
+    	</div>
+    </script>
+
+    <!-- The command/result template (NB whitespace/line breaks matter inside <pre> tag): -->
+    <script type="text/template" id="tplCommand"><% if (! _hidden) { %><span class="command"><%= command %></span>
+    <span class="prefix"><%= this.resultPrefix %></span><span class="<%= _class %>"><%= result %></span>
+    <% } %></script>
+
+    <script src="./lib/underscore.min.js"></script>
+    <script src="./lib/backbone.min.js"></script>
+    <script src="./lib/backbone-localstorage.min.js"></script><!-- opt -->
+    <script src="./lib/jquery.min.js"></script>
+
+    <script src="./lib/sandbox-console.js"></script>
+    <script type="text/javascript">
+    	jQuery(document).ready(function($) {
+    		// Create the sandbox:
+    		window.sandbox = new Sandbox.View({
+        	model : new Sandbox.Model(), // see below for more
+        	el : $('#sandbox'), // or etc.
+        	// these are optional (defaults are given here):
+        	resultPrefix : "  => ",
+        	helpText : "type javascript commands into the console, hit enter to evaluate. \n[up/down] to scroll through history, ':clear' to reset it. \n[alt + return/up/down] for returns and multi-line editing.",
+        	tabCharacter : "\t",
+        	placeholder : "// type some javascript and hit enter (:help for info)"
+    		});
+    	});
+    </script>
+    <script src="index.js"></script>
+	</body>
+</html>
