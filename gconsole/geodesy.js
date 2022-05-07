@@ -39,6 +39,12 @@ class Angle {
   divide(n) {
     return new Angle(this.degrees / n);
   }
+  get abs() {
+    return new Angle(Math.abs(this.degrees));
+  }
+  get sign() {
+    return Math.sign(this.degrees);
+  }
   get radians() {
     return this.degrees * Math.PI / 180;
   }
@@ -52,7 +58,7 @@ function ground(n, d=2) {
   return br / Math.pow(10, d);
 }
 
-function InitP(p30, p60, p90, p120, p150) {
+function initP(p30, p60, p90, p120, p150) {
   P.p30 = p30;
   P.p60 = p60;
   P.p90 = p90;
@@ -77,8 +83,10 @@ function P(n) {
 function drawTraverse(a, s, b, scale=1/20) {
   let x, y, prevX = 50, prevY = 50;
   let angle = new Angle(a).minus(90);
-  let svg = document.getElementById("svgdrawing");
   let ss = [200, ...s, 200];
+  let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  svg.setAttribute("viewBox", "0 0 100 100");
   svg.innerHTML = "";
   for (let i = 0; i < ss.length; i++) {
     x = prevX + Math.cos(new Angle(angle).radians) * ss[i] * scale;
@@ -89,14 +97,14 @@ function drawTraverse(a, s, b, scale=1/20) {
     line.setAttributeNS(null, "x2", x);
     line.setAttributeNS(null, "y2", y);
     line.setAttributeNS(null, "stroke", "black");
-    $("#svgdrawing").append(line);
+    svg.append(line);
     prevX = x;
     prevY = y;
     angle = angle.plus(b[i]);
     if (angle.degrees > 180) angle = angle.minus(180);
     else angle = angle.plus(180);
   }
-  return "Отрисовано";
+  return svg;
 }
 
 // Вычисления на станции тахеометрического хода
@@ -118,37 +126,112 @@ function traverseStation(i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1,
   const lr = ground((lr1 + lr2) / 2, 1);
   const Dl = P(ll);
   const Dr = P(lr);
-  const Sl = ground(Dl * Math.pow(Math.cos(vl), 2), 1);
-  const Sr = ground(Dr * Math.pow(Math.cos(vr), 2), 1);
-  const hlf = ground(Sl * Math.tan(vl), 2);
-  const hrf = ground(Sr * Math.tan(vr), 2);
+  const Sl = ground(Dl * Math.pow(Math.cos(vl.radians), 2), 1);
+  const Sr = ground(Dr * Math.pow(Math.cos(vr.radians), 2), 1);
+  const hlf = ground(Sl * Math.tan(vl.radians), 2);
+  const hrf = ground(Sr * Math.tan(vr.radians), 2);
   const dl = i - Vl;
   const dr = i - Vr;
   const hl = hlf + dl;
   const hr = hrf + dr;
-  const h = ground((hr + hback) / 2, 2);
-  return {
-    "Левый угол: ": horl.toFormat("d360 m.1"),
-    "Средний угол: ": hor.toFormat("d360 m.1"),
-    "Правый угол: ": horr.toFormat("d360 m.1"),
-    "МО обратно: ": MOl.toFormat("d360 m.1"),
-    "v обратно: ": vl.toFormat("d360 m.1"),
-    "МО прямо: ": MOr.toFormat("d360 m.1"),
-    "v прямо: ": vr.toFormat("d360 m.1"),
-    "l обратно: ": ll,
-    "l прямо: ": lr,
-    "D обратно: ": Dl,
-    "S обратно: ": Sl,
-    "D прямо: ": Dr,
-    "S прямо: ": Sr,
-    "h' обратно: ": hlf,
-    "delta обратно: ": dl,
-    "h обратно: ": hl,
-    "h' прямо: ": hrf,
-    "delta прямо: ": dr,
-    "h прямо: ": hr,
-    "h пр.: ": hr,
-    "h обр.: ": hback,
-    "h ср.: ": h,
-  };
+  const h = ground((hr - hback) / 2, 2);
+  
+  const table = document.createElement("div");
+  table.classList.add("gtable");
+  table.innerHTML = `
+    <div class="grow">
+      <div>Номер пункта</div>
+      <div>${i}</div>
+    </div>
+    <div class="grow">
+      <div>Предыдущий пункт</div>
+      <div>Следующий пункт</div>
+      <div>Предыдущий пункт</div>
+      <div>Следующий пункт</div>
+    </div>
+    <div class="grow">
+      <div>Л</div>
+      <div>П</div>
+    </div>
+    <div class="grow">
+      <div>${hl1.toFormat("d360 m.1")}</div>
+      <div>${hl2.toFormat("d360 m.1")}</div>
+      <div>${hr1.toFormat("d360 m.1")}</div>
+      <div>${hr2.toFormat("d360 m.1")}</div>
+    </div>
+    <div class="grow">
+      <div>${horl.toFormat("d360 m.1")}</div>
+      <div>${hor.toFormat("d360 m.1")}</div>
+      <div>${horr.toFormat("d360 m.1")}</div>
+    </div>
+    <div class="grow">
+      <div>Предыдущий пункт</div>
+      <div>${Vl}</div>
+      <div>Следующий пункт</div>
+      <div>${Vr}</div>
+    </div>
+    <div class="grow">
+      <div>Л</div>
+      <div>П</div>
+      <div>Л</div>
+      <div>П</div>
+    </div>
+    <div class="grow">
+      <div>${new Angle(vl1).toFormat("d360 m.1")}</div>
+      <div>${new Angle(vl2).toFormat("d360 m.1")}</div>
+      <div>${new Angle(vr1).toFormat("d360 m.1")}</div>
+      <div>${new Angle(vr2).toFormat("d360 m.1")}</div>
+    </div>
+    <div class="grow">
+      <div>${new Angle(MOl).sign}</div>
+      <div>${new Angle(vl).sign}</div>
+      <div>${new Angle(MOr).sign}</div>
+      <div>${new Angle(vr).sign}</div>
+    </div>
+    <div class="grow">
+    <div>${new Angle(MOl).abs.toFormat("d360 m.1")}</div>
+    <div>${new Angle(vl).abs.toFormat("d360 m.1")}</div>
+    <div>${new Angle(MOr).abs.toFormat("d360 m.1")}</div>
+    <div>${new Angle(vr).abs.toFormat("d360 m.1")}</div>
+    </div>
+    <div class="grow">
+      <div>${ll1}</div>
+      <div>${ll2}</div>
+      <div>${ll}</div>
+      <div>${lr1}</div>
+      <div>${lr2}</div>
+      <div>${lr}</div>
+    </div>
+    <div class="grow">
+      <div>${Dl}</div>
+      <div>${Sl}</div>
+      <div>${Dr}</div>
+      <div>${Sr}</div>
+    </div>
+    <div class="grow">
+      <div>${Math.sign(hlf)}</div>
+      <div>${Math.sign(dl)}</div>
+      <div>${Math.sign(hl)}</div>
+      <div>${Math.sign(hrf)}</div>
+      <div>${Math.sign(dr)}</div>
+      <div>${Math.sign(hr)}</div>
+    </div>
+    <div class="grow">
+      <div>${ground(hlf, 2)}</div>
+      <div>${ground(dl)}</div>
+      <div>${ground(hl)}</div>
+      <div>${ground(hrf)}</div>
+      <div>${ground(dr)}</div>
+      <div>${ground(hr)}</div>
+    </div>
+    <div class="grow">
+      <div>-</div>
+      <div>-</div>
+      <div>-</div>
+      <div>${hr}</div>
+      <div>${hback}</div>
+      <div>${h}</div>
+    </div>
+  `;
+  return table;
 }

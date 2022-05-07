@@ -1,0 +1,98 @@
+main {
+    max-width: 1024px;
+    margin: auto;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+svg {
+    width: 12em;
+    height: 12em;
+    border: 1px solid brown;
+}
+
+.select-onclick {
+    background-color: #F7EAE4;
+}
+
+#documentation > ol > li {
+    margin-top: 1em;
+}
+
+p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+#console {
+    border: 2px solid black;
+    height: 24em;
+    overflow: auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#history-box {
+    flex: 1 0 auto;
+    padding: 0 0 4em 0;
+}
+
+#input-box {
+    flex: 0 0 auto;
+}
+
+#input-box input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.history-item {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.history-item-echo {
+    color: black;
+}
+
+.history-item-respond {
+    color: blue;
+}
+
+.history-item-error {
+    color: red;
+}
+
+.history-item-respond::before,
+.history-item-error::before {
+    content: "";
+    background-color: #ebd4c9;
+    width: 1em;
+}
+
+.history-item-part {
+    margin: 4px;
+}
+
+.gtable {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.grow {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.grow > * {
+    display: block;
+    height: 2em;
+    border: 1px solid blue;
+    box-sizing: border-box;
+    padding: 0.5em;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    text-align: center;
+}
