@@ -1,0 +1,109 @@
+{
+  "defaultLayout": {
+    "contribute": "Contribute on GitHub (soon)"
+  },
+  "home": {
+    "title": "Available pages",
+    "nsLink": "Number systems translation",
+    "wofLink": "Wheel of fortune"
+  },
+  "pnf": {
+    "homeLink": "To home"
+  },
+  "ns": {
+    "title": "Number systems translation",
+    "empty": "Add a translator",
+    "instruction": {
+      "header": "Instruction",
+      "introduction": "Interface is divided into two parts: base of number system on the left, and number's presentation on the right. Edit number on the right and then all other values will be updated to correspond to the new one.",
+      "addingTranslator": {
+        "beforeButton": "You can ",
+        "button": "add a translator",
+        "afterButton": ""
+      },
+      "settingPrecision": {
+        "beforeInput": ", enter decimal numbers with precision up to ",
+        "afterInput": " digits relatively to decimal number system"
+      },
+      "settingStep": {
+        "beforeInput": ", change number by ",
+        "afterInput": " (relatively to it's decimal value), by pressing the plus or minus buttons around the number"
+      },
+      "changingType": {
+        "beforeButton": ". Press ",
+        "afterButton": " button near translator's base to delete translator or change it's type."
+      },
+      "settingAlphabet": {
+        "beforeInput": "The alphabet below is used to present numbers: ",
+        "afterInput": ""
+      }
+    },
+    "alphabetErrors": {
+      "atLeastTwoSymbols": "Alphabet should contain at least two symbols",
+      "parsingError": "Could not use the alphabet. Please check every symbol occures no more than one time"
+    },
+    "ComplementTranslator": {
+      "Ones": "One's complement with ",
+      "Twos": "Two's complement with ",
+      "rankedBinary": " bits",
+      "tooLittleRanks": "Increase number of bits to make range wider",
+      "emptyNumberInput": "Empty number input",
+      "fractionsNotSupported": "Fractions are not supported",
+      "fillZeros": "Add insignificant zeros [{amount}] to fit number of bits",
+      "tooLargeValue": "Too many digits for specified number of bits",
+      "fractionsDiscarded": "Fractions discarded",
+      "ranksNotEnough": "Not enough bits",
+      "parsingError": "Could not read the input"
+    },
+    "NumericTranslator": {
+      "positional": "Positional with radix ",
+      "based": "",
+      "emptyNumberInput": "Empty number input",
+      "parsingError": "Could not read input",
+      "zeroRadix": "Radix can not be zero",
+      "oneRadix": "Radix can not be one",
+      "negativeOneRadix": "Radix can not be -1",
+      "negativeRadix": "Unfortunately, negative based systems are not suported",
+      "tooBigRadix": "Radix should not be bigger then alphabet size"
+    },
+    "RomanTranslator": {
+      "roman": "Roman numerals",
+      "useUnicodeHint": "Use Unicode symbols to extend values range",
+      "useUnicode": "Use Unicode",
+      "parsingError": "Could not read input",
+      "fractionsDiscarded": "Fractions discarded",
+      "tooBigNumber": "Too big number",
+      "negativeNumber": "There is no negative numbers in Roman numerals",
+      "noZero": "There is no zero in Roman numerals",
+      "notPresentable": "Value can not be presented in Roman numerals"
+    },
+    "Translator": {
+      "positional": "Positional",
+      "positionalHint": "Common positional notation: binary numbers, hexadecimals and others",
+      "roman": "Roman numerals",
+      "romanHint": "Numeral system that originated in ancient Rome",
+      "onesComplement": "One's complement",
+      "onesComplementHint": "Deprecated way of storing numbers in computers",
+      "twosComplement": "Two's complement",
+      "twosComplementHint": "It is used in computing as method of signed number representation",
+      "delete": "Delete"
+    }
+  },
+  "wof": {
+    "title": "Fortune Wheel",
+    "spinCWButton": "Spin clock-wise",
+    "spinCCWButton": "Spin counter-clock-wise",
+    "brakeButton": "Brake (press and hold)",
+    "accelerateButton": "Accelerate (press and hold)",
+    "stopButton": "Stop",
+    "excludeButton": "Exclude this section",
+    "shuffle": "Shuffle variants",
+    "deleteBlankSections": "Delete blank sections",
+    "randomizeColors": "Randomize colors",
+    "imageDisplayMode": "Image fit: ",
+    "imageDisplayModeResize": "Resize",
+    "imageDisplayModePattern": "Pattern",
+    "imageDisplayModeFit": "Fit",
+    "addSector": "Add sector"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "IHNM",
+  "private": true,
+  "scripts": {
+    "develop": "gridsome develop",
+    "explore": "gridsome explore",
+    "build": "gridsome build"
+  },
+  "dependencies": {
+    "bignumber.js": "^9.0.1",
+    "gridsome": "^0.7.0",
+    "gridsome-plugin-i18n": "^1.6.0"
+  },
+  "devDependencies": {
+    "node-sass": "^6.0.1",
+    "sass-loader": "^10.1.1",
+    "style-resources-loader": "^1.4.1"
+  }
+}

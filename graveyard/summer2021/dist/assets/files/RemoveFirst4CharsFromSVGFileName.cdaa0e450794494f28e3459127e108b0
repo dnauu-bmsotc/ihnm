@@ -1,0 +1,5 @@
+#!/bin/bash
+for f in *.svg
+do
+	mv $f ${f:4:${#f}-1}
+done

@@ -1,0 +1,47 @@
+$background-color: white;
+$text-color: #56261f;
+$secondary-text-color: #886d66;
+$error-color: #db5043;
+$warning-color: #f9a90d;
+$highlight-color: #f3eeed;
+$lowshadow-color: #c2a79e;
+$button-color: #f1ddd9;
+
+:export {
+  backgroundColor: $background-color;
+  textColor: $text-color;
+  secondaryTextColor: $secondary-text-color;
+  errorColor: $error-color;
+  warningColor: $warning-color;
+  highlightColor: $highlight-color;
+  lowshadowColor: $lowshadow-color;
+  buttonColor: $button-color;
+}
+
+@mixin tabbable {
+  &:focus-visible {
+    outline: 4px solid $text-color;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@mixin hintable {
+  &[data-hint]:hover::after,
+  &[data-show-hint]::after {
+    content: attr(data-hint);
+    position: relative;
+    left: 0;
+    background-color: $highlight-color;
+    border: 1px solid $lowshadow-color;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 0px 4px;
+    color: $text-color;
+    text-align: left;
+    width: auto;
+    border-radius: 3px;
+    display: inline-block;
+    white-space: nowrap;
+  }
+}
