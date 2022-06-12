@@ -26,7 +26,8 @@ p {
 
 #console {
     border: 2px solid black;
-    height: 24em;
+    min-height: 20vh;
+    max-height: 80vh;
     overflow: auto;
     display: flex;
     flex-flow: column nowrap;
@@ -39,6 +40,8 @@ p {
 
 #input-box {
     flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
 }
 
 #input-box input {

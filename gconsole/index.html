@@ -10,10 +10,14 @@
 	</head>
 	<body>
 		<main>
+            <input name="data" type="file" onchange="getFile(event)">
+			<button onclick="getTestFile()">Использовать тестовый файл</button>
+            <a href="./testdata.txt" download> Скачать тестовый файл</a>
             <section id="console">
                 <div id="history-box"></div>
                 <div id="input-box">
-                    <input></input>
+                    <input id="input-box--input" onkeydown="onKeydown(event)"></input>
+                    <button id="input-box--enter-btn" onclick="onEnter()">enter</button>
                 </div>
             </section>
             <section id="documentation">

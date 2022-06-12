@@ -7,26 +7,35 @@ const GERRR = 2;
 const inputHistory = [];
 let inputHistoryCursor = 0;
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelector("#input-box input").addEventListener("keydown", function(e) {
-        switch (e.keyCode) {
-            case 13: onEnter(e); break;
-            case 38: onArrowUp(e); break;
-            case 40: onArrowDown(e); break;
-        }
-    });
-});
+// document.addEventListener("DOMContentLoaded", function() {
+//     document.querySelector("#input-box input").addEventListener("keydown", function(e) {
+//         switch (e.keyCode) {
+//             case 13: onEnter(e); break;
+//             case 38: onArrowUp(e); break;
+//             case 40: onArrowDown(e); break;
+//         }
+//     });
+// });
+
+function onKeydown(e) {
+    switch (e.keyCode) {
+        case 13: onEnter(e); break;
+        case 38: onArrowUp(e); break;
+        case 40: onArrowDown(e); break;
+    }
+}
 
 function onEnter(e) {
-    inputHistory.push(e.target.value);
-    gcout(GECHO, e.target.value);
+    const inp = document.getElementById("input-box--input");
+    inputHistory.push(inp.value);
+    gcout(GECHO, inp.value);
     try {
-        gcout(GRESP, (1, eval)(e.target.value)); // https://stackoverflow.com/questions/9107240
+        gcout(GRESP, (1, eval)(inp.value)); // https://stackoverflow.com/questions/9107240
     }
-    catch (e) {
-        gcout(GERRR, e.name + ": " + e.message);
+    catch (err) {
+        gcout(GERRR, err.name + ": " + err.message);
     }
-    e.target.value = "";
+    inp.value = "";
     inputHistoryCursor = inputHistory.length;
     document.getElementById("console").scrollTop = document.getElementById("console").scrollHeight;
 }
@@ -80,4 +89,35 @@ function selectOnClick(el) {
     range.setEnd(el.childNodes[0], el.textContent.length);
     sel.removeAllRanges();
     sel.addRange(range);
+}
+
+async function getFile(e) {
+    processFile(await e.target.files[0].text());
+}
+ 
+async function getTestFile() {
+    let testfile = await fetchNoCache("./testdata.txt");
+    if (testfile.ok) {
+        processFile(await testfile.text());
+    }
+}
+
+function processFile(txt) {
+    for (let command of txt.split(";")) {
+        document.querySelector("#input-box input").value = command.replace(/\/\*[\s\S]*?\*\//g, "");
+        document.getElementById("input-box--enter-btn").dispatchEvent(new Event("click"));
+    }
+}
+
+// https://stackoverflow.com/questions/29246444
+async function fetchNoCache(path) {
+    var myHeaders = new Headers();
+    myHeaders.append('pragma', 'no-cache');
+    myHeaders.append('cache-control', 'no-cache');
+    var myInit = {
+        method: 'GET',
+        headers: myHeaders,
+    };
+    var myRequest = new Request(path);
+    return await fetch(myRequest, myInit);
 }
