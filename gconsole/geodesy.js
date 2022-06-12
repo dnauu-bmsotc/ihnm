@@ -15,6 +15,7 @@ class Angle {
   // d360 --- Целое число градусов в пределах 360 градусов
   toFormat(format) {
     format = format.replace(/d360/, Math.trunc(this.degrees) % 360);
+    format = format.replace(/d/, Math.trunc(this.degrees));
     format = format.replace(/m.(\d*)/, function(a, b) { return `${ground(this.degrees % 1 * 60, parseInt(b))}` }.bind(this));
     return format;
   }
@@ -39,6 +40,9 @@ class Angle {
   divide(n) {
     return new Angle(this.degrees / n);
   }
+  to360 () {
+    return new Angle((360 + this.degrees % 360) % 360);
+  }
   get abs() {
     return new Angle(Math.abs(this.degrees));
   }
@@ -58,24 +62,23 @@ function ground(n, d=2) {
   return br / Math.pow(10, d);
 }
 
-function initP(p30, p60, p90, p120, p150) {
-  P.p30 = p30;
-  P.p60 = p60;
-  P.p90 = p90;
-  P.p120 = p120;
-  P.p150 = p150;
+function P(n) {
+  if (!P.ps) {
+    throw "Не установлены поправки. Используйте функцию P.init";
+  }
+  let closest = 0;
+  for (let i = 0; i < P.ps.length; i += 2) {
+    if (Math.abs(n - P.ps[i]) < Math.abs(n - P.ps[closest])) {
+      closest = i;
+    }
+  }
+  return n + P.ps[closest + 1];
 }
 
-function P(n) {
-  if (typeof P.p30 === "undefined") {
-    alert("Не установлены поправки. Используйте функцию InitP");
-  }
-  if (n < 30) return n + P.p30;
-  if (n < 60) return n + P.p60;
-  if (n < 90) return n + P.p90;
-  if (n < 120) return n + P.p120;
-  if (n < 150) return n + P.p150;
-}
+// Принимает массив следующего вида: расстояние, поправка, расстояние, поправка...
+P.init = function(...args) {
+  P.ps = args;
+};
 
 // a --- начальный дирекционный угол
 // s --- массив расстояний
@@ -114,9 +117,17 @@ function drawTraverse(a, s, b, scale=1/20) {
 // vl1, vl2, vr1, vr2 --- вертикальные отсчёты
 // ll1, ll2, lr1, lr2 --- отсчёты по дальномеру
 // hback --- h обратное
-function traverseStation(i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback) {
-  const horl = new Angle(hl2).minus(hl1);
-  const horr = new Angle(hr2).minus(hr1);
+// Сохраняемые данные:
+// traverseStation.s_backward;
+// traverseStation.s_forward;
+// traverseStation.h_backward;
+// traverseStation.h_forward;
+// traverseStation.b;
+function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) {
+  const firstStation = !vl1;
+  const lastStation = !vr1;
+  const horl = new Angle(hl2).minus(hl1).to360();
+  const horr = new Angle(hr2).minus(hr1).to360();
   const hor = horl.plus(horr).divide(2);
   const MOl = new Angle(vl1).plus(vl2).divide(2);
   const MOr = new Angle(vr1).plus(vr2).divide(2);
@@ -124,114 +135,158 @@ function traverseStation(i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1,
   const vr = new Angle(vr1).minus(vr2).divide(2);
   const ll = ground((ll1 + ll2) / 2, 1);
   const lr = ground((lr1 + lr2) / 2, 1);
-  const Dl = P(ll);
-  const Dr = P(lr);
+  const Dl = ground(P(ll));
+  const Dr = ground(P(lr));
   const Sl = ground(Dl * Math.pow(Math.cos(vl.radians), 2), 1);
   const Sr = ground(Dr * Math.pow(Math.cos(vr.radians), 2), 1);
-  const hlf = ground(Sl * Math.tan(vl.radians), 2);
-  const hrf = ground(Sr * Math.tan(vr.radians), 2);
-  const dl = i - Vl;
-  const dr = i - Vr;
-  const hl = hlf + dl;
-  const hr = hrf + dr;
+  const hlf = ground(Sl * Math.tan(vl.radians));
+  const hrf = ground(Sr * Math.tan(vr.radians));
+  const dl = ground(i - Vl);
+  const dr = ground(i - Vr);
+  const hl = ground(hlf + dl);
+  const hr = ground(hrf + dr);
   const h = ground((hr - hback) / 2, 2);
   
   const table = document.createElement("div");
   table.classList.add("gtable");
   table.innerHTML = `
     <div class="grow">
-      <div>Номер пункта</div>
+      <div>Пункт</div>
       <div>${i}</div>
     </div>
     <div class="grow">
-      <div>Предыдущий пункт</div>
-      <div>Следующий пункт</div>
-      <div>Предыдущий пункт</div>
-      <div>Следующий пункт</div>
+      <div>Пред пункт</div>
+      <div>След пункт</div>
+      <div>Пред пункт</div>
+      <div>След пункт</div>
     </div>
     <div class="grow">
       <div>Л</div>
       <div>П</div>
     </div>
     <div class="grow">
-      <div>${hl1.toFormat("d360 m.1")}</div>
-      <div>${hl2.toFormat("d360 m.1")}</div>
-      <div>${hr1.toFormat("d360 m.1")}</div>
-      <div>${hr2.toFormat("d360 m.1")}</div>
+      <div>${hl1.toFormat("d m.1")}</div>
+      <div>${hl2.toFormat("d m.1")}</div>
+      <div>${hr1.toFormat("d m.1")}</div>
+      <div>${hr2.toFormat("d m.1")}</div>
     </div>
     <div class="grow">
-      <div>${horl.toFormat("d360 m.1")}</div>
-      <div>${hor.toFormat("d360 m.1")}</div>
-      <div>${horr.toFormat("d360 m.1")}</div>
+      <div>${horl.toFormat("d m.1")}</div>
+      <div>${hor.toFormat("d m.1")}</div>
+      <div>${horr.toFormat("d m.1")}</div>
     </div>
     <div class="grow">
-      <div>Предыдущий пункт</div>
-      <div>${Vl}</div>
-      <div>Следующий пункт</div>
-      <div>${Vr}</div>
+      <div>${!firstStation ? "Пред пункт" : ""}</div>
+      <div>${!firstStation ? Vl : ""}</div>
+      <div>${!lastStation ? "След пункт" : ""}</div>
+      <div>${!lastStation ? Vr : ""}</div>
     </div>
     <div class="grow">
-      <div>Л</div>
-      <div>П</div>
-      <div>Л</div>
-      <div>П</div>
+      <div>${!firstStation ? "Л" : ""}</div>
+      <div>${!firstStation ? "П" : ""}</div>
+      <div>${!lastStation ? "Л" : ""}</div>
+      <div>${!lastStation ? "П" : ""}</div>
     </div>
     <div class="grow">
-      <div>${new Angle(vl1).toFormat("d360 m.1")}</div>
-      <div>${new Angle(vl2).toFormat("d360 m.1")}</div>
-      <div>${new Angle(vr1).toFormat("d360 m.1")}</div>
-      <div>${new Angle(vr2).toFormat("d360 m.1")}</div>
+      <div>${!firstStation ? new Angle(vl1).toFormat("d m.1") : ""}</div>
+      <div>${!firstStation ? new Angle(vl2).toFormat("d m.1") : ""}</div>
+      <div>${!lastStation ? new Angle(vr1).toFormat("d m.1") : ""}</div>
+      <div>${!lastStation ? new Angle(vr2).toFormat("d m.1") : ""}</div>
     </div>
     <div class="grow">
-      <div>${new Angle(MOl).sign}</div>
-      <div>${new Angle(vl).sign}</div>
-      <div>${new Angle(MOr).sign}</div>
-      <div>${new Angle(vr).sign}</div>
+      <div>${!firstStation ? new Angle(MOl).sign : ""}</div>
+      <div>${!firstStation ? new Angle(vl).sign : ""}</div>
+      <div>${!lastStation ? new Angle(MOr).sign : ""}</div>
+      <div>${!lastStation ? new Angle(vr).sign : ""}</div>
     </div>
     <div class="grow">
-    <div>${new Angle(MOl).abs.toFormat("d360 m.1")}</div>
-    <div>${new Angle(vl).abs.toFormat("d360 m.1")}</div>
-    <div>${new Angle(MOr).abs.toFormat("d360 m.1")}</div>
-    <div>${new Angle(vr).abs.toFormat("d360 m.1")}</div>
+    <div>${!firstStation ? new Angle(MOl).abs.toFormat("d m.1") : ""}</div>
+    <div>${!firstStation ? new Angle(vl).abs.toFormat("d m.1") : ""}</div>
+    <div>${!lastStation ? new Angle(MOr).abs.toFormat("d m.1") : ""}</div>
+    <div>${!lastStation ? new Angle(vr).abs.toFormat("d m.1") : ""}</div>
     </div>
     <div class="grow">
-      <div>${ll1}</div>
-      <div>${ll2}</div>
-      <div>${ll}</div>
-      <div>${lr1}</div>
-      <div>${lr2}</div>
-      <div>${lr}</div>
+      <div>${!firstStation ? ll1 : ""}</div>
+      <div>${!firstStation ? ll2 : ""}</div>
+      <div>${!firstStation ? ll : ""}</div>
+      <div>${!lastStation ? lr1 : ""}</div>
+      <div>${!lastStation ? lr2 : ""}</div>
+      <div>${!lastStation ? lr : ""}</div>
     </div>
     <div class="grow">
-      <div>${Dl}</div>
-      <div>${Sl}</div>
-      <div>${Dr}</div>
-      <div>${Sr}</div>
+      <div>${!firstStation ? Dl : ""}</div>
+      <div>${!firstStation ? Sl : ""}</div>
+      <div>${!lastStation ? Dr : ""}</div>
+      <div>${!lastStation ? Sr : ""}</div>
     </div>
     <div class="grow">
-      <div>${Math.sign(hlf)}</div>
-      <div>${Math.sign(dl)}</div>
-      <div>${Math.sign(hl)}</div>
-      <div>${Math.sign(hrf)}</div>
-      <div>${Math.sign(dr)}</div>
-      <div>${Math.sign(hr)}</div>
+      <div>${!firstStation ? Math.sign(hlf) : ""}</div>
+      <div>${!firstStation ? Math.sign(dl) : ""}</div>
+      <div>${!firstStation ? Math.sign(hl) : ""}</div>
+      <div>${!lastStation ? Math.sign(hrf) : ""}</div>
+      <div>${!lastStation ? Math.sign(dr) : ""}</div>
+      <div>${!lastStation ? Math.sign(hr) : ""}</div>
     </div>
     <div class="grow">
-      <div>${ground(hlf, 2)}</div>
-      <div>${ground(dl)}</div>
-      <div>${ground(hl)}</div>
-      <div>${ground(hrf)}</div>
-      <div>${ground(dr)}</div>
-      <div>${ground(hr)}</div>
+      <div>${!firstStation ? hlf : ""}</div>
+      <div>${!firstStation ? dl : ""}</div>
+      <div>${!firstStation ? hl : ""}</div>
+      <div>${!lastStation ? hrf : ""}</div>
+      <div>${!lastStation ? dr : ""}</div>
+      <div>${!lastStation ? hr : ""}</div>
     </div>
     <div class="grow">
-      <div>-</div>
-      <div>-</div>
-      <div>-</div>
-      <div>${hr}</div>
-      <div>${hback}</div>
-      <div>${h}</div>
+      <div>${!firstStation ? "-" : ""}</div>
+      <div>${!firstStation ? "-" : ""}</div>
+      <div>${!firstStation ? "-" : ""}</div>
+      <div>${!lastStation ? hr : ""}</div>
+      <div>${!lastStation ? hback : ""}</div>
+      <div>${!lastStation ? h : ""}</div>
     </div>
   `;
+
+  traverseStation.s_backward = !firstStation ? Sl : 0;
+  traverseStation.s_forward =  !lastStation  ? Sr : 0;
+  traverseStation.h_backward = !firstStation ? hl : 0;
+  traverseStation.h_forward =  !lastStation  ? h  : 0;
+  traverseStation.b = hor;
+
   return table;
+}
+
+function add_s_from_traverse(arr) {
+  if (arr.length) {
+    arr[arr.length - 1] = ground((arr[arr.length-1] + traverseStation.s_backward) / 2);
+  }
+  if ((arr.length === 0) || (traverseStation.s_forward)) {
+    arr.push(traverseStation.s_forward);
+  }
+  return arr;
+}
+
+function add_b_from_traverse(arr) {
+  arr.push(traverseStation.b);
+  return arr;
+}
+
+// Сохраняемые данные:
+// totalStation.s --- массив длин сторон хода
+// totalStation.b --- массив углов поворота
+function* totalStation(stationsData) {
+  const h_backward_arr = [];
+  totalStation.s = [];
+  totalStation.b = [];
+  for (let station of stationsData) {
+    traverseStation(station);
+    h_backward_arr.push(traverseStation.h_backward);
+  }
+  for (let i = 0; i < stationsData.length; i++) {
+    if (i + 1 < stationsData.length) {
+      stationsData[i].hback = h_backward_arr[i + 1];
+    }
+    yield traverseStation(stationsData[i]);
+    add_s_from_traverse(totalStation.s);
+    add_b_from_traverse(totalStation.b);
+  }
+  return [h_backward_arr, totalStation.s, totalStation.b];
 }

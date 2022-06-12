@@ -60,6 +60,7 @@ p {
 
 .history-item-respond {
     color: blue;
+    margin-bottom: 16px;
 }
 
 .history-item-error {

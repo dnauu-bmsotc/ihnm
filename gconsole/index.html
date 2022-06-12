@@ -35,12 +35,13 @@
                     </ol>
                 </li>
                 <li>function ground(n, decimalPlaces) --- округление по Гауссу;</li>
-                <li>function initP(p30, p60, p90, p120, p150) --- установление поправок. Например: <span class="select-onclick" onClick="selectOnClick(this)">initP(-0.1, -0.1, -0.1, -0.1, -0.2);</span></li>
+                <li>function P.init(...arg) --- установление поправок. Например: <span class="select-onclick" onClick="selectOnClick(this)">P.init(100, -0.1, 150, -0.2, 200, -0.2);</span></li>
                 <li>function P(n) --- внесение поправки</li>
                 <li>function drawTraverse(angle|d, s, b, scale=1/20) --- отрисовка схемы тахеометрического хода по начальному дирекционному углу, массиву расстояний и массиву углов. Например: <span class="select-onclick" onClick="selectOnClick(this)">drawTraverse(288, [101.2,110.0,196.4,188.9], [168, 130, 98, 306.5, 218.5])</span></li>
-                <li>function traverseStation(i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback) Вычисления на станции тахеометрического хода.
+                <li>function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) Вычисления на станции тахеометрического хода.
                     <p>i --- высота инструмента; hl1, hl2, hr1, hr2 --- горизонтальные отсчёты; Vl, Vr --- высоты реек; vl1, vl2, vr1, vr2 --- вертикальные отсчёты; ll1, ll2, lr1, lr2 --- отсчёты по дальномеру; hback --- h обратное.</p>
                     <p>Например: <span class="select-onclick" onClick="selectOnClick(this)">traverseStation(1.30, new Angle(0, 1.5), new Angle(168, 14.5), new Angle(181, 31), new Angle(349, 44.5), 0, 1, null, null, new Angle(1, 23), new Angle(-1, -24), 0, 0, 101.5, 101.5, -2.74);</span></p></li>
+                <li>function totalStation(stations) --- принимает массив из данных на каждой станции хода и делает вычисления.</li>
                 <ol>
             </section>
         </main>

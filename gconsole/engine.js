@@ -7,16 +7,6 @@ const GERRR = 2;
 const inputHistory = [];
 let inputHistoryCursor = 0;
 
-// document.addEventListener("DOMContentLoaded", function() {
-//     document.querySelector("#input-box input").addEventListener("keydown", function(e) {
-//         switch (e.keyCode) {
-//             case 13: onEnter(e); break;
-//             case 38: onArrowUp(e); break;
-//             case 40: onArrowDown(e); break;
-//         }
-//     });
-// });
-
 function onKeydown(e) {
     switch (e.keyCode) {
         case 13: onEnter(e); break;
@@ -56,29 +46,41 @@ function onArrowDown(e) {
     }
 }
 
-// https://stackoverflow.com/questions/384286
-function isElement(element) {
-    return element instanceof Element || element instanceof HTMLDocument;  
+function gcout(type, arg) {
+    if (arg && typeof arg.next === "function") {
+        let done = false;
+        while (!done) {
+            const res = arg.next();
+            gcout_single(type, res.value);
+            done = res.done;
+        }
+    }
+    else {
+        gcout_single(type, arg)
+    }
 }
 
-function gcout(type, ...args) {
+function gcout_single(type, arg) {
     let div = document.createElement("div");
     div.classList.add("history-item");
     if (type === GECHO) div.classList.add("history-item-echo");
     if (type === GRESP) div.classList.add("history-item-respond");
     if (type === GERRR) div.classList.add("history-item-error");
-    for (let arg of args) {
-        let el = document.createElement("div");
-        el.classList.add("history-item-part");
-        if (isElement(arg)) {
-            el.appendChild(arg);
-        }
-        else {
-            el.innerHTML = JSON.stringify(arg);
-        }
-        div.appendChild(el);
+    let el = document.createElement("div");
+    el.classList.add("history-item-part");
+    if (isElement(arg)) {
+        el.appendChild(arg);
     }
+    else {
+        el.innerHTML = JSON.stringify(arg);
+    }
+    div.appendChild(el);
     document.getElementById("history-box").appendChild(div);
+}
+
+// https://stackoverflow.com/questions/384286
+function isElement(element) {
+    return element instanceof Element || element instanceof HTMLDocument;  
 }
 
 // https://stackoverflow.com/questions/6249095
