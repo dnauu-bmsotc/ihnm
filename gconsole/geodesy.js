@@ -99,7 +99,7 @@ function drawTraverse(a, s, b, scale=1/20) {
     line.setAttributeNS(null, "y1", prevY);
     line.setAttributeNS(null, "x2", x);
     line.setAttributeNS(null, "y2", y);
-    line.setAttributeNS(null, "stroke", "black");
+    line.setAttributeNS(null, "stroke", (i === 0 || i === ss.length - 1) ? "red" : "blue");
     svg.append(line);
     prevX = x;
     prevY = y;
@@ -151,76 +151,89 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
   const table = document.createElement("div");
   table.classList.add("gtable");
   table.innerHTML = `
-    <div class="grow">
+    <div class="grow grow-average">
+      <div class="gheader"></div>
       <div>Пункт</div>
-      <div>${i}</div>
+      <div class="userinputed">${i}</div>
     </div>
-    <div class="grow">
-      <div>Пред пункт</div>
-      <div>След пункт</div>
-      <div>Пред пункт</div>
-      <div>След пункт</div>
+    <div class="grow grow-average">
+      <div class="gheader"></div>
+      <div>Пред</div>
+      <div>След</div>
+      <div>Пред</div>
+      <div>След</div>
     </div>
-    <div class="grow">
+    <div class="grow" grow-tight>
+      <div class="gheader"></div>
       <div>Л</div>
       <div>П</div>
     </div>
-    <div class="grow">
-      <div>${hl1.toFormat("d m.1")}</div>
-      <div>${hl2.toFormat("d m.1")}</div>
-      <div>${hr1.toFormat("d m.1")}</div>
-      <div>${hr2.toFormat("d m.1")}</div>
+    <div class="grow grow-average">
+      <div class="gheader">Гор кр</div>
+      <div class="userinputed">${hl1.toFormat("d m.1")}</div>
+      <div class="userinputed">${hl2.toFormat("d m.1")}</div>
+      <div class="userinputed">${hr1.toFormat("d m.1")}</div>
+      <div class="userinputed">${hr2.toFormat("d m.1")}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-average">
+      <div class="gheader"></div>
       <div>${horl.toFormat("d m.1")}</div>
       <div>${hor.toFormat("d m.1")}</div>
       <div>${horr.toFormat("d m.1")}</div>
     </div>
-    <div class="grow">
-      <div>${!firstStation ? "Пред пункт" : ""}</div>
-      <div>${!firstStation ? Vl : ""}</div>
-      <div>${!lastStation ? "След пункт" : ""}</div>
-      <div>${!lastStation ? Vr : ""}</div>
+    <div class="grow grow-average">
+      <div class="gheader"></div>
+      <div>${!firstStation ? "Пред" : ""}</div>
+      <div class="userinputed">${!firstStation ? Vl : ""}</div>
+      <div>${!lastStation ? "След" : ""}</div>
+      <div class="userinputed">${!lastStation ? Vr : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-tight">
+      <div class="gheader"></div>
       <div>${!firstStation ? "Л" : ""}</div>
       <div>${!firstStation ? "П" : ""}</div>
       <div>${!lastStation ? "Л" : ""}</div>
       <div>${!lastStation ? "П" : ""}</div>
     </div>
-    <div class="grow">
-      <div>${!firstStation ? new Angle(vl1).toFormat("d m.1") : ""}</div>
-      <div>${!firstStation ? new Angle(vl2).toFormat("d m.1") : ""}</div>
-      <div>${!lastStation ? new Angle(vr1).toFormat("d m.1") : ""}</div>
-      <div>${!lastStation ? new Angle(vr2).toFormat("d m.1") : ""}</div>
+    <div class="grow grow-average">
+      <div class="gheader">Вер кр</div>
+      <div class="userinputed">${!firstStation ? new Angle(vl1).toFormat("d m.1") : ""}</div>
+      <div class="userinputed">${!firstStation ? new Angle(vl2).toFormat("d m.1") : ""}</div>
+      <div class="userinputed">${!lastStation ? new Angle(vr1).toFormat("d m.1") : ""}</div>
+      <div class="userinputed">${!lastStation ? new Angle(vr2).toFormat("d m.1") : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-tight">
+      <div class="gheader"></div>
       <div>${!firstStation ? new Angle(MOl).sign : ""}</div>
       <div>${!firstStation ? new Angle(vl).sign : ""}</div>
       <div>${!lastStation ? new Angle(MOr).sign : ""}</div>
       <div>${!lastStation ? new Angle(vr).sign : ""}</div>
     </div>
-    <div class="grow">
-    <div>${!firstStation ? new Angle(MOl).abs.toFormat("d m.1") : ""}</div>
-    <div>${!firstStation ? new Angle(vl).abs.toFormat("d m.1") : ""}</div>
-    <div>${!lastStation ? new Angle(MOr).abs.toFormat("d m.1") : ""}</div>
-    <div>${!lastStation ? new Angle(vr).abs.toFormat("d m.1") : ""}</div>
+    <div class="grow grow-average">
+      <div class="gheader"></div>
+      <div>${!firstStation ? new Angle(MOl).abs.toFormat("d m.1") : ""}</div>
+      <div>${!firstStation ? new Angle(vl).abs.toFormat("d m.1") : ""}</div>
+      <div>${!lastStation ? new Angle(MOr).abs.toFormat("d m.1") : ""}</div>
+      <div>${!lastStation ? new Angle(vr).abs.toFormat("d m.1") : ""}</div>
     </div>
-    <div class="grow">
-      <div>${!firstStation ? ll1 : ""}</div>
-      <div>${!firstStation ? ll2 : ""}</div>
+    <div class="grow grow-average">
+      <div class="gheader">Дальномер</div>
+      <div class="userinputed">${!firstStation ? ll1 : ""}</div>
+      <div class="userinputed">${!firstStation ? ll2 : ""}</div>
       <div>${!firstStation ? ll : ""}</div>
-      <div>${!lastStation ? lr1 : ""}</div>
-      <div>${!lastStation ? lr2 : ""}</div>
+      <div class="userinputed">${!lastStation ? lr1 : ""}</div>
+      <div class="userinputed">${!lastStation ? lr2 : ""}</div>
       <div>${!lastStation ? lr : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-average">
+      <div class="gheader">D, S</div>
       <div>${!firstStation ? Dl : ""}</div>
       <div>${!firstStation ? Sl : ""}</div>
       <div>${!lastStation ? Dr : ""}</div>
       <div>${!lastStation ? Sr : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-tight">
+      <div class="gheader"></div>
       <div>${!firstStation ? Math.sign(hlf) : ""}</div>
       <div>${!firstStation ? Math.sign(dl) : ""}</div>
       <div>${!firstStation ? Math.sign(hl) : ""}</div>
@@ -228,7 +241,8 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
       <div>${!lastStation ? Math.sign(dr) : ""}</div>
       <div>${!lastStation ? Math.sign(hr) : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-average">
+      <div class="gheader"></div>
       <div>${!firstStation ? hlf : ""}</div>
       <div>${!firstStation ? dl : ""}</div>
       <div>${!firstStation ? hl : ""}</div>
@@ -236,7 +250,8 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
       <div>${!lastStation ? dr : ""}</div>
       <div>${!lastStation ? hr : ""}</div>
     </div>
-    <div class="grow">
+    <div class="grow grow-average">
+      <div class="gheader">h пр обр ср</div>
       <div>${!firstStation ? "-" : ""}</div>
       <div>${!firstStation ? "-" : ""}</div>
       <div>${!firstStation ? "-" : ""}</div>
@@ -305,9 +320,10 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   let html = "";
   // S
   html += `<div class="grow">`;
+  html += `<div>S</div>`;
   for (let s of s_arr) {
     html += `<div></div>`;
-    html += `<div>${ground(s, 1)}</div>`;
+    html += `<div class="userinputed">${ground(s, 1)}</div>`;
   }
   html += `<div></div>`;
   html += `<div>${ssum}</div>`;
@@ -317,9 +333,10 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   html += `</div>`;
   // h среднее
   html += `<div class="grow">`;
+  html += `<div>h ср</div>`;
   for (let h of h_arr) {
     html += `<div></div>`;
-    html += `<div>${ground(h, 2)}</div>`;
+    html += `<div class="userinputed">${ground(h, 2)}</div>`;
   }
   html += `<div></div>`;
   html += `<div>${ground(fsum, 2)}</div>`;
@@ -329,6 +346,7 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   html += `</div>`;
   // v
   html += `<div class="grow">`;
+  html += `<div>Поправка v</div>`;
   let v_arr = [];
   for (let i = 0; i < s_arr.length; i++) {
     v_arr.push({id: i, s: s_arr[i], v: 0});
@@ -350,6 +368,7 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   // h испр
   const hv = [];
   html += `<div class="grow">`;
+  html += `<div>h испр</div>`;
   for (let i = 0; i < s_arr.length; i++) {
     html += `<div></div>`;
     hv.push(ground(h_arr[i] + v_arr.find((el, ind, arr) => el.id === i).v, 2));
@@ -364,6 +383,7 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   // H
   const H_arr = [];
   html += `<div class="grow">`;
+  html += `<div>H</div>`;
   html += `<div>${ground(H1, 2)}</div>`;
   H_arr.push(ground(H1, 2));
   for (let i = 0; i < s_arr.length; i++) {
@@ -379,5 +399,117 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   //
   html += `</div>`;
   table.innerHTML = html;
+  return table;
+}
+
+function levelingStation({bl_up_1, bl_mid_1, bl_up_2, bl_mid_2, red_2, red_1, d, dS}) {
+  levelingStation._1 = bl_up_1;
+  levelingStation._2 = bl_mid_1;
+  levelingStation._3 = bl_up_2;
+  levelingStation._4 = bl_mid_2;
+  levelingStation._5 = red_2;
+  levelingStation._6 = red_1;
+
+  levelingStation._7 = levelingStation._2 - levelingStation._1;
+  levelingStation._8 = levelingStation._4 - levelingStation._3;
+  levelingStation._9 = levelingStation._6 - levelingStation._2;
+  levelingStation._10 = levelingStation._5 - levelingStation._4;
+  levelingStation._11 = levelingStation._2 - levelingStation._4;
+  levelingStation._12 = levelingStation._6 - levelingStation._5;
+  levelingStation._14 = levelingStation._11 - levelingStation._12;
+  levelingStation._13 = ground((levelingStation._11 + levelingStation._12 + Math.sign(levelingStation._14) * d) / 2, 0);
+  levelingStation._22 = levelingStation._8 - levelingStation._7;
+
+  const table = document.createElement("div");
+  table.classList.add("gtable");
+  table.innerHTML = `
+    <div class="grow grow-average">
+      <div>${levelingStation._7}</div>
+      <div>${levelingStation._8}</div>
+      <div>${levelingStation._22}</div>
+    </div>
+    <div class="grow grow-average">
+      <div class="userinputed">${levelingStation._1}</div>
+      <div class="userinputed">${levelingStation._2}</div>
+      <div class="userinputed">${levelingStation._6}</div>
+      <div>${levelingStation._9}</div>
+    </div>
+    <div class="grow grow-average">
+      <div class="userinputed">${levelingStation._3}</div>
+      <div class="userinputed">${levelingStation._4}</div>
+      <div class="userinputed">${levelingStation._5}</div>
+      <div>${levelingStation._10}</div>
+    </div>
+    <div class="grow grow-average">
+      <div>${levelingStation._11}</div>
+      <div>${levelingStation._12}</div>
+      <div>${levelingStation._14}</div>
+    </div>
+    <div class="grow grow-average">
+      <div>${levelingStation._13}</div>
+    </div>
+  `;
+  return table
+}
+
+// stations is an array of arrays of objects with properties that are required for each station.
+// inner arrays unite stations for control checks.
+// [ [stationObject, stationObject, stationObject],
+//   [stationObject, stationObject] ]
+function* levelingLog(H1, Hn, stations) {
+  const ks = new Array(21+1).fill(0);
+  for (let page of stations) {
+    const kp = new Array(21+1).fill(0);
+    for (let station of page) {
+      yield levelingStation(station);
+      kp[15] += levelingStation._2 + levelingStation._6;
+      kp[16] += levelingStation._4 + levelingStation._5;
+      kp[17] += levelingStation._11 + levelingStation._12 + levelingStation._14;
+      kp[18] += levelingStation._13;
+      kp[21] += levelingStation._7 + levelingStation._8;
+    }
+    kp[19] = kp[15] - kp[16];
+    kp[20] = ground(kp[17] / 2, 0);
+    yield "Постраничный контроль:";
+    yield levelingPageControls(kp);
+    for (let i = 15; i <= 21; i++) {
+      ks[i] += kp[i];
+    }
+  }
+  yield "Контроль секции:";
+  yield levelingPageControls(ks);
+  levelingLog.L = ground(ks[21] * 2 / 10000, 1);
+  const kstable = document.createElement("div");
+  kstable.innerHTML = `
+    <div>L = ${ks[21]}мм = ${levelingLog.L}км</div>
+    <div>fh = ${ground(ks[18] - (Hn - H1) * 1000, 0)}мм</div>
+    <div>fh допустимое = 20мм sqrt(L) = ${ground(20 * Math.sqrt(levelingLog.L), 0)}</div>
+  `;
+  return kstable;
+}
+
+function levelingPageControls(sums) {
+  const table = document.createElement("div");
+  table.classList.add("gtable");
+  table.innerHTML = `
+    <div class="grow">
+      <div>${sums[21]}</div>
+    </div>
+    <div class="grow">
+      <div>${sums[15]}</div>
+      <div>${sums[16]}</div>
+      <div>${sums[19]}</div>
+    </div>
+    <div class="grow">
+      <div>${sums[16]}</div>
+    </div>
+    <div class="grow">
+      <div>${sums[17]}</div>
+      <div>${sums[20]}</div>
+    </div>
+    <div class="grow">
+      <div>${sums[18]}</div>
+    </div>
+  `;
   return table;
 }

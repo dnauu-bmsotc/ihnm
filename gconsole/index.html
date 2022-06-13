@@ -4,15 +4,18 @@
 		<meta charset="utf-8">
 		<title>Геодезическая консоль</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="style.css">
-        <script src="engine.js"></script>
+		<link rel="stylesheet" href="index.css">
+        <script src="console.js"></script>
         <script src="geodesy.js"></script>
 	</head>
 	<body>
 		<main>
-            <input name="data" type="file" onchange="getFile(event)">
-			<button onclick="getTestFile()">Использовать тестовый файл</button>
-            <a href="./testdata.txt" download> Скачать тестовый файл</a>
+            <section id="buttons-section">
+                <input name="data" type="file" onchange="getFile(event)">
+                <button onclick="getTestFile('./testTraverse.txt')">Использовать тестовый файл</button>
+                <a href="./testTraverse.txt" download> Скачать тестовый файл</a>
+                <button onclick="clearConsole()">Очистить консоль</button>
+            </section>
             <section id="console">
                 <div id="history-box"></div>
                 <div id="input-box">
@@ -23,25 +26,30 @@
             <section id="documentation">
                 <h3>Функции</h3>
                 <ol>
-                <li>class Angle(angle | d=0, m=0, s=0) --- класс угла, для отрицательных углов нужно каждый аргумент записывать с минусом
-                    <ol>
-                    <li>plus(angle | dd) --- возвращает новый угол, равный сумме данного и указанного</li>
-                    <li>minus(angle | dd) --- возвращает новый угол, равный разности данного и указанного</li>
-                    <li>times(n)</li>
-                    <li>divide(n)</li>
-                    <li>get radians --- значение угла в радианах</li>
-                    <li>get abs --- абсолютное значение угла</li>
-                    <li>get sign --- возвращает +-1</li>
-                    </ol>
-                </li>
-                <li>function ground(n, decimalPlaces) --- округление по Гауссу;</li>
-                <li>function P.init(...arg) --- установление поправок. Например: <span class="select-onclick" onClick="selectOnClick(this)">P.init(100, -0.1, 150, -0.2, 200, -0.2);</span></li>
-                <li>function P(n) --- внесение поправки</li>
-                <li>function drawTraverse(angle|d, s, b, scale=1/20) --- отрисовка схемы тахеометрического хода по начальному дирекционному углу, массиву расстояний и массиву углов. Например: <span class="select-onclick" onClick="selectOnClick(this)">drawTraverse(288, [101.2,110.0,196.4,188.9], [168, 130, 98, 306.5, 218.5])</span></li>
-                <li>function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) Вычисления на станции тахеометрического хода.
-                    <p>i --- высота инструмента; hl1, hl2, hr1, hr2 --- горизонтальные отсчёты; Vl, Vr --- высоты реек; vl1, vl2, vr1, vr2 --- вертикальные отсчёты; ll1, ll2, lr1, lr2 --- отсчёты по дальномеру; hback --- h обратное.</p>
-                    <p>Например: <span class="select-onclick" onClick="selectOnClick(this)">traverseStation(1.30, new Angle(0, 1.5), new Angle(168, 14.5), new Angle(181, 31), new Angle(349, 44.5), 0, 1, null, null, new Angle(1, 23), new Angle(-1, -24), 0, 0, 101.5, 101.5, -2.74);</span></p></li>
-                <li>function totalStation(stations) --- принимает массив из данных на каждой станции хода и делает вычисления.</li>
+                    <li>class Angle(angle | d=0, m=0, s=0) --- класс угла, для отрицательных углов нужно каждый аргумент записывать с минусом
+                        <ol>
+                        <li>plus(angle | dd) --- возвращает новый угол, равный сумме данного и указанного</li>
+                        <li>minus(angle | dd) --- возвращает новый угол, равный разности данного и указанного</li>
+                        <li>times(n)</li>
+                        <li>divide(n)</li>
+                        <li>get radians --- значение угла в радианах</li>
+                        <li>get abs --- абсолютное значение угла</li>
+                        <li>get sign --- возвращает +-1</li>
+                        </ol>
+                    </li>
+                    <li>function ground(n, decimalPlaces) --- округление по Гауссу;</li>
+                    <li>function P.init(...arg) --- установление поправок. Например: <span class="select-onclick" onClick="selectOnClick(this)">P.init(100, -0.1, 150, -0.2, 200, -0.2);</span></li>
+                    <li>function P(n) --- внесение поправки</li>
+                    <li>function drawTraverse(angle|d, s, b, scale=1/20) --- отрисовка схемы тахеометрического хода по начальному дирекционному углу, массиву расстояний и массиву углов. Например: <span class="select-onclick" onClick="selectOnClick(this)">drawTraverse(288, [101.2,110.0,196.4,188.9], [168, 130, 98, 306.5, 218.5])</span></li>
+                    <li>function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) Вычисления на станции тахеометрического хода.
+                        <p>i --- высота инструмента; hl1, hl2, hr1, hr2 --- горизонтальные отсчёты; Vl, Vr --- высоты реек; vl1, vl2, vr1, vr2 --- вертикальные отсчёты; ll1, ll2, lr1, lr2 --- отсчёты по дальномеру; hback --- h обратное.</p>
+                        <p>Например: <span class="select-onclick" onClick="selectOnClick(this)">traverseStation(1.30, new Angle(0, 1.5), new Angle(168, 14.5), new Angle(181, 31), new Angle(349, 44.5), 0, 1, null, null, new Angle(1, 23), new Angle(-1, -24), 0, 0, 101.5, 101.5, -2.74);</span></p></li>
+                    <li>function totalStation(stations) --- принимает массив из данных на каждой станции хода и делает вычисления.</li>
+                    <li>linkHeights(H1, Hn, s_arr, h_arr) --- увязка высот. H1 --- высота начальной точки, Hn --- высота конечной точки, s_arr --- массив длин отрезков; h_arr --- массив превышений.</li>
+                    <li>levelingStation({bl_up_1, bl_mid_1, bl_up_2, bl_mid_2, red_2, red_1, d, dS}) --- вычисления на станции нивелирного хода. Принимает измерения по черным и красным рейкам.</li>
+                    <li>levelingLog(H1, Hn, stations) --- вычисления в журнале нивелирования. H1 --- высота начальной точки, Hn --- высота конечной точки, stations --- массив из массивов данных станций, внутренний массив необходим для разграничения постраничных контролей.</li>
+                    <li>levelingPageControls(sums) --- вывод постраничного контроля. Принимает массив с индексами 15-21 включительно</li>
+                    <li>clearConsole() --- очистить консоль</li>
                 <ol>
             </section>
         </main>

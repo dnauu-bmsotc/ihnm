@@ -99,6 +99,79 @@ totalStation([
     }
 ]);
 
-drawTraverse(alpha_1, totalStation.s, [...totalStation.b, alpha_n]);
+drawTraverse(alpha_1, totalStation.s, [...totalStation.b, alpha_n], 1/15);
 
 linkHeights(H_1, H_n, totalStation.s, totalStation.h);
+
+
+
+/* Нивелирование */
+levelingH1 = 100.000;
+levelingHn = 99.968;
+
+levelingLog(levelingH1, levelingHn, [
+    [
+        {
+            bl_up_1: 1441,
+            bl_mid_1: 1640,
+            bl_up_2: 998,
+            bl_mid_2: 1196,
+            red_2: 6030,
+            red_1: 6374,
+            d: 99,
+            dS: 0
+        },
+        {
+            bl_up_1: 302,
+            bl_mid_1: 473,
+            bl_up_2: 975,
+            bl_mid_2: 1150,
+            red_2: 5885,
+            red_1: 5306,
+            d: 99,
+            dS: 0
+        },
+        {
+            bl_up_1: 708,
+            bl_mid_1: 1075,
+            bl_up_2: 1762,
+            bl_mid_2: 2125,
+            red_2: 6958,
+            red_1: 5811,
+            d: 99,
+            dS: 0
+        },
+        {
+            bl_up_1: 2032,
+            bl_mid_1: 2079,
+            bl_up_2: 2407,
+            bl_mid_2: 2455,
+            red_2: 7190,
+            red_1: 6914,
+            d: 99,
+            dS: 0
+        }
+    ],
+    [
+        {
+            bl_up_1: 926,
+            bl_mid_1: 1154,
+            bl_up_2: 365,
+            bl_mid_2: 597,
+            red_2: 5431,
+            red_1: 5889,
+            d: 99,
+            dS: 0
+        },
+        {
+            bl_up_1: 1739,
+            bl_mid_1: 1886,
+            bl_up_2: 673,
+            bl_mid_2: 819,
+            red_2: 5554,
+            red_1: 6718,
+            d: 99,
+            dS: 0
+        },
+    ]
+]);

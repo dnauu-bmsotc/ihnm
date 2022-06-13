@@ -25,17 +25,16 @@ p {
 }
 
 #console {
-    border: 2px solid black;
-    min-height: 20vh;
+    border: 2px solid #90867e;
+    height: 80vh;
     max-height: 80vh;
-    overflow: auto;
     display: flex;
     flex-flow: column nowrap;
 }
 
 #history-box {
-    flex: 1 0 auto;
-    padding: 0 0 4em 0;
+    flex: 1 0 1px;
+    overflow: auto;
 }
 
 #input-box {
@@ -47,6 +46,7 @@ p {
 #input-box input {
     width: 100%;
     box-sizing: border-box;
+    
 }
 
 .history-item {
@@ -55,11 +55,11 @@ p {
 }
 
 .history-item-echo {
-    color: black;
+    color: blue;
 }
 
 .history-item-respond {
-    color: blue;
+    color: black;
     margin-bottom: 16px;
 }
 
@@ -72,6 +72,7 @@ p {
     content: "";
     background-color: #ebd4c9;
     width: 1em;
+    min-width: 1em;
 }
 
 .history-item-part {
@@ -93,10 +94,33 @@ p {
 .grow > * {
     display: block;
     height: 2em;
-    border: 1px solid blue;
+    border: 1px solid #c3b2a8;
     box-sizing: border-box;
     padding: 0.5em;
     flex: 1 1 auto;
     white-space: nowrap;
     text-align: center;
+}
+
+.grow-tight {
+    width: 2em;
+    max-width: 2em;
+}
+
+.grow-average {
+    width: 5em;
+    max-width: 5em;
+}
+
+.gheader {
+    height: 2em;
+    max-height: 2em;
+}
+
+.userinputed {
+    color: blue;
+}
+
+#buttons-section {
+    margin: 4px;
 }

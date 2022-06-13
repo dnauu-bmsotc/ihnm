@@ -27,7 +27,7 @@ function onEnter(e) {
     }
     inp.value = "";
     inputHistoryCursor = inputHistory.length;
-    document.getElementById("console").scrollTop = document.getElementById("console").scrollHeight;
+    document.getElementById("history-box").scrollTop = document.getElementById("history-box").scrollHeight;
 }
 
 function onArrowUp(e) {
@@ -97,8 +97,8 @@ async function getFile(e) {
     processFile(await e.target.files[0].text());
 }
  
-async function getTestFile() {
-    let testfile = await fetchNoCache("./testdata.txt");
+async function getTestFile(path) {
+    let testfile = await fetchNoCache(path);
     if (testfile.ok) {
         processFile(await testfile.text());
     }
@@ -106,7 +106,7 @@ async function getTestFile() {
 
 function processFile(txt) {
     for (let command of txt.split(";")) {
-        document.querySelector("#input-box input").value = command.replace(/\/\*[\s\S]*?\*\//g, "");
+        document.getElementById("input-box--input").value = command.replace(/\/\*[\s\S]*?\*\//g, "");
         document.getElementById("input-box--enter-btn").dispatchEvent(new Event("click"));
     }
 }
@@ -122,4 +122,8 @@ async function fetchNoCache(path) {
     };
     var myRequest = new Request(path);
     return await fetch(myRequest, myInit);
+}
+
+function clearConsole() {
+    document.getElementById("history-box").innerHTML = "";
 }
