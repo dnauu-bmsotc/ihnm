@@ -56,7 +56,7 @@ class Angle {
 
 function ground(n, d=2) {
   // https://stackoverflow.com/questions/3108986
-  let x = n * Math.pow(10, d);
+  let x = Math.floor(n * Math.pow(10, d + 1)) / 10;
   let r = Math.round(x);
   let br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r;
   return br / Math.pow(10, d);
@@ -122,6 +122,7 @@ function drawTraverse(a, s, b, scale=1/20) {
 // traverseStation.s_forward;
 // traverseStation.h_backward;
 // traverseStation.h_forward;
+// traverseStation.h;
 // traverseStation.b;
 function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) {
   const firstStation = !vl1;
@@ -249,6 +250,7 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
   traverseStation.s_forward =  !lastStation  ? Sr : 0;
   traverseStation.h_backward = !firstStation ? hl : 0;
   traverseStation.h_forward =  !lastStation  ? h  : 0;
+  traverseStation.h = h;
   traverseStation.b = hor;
 
   return table;
@@ -272,10 +274,12 @@ function add_b_from_traverse(arr) {
 // Сохраняемые данные:
 // totalStation.s --- массив длин сторон хода
 // totalStation.b --- массив углов поворота
+// totalStation.h --- массив средних превышений
 function* totalStation(stationsData) {
   const h_backward_arr = [];
   totalStation.s = [];
   totalStation.b = [];
+  totalStation.h = [];
   for (let station of stationsData) {
     traverseStation(station);
     h_backward_arr.push(traverseStation.h_backward);
@@ -287,6 +291,93 @@ function* totalStation(stationsData) {
     yield traverseStation(stationsData[i]);
     add_s_from_traverse(totalStation.s);
     add_b_from_traverse(totalStation.b);
+    totalStation.h.push(traverseStation.h);
   }
-  return [h_backward_arr, totalStation.s, totalStation.b];
+  totalStation.h.pop();
+  return [h_backward_arr, totalStation.s, totalStation.b, totalStation.h];
+}
+
+function linkHeights(H1, Hn, s_arr, h_arr) {
+  const ssum = s_arr.reduce((partialSum, a) => partialSum + a, 0);
+  const fsum = h_arr.reduce((partialSum, a) => partialSum + a, 0);
+  const table = document.createElement("div");
+  table.classList.add("gtable");
+  let html = "";
+  // S
+  html += `<div class="grow">`;
+  for (let s of s_arr) {
+    html += `<div></div>`;
+    html += `<div>${ground(s, 1)}</div>`;
+  }
+  html += `<div></div>`;
+  html += `<div>${ssum}</div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `</div>`;
+  // h среднее
+  html += `<div class="grow">`;
+  for (let h of h_arr) {
+    html += `<div></div>`;
+    html += `<div>${ground(h, 2)}</div>`;
+  }
+  html += `<div></div>`;
+  html += `<div>${ground(fsum, 2)}</div>`;
+  html += `<div>${ground(Hn-H1, 2)}</div>`;
+  html += `<div>${ground(fsum-(Hn-H1), 2)}</div>`;
+  html += `<div>${ground(0.04*ssum/Math.sqrt(s_arr.length), 0)}</div>`;
+  html += `</div>`;
+  // v
+  html += `<div class="grow">`;
+  let v_arr = [];
+  for (let i = 0; i < s_arr.length; i++) {
+    v_arr.push({id: i, s: s_arr[i], v: 0});
+  }
+  v_arr.sort((a, b) => b.s - a.s);
+  for (let i = 0; i < Math.round(Math.abs(fsum - (Hn - H1))*100); i++) {
+    v_arr[i % s_arr.length].v += 0.01;
+  }
+  for (let i = 0; i < s_arr.length; i++) {
+    html += `<div></div>`;
+    html += `<div>${v_arr.find((el, ind, arr) => el.id === i).v}</div>`;
+  }
+  html += `<div></div>`;
+  html += `<div>${ground(v_arr.reduce((partialSum, a) => partialSum + a.v, 0), 2)}</div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `</div>`;
+  // h испр
+  const hv = [];
+  html += `<div class="grow">`;
+  for (let i = 0; i < s_arr.length; i++) {
+    html += `<div></div>`;
+    hv.push(ground(h_arr[i] + v_arr.find((el, ind, arr) => el.id === i).v, 2));
+    html += `<div>${hv[i]}</div>`;
+  }
+  html += `<div></div>`;
+  html += `<div>${ground(hv.reduce((partialSum, a) => partialSum + a, 0), 2)}</div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `</div>`;
+  // H
+  const H_arr = [];
+  html += `<div class="grow">`;
+  html += `<div>${ground(H1, 2)}</div>`;
+  H_arr.push(ground(H1, 2));
+  for (let i = 0; i < s_arr.length; i++) {
+    html += `<div></div>`;
+    H_arr.push(ground(H_arr[H_arr.length - 1] + hv[i], 2));
+    html += `<div>${H_arr[H_arr.length - 1]}</div>`;
+  }
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `<div></div>`;
+  html += `</div>`;
+  //
+  html += `</div>`;
+  table.innerHTML = html;
+  return table;
 }
