@@ -7,40 +7,7 @@
 		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-		<style>
-			body {
-				font-family: sans-serif;
-				font-size: 12px;
-			}
-			/* Minerals table styles */
-			.mineral-class {
-				margin: 8px;
-				padding: 4px;
-			}
-			.mineral {
-				display: inline-block;
-				border: 1px solid black;
-				margin: 4px;
-				padding: 4px;
-			}
-			/* guess styles */
-			button {
-				margin: 1em;
-			}
-			#imgdiv {
-				overflow:hidden;
-			}
-			#img {
-				height: 256px;
-			}
-			/* rock tables styles */
-			table {
-				border-collapse: collapse;
-			}
-			table td {
-				border: 1px solid black;
-			}
-		</style>
+		<link rel="stylesheet" href="index.css">
 	</head>
 	<body>
 		<main>
@@ -52,166 +19,390 @@
 				<img id="img"></img>
 			</div>
 			<p id="answer"></p>
-			<details>
-				<summary>Таблица минералов</summary>
-				<div id="minerals"></div>
-			</details>
-			<details>
-				<summary>Таблица метаморфических горных пород</summary>
-				<table>
-					<tbody>
-						<tr style="height: 41px">
-							<td class="s0" dir="ltr" colspan="8">Магматические горные породы</td>
-						</tr>
-						<tr style="height: 26px">
-							<td class="s1" dir="ltr" rowspan="2">Химический класс SiO2%</td>
-							<td class="s1" dir="ltr" rowspan="2">Название</td>
-							<td class="s1" dir="ltr" colspan="2">Минеральный состав</td>
-							<td class="s1" dir="ltr" rowspan="2">Структура</td>
-							<td class="s1" dir="ltr" rowspan="2">Текстура</td>
-							<td class="s1" dir="ltr" rowspan="2">Фация</td>
-							<td class="s1" dir="ltr" rowspan="2">Преобладающие цвета пород</td>
-						</tr>
-						<tr style="height: 29px">
-							<td class="s1" dir="ltr">Породообразующие</td>
-							<td class="s1" dir="ltr">Второстепенные</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr" rowspan="3">Кислые (65-75)</td>
-							<td class="s2" dir="ltr">Липарит</td>
-							<td class="s2" dir="ltr" rowspan="3">Ортоклаз, микроклин, кварц*</td>
-							<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, роговая обманка, биотит, мусковит</td>
-							<td class="s2" dir="ltr">Скрытокристаллическая</td>
-							<td class="s2" dir="ltr">Пористая</td>
-							<td class="s2" dir="ltr">Поверхностная</td>
-							<td class="s2" dir="ltr" rowspan="3">Светлые, розовые</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Липаритовый порфир</td>
-							<td class="s2" dir="ltr">Порфировая</td>
-							<td class="s2" dir="ltr" rowspan="2">Плотная</td>
-							<td class="s2" dir="ltr">Полуглубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Гранит</td>
-							<td class="s2" dir="ltr">Полнокристаллическая</td>
-							<td class="s2" dir="ltr">Глубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr" rowspan="3">Средние (52-65)</td>
-							<td class="s2" dir="ltr">Андезит</td>
-							<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, роговая обманка</td>
-							<td class="s2" dir="ltr" rowspan="3">Пироксен, биотит</td>
-							<td class="s2" dir="ltr">Скрытокристаллическая</td>
-							<td class="s2" dir="ltr">Пористая</td>
-							<td class="s2" dir="ltr">Поверхностная</td>
-							<td class="s2" dir="ltr" rowspan="3">Серые</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Андезитовый порфирит</td>
-							<td class="s2" dir="ltr">Порфировая</td>
-							<td class="s2" dir="ltr" rowspan="2">Плотная</td>
-							<td class="s2" dir="ltr">Полуглубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Диорит</td>
-							<td class="s2" dir="ltr">Полнокристаллическая</td>
-							<td class="s2" dir="ltr">Глубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr" rowspan="3">Основные (40-52)</td>
-							<td class="s2" dir="ltr">Базальт</td>
-							<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, пироксен**</td>
-							<td class="s2" dir="ltr" rowspan="3">Роговая обманка</td>
-							<td class="s2" dir="ltr">Скрытокристаллическая</td>
-							<td class="s2" dir="ltr">Пористая</td>
-							<td class="s2" dir="ltr">Поверхностная</td>
-							<td class="s2" dir="ltr" rowspan="3">Тёмно-серые, чёрные</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Диабаз</td>
-							<td class="s2" dir="ltr">Порфировая</td>
-							<td class="s2" dir="ltr" rowspan="2">Плотная</td>
-							<td class="s2" dir="ltr">Полуглубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Габбро</td>
-							<td class="s2" dir="ltr">Полнокристаллическая</td>
-							<td class="s2" dir="ltr">Глубинная</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr" rowspan="3">Ультраосновные (менее 40)</td>
-							<td class="s2" dir="ltr">Пироксенит</td>
-							<td class="s2" dir="ltr">Пироксен**</td>
-							<td class="s2" dir="ltr">Оливин**</td>
-							<td class="s2" dir="ltr" rowspan="3">Полнокристаллическая</td>
-							<td class="s2" dir="ltr" rowspan="3">Плотная</td>
-							<td class="s2" dir="ltr" rowspan="3">Глубинная</td>
-							<td class="s2" dir="ltr" rowspan="3">Чёрые или тёмно-зелёные</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Перидотит</td>
-							<td class="s2" dir="ltr">Пироксен**, оливин*</td>
-							<td class="s2"></td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s2" dir="ltr">Дунит</td>
-							<td class="s2" dir="ltr">Оливин*</td>
-							<td class="s2" dir="ltr">Пироксен**</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-							<td class="s3"></td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s3" dir="ltr">Примечания:</td>
-							<td class="s4" dir="ltr" colspan="7">* — минералы, обозначенные звездочкой, являются показателем кислотности пород;</td>
-						</tr>
-						<tr style="height: 20px">
-							<td class="s3" dir="ltr"></td>
-							<td class="s3" dir="ltr" colspan="7">** — к группе пироксенов относится авгит и другие минералы из класса ценных силикатов.</td>
-						</tr>
-					</tbody>
-				</table>
-				В табл.2 не входят следующие породы:
-				Пегматиты— крупно- и гигантозернистые горные породы. Раз-
-				личают пегматиты, связанные с кислыми, основными и другими полно-
-				кристаллическими породами. Пегматиты являются источниками многих
-				полезных ископаемых (слюды, пьезосырья, драгоценных камней, редко-
-				земельных элементов и т.д.).
-				Обсидианы — вулканические стекла, представляющие собой стекло-
-				видную породу различного цвета (преобладают черные, серые и бурые
-				цвета, с раковистым изломом. По составу обсидианы чаще кислые, но
-				бывают средние и основные.
-				Пемзы — пористые, стекловатые породы, возникающие при вулка-
-				нических извержениях кислых, средних, реже основных, богатых газами
-				лав. Из-за большой пористости плотность пемз очень низкая (менее
-				1,0 г/см3, плавают в воде).
-				Пирокластические породы — возникают в результате вулканических
-				выбросов частиц еще не застывшей лавы и обломков пород, слагающих
-				жерло и кратер вулкана. Различают:
-				вулканический пепел, размер частиц менее 0,5 мм;
-				вулканический песок, размер частиц 0,5–2,0 мм;
-				лапилли, размер частиц 20 – 30 мм;
-				вулканические бомбы, размер частиц более 30 мм;
-				вулканический туф, спекшиеся вулканические пепел и песок, со-
-				держащие более крупные обломки.
-			</details>
-			<details>
-				<summary>Таблица осадочных горных пород</summary>
-				<img src="Обломочные.png"></img>
-				<img src="Хемогенные и органогенные.png"></img>
-			</details>
-			<details>
-				<summary>Таблица метаморфических горных пород</summary>
-				<img src="Метаморфические.png"></img>
-			</details>
+			<section id="details-section">
+				<details>
+					<summary>Таблица минералов</summary>
+					<div id="minerals"></div>
+				</details>
+				<details>
+					<summary>Таблица метаморфических горных пород</summary>
+					<table>
+						<tbody>
+							<tr style="height: 41px">
+								<td class="s0" dir="ltr" colspan="8">Магматические горные породы</td>
+							</tr>
+							<tr style="height: 26px">
+								<td class="s1" dir="ltr" rowspan="2">Химический класс SiO2%</td>
+								<td class="s1" dir="ltr" rowspan="2">Название</td>
+								<td class="s1" dir="ltr" colspan="2">Минеральный состав</td>
+								<td class="s1" dir="ltr" rowspan="2">Структура</td>
+								<td class="s1" dir="ltr" rowspan="2">Текстура</td>
+								<td class="s1" dir="ltr" rowspan="2">Фация</td>
+								<td class="s1" dir="ltr" rowspan="2">Преобладающие цвета пород</td>
+							</tr>
+							<tr style="height: 29px">
+								<td class="s1" dir="ltr">Породообразующие</td>
+								<td class="s1" dir="ltr">Второстепенные</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr" rowspan="3">Кислые (65-75)</td>
+								<td class="s2" dir="ltr">Липарит</td>
+								<td class="s2" dir="ltr" rowspan="3">Ортоклаз, микроклин, кварц*</td>
+								<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, роговая обманка, биотит, мусковит</td>
+								<td class="s2" dir="ltr">Скрытокристаллическая</td>
+								<td class="s2" dir="ltr">Пористая</td>
+								<td class="s2" dir="ltr">Поверхностная</td>
+								<td class="s2" dir="ltr" rowspan="3">Светлые, розовые</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Липаритовый порфир</td>
+								<td class="s2" dir="ltr">Порфировая</td>
+								<td class="s2" dir="ltr" rowspan="2">Плотная</td>
+								<td class="s2" dir="ltr">Полуглубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Гранит</td>
+								<td class="s2" dir="ltr">Полнокристаллическая</td>
+								<td class="s2" dir="ltr">Глубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr" rowspan="3">Средние (52-65)</td>
+								<td class="s2" dir="ltr">Андезит</td>
+								<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, роговая обманка</td>
+								<td class="s2" dir="ltr" rowspan="3">Пироксен, биотит</td>
+								<td class="s2" dir="ltr">Скрытокристаллическая</td>
+								<td class="s2" dir="ltr">Пористая</td>
+								<td class="s2" dir="ltr">Поверхностная</td>
+								<td class="s2" dir="ltr" rowspan="3">Серые</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Андезитовый порфирит</td>
+								<td class="s2" dir="ltr">Порфировая</td>
+								<td class="s2" dir="ltr" rowspan="2">Плотная</td>
+								<td class="s2" dir="ltr">Полуглубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Диорит</td>
+								<td class="s2" dir="ltr">Полнокристаллическая</td>
+								<td class="s2" dir="ltr">Глубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr" rowspan="3">Основные (40-52)</td>
+								<td class="s2" dir="ltr">Базальт</td>
+								<td class="s2" dir="ltr" rowspan="3">Плагиоклаз, пироксен**</td>
+								<td class="s2" dir="ltr" rowspan="3">Роговая обманка</td>
+								<td class="s2" dir="ltr">Скрытокристаллическая</td>
+								<td class="s2" dir="ltr">Пористая</td>
+								<td class="s2" dir="ltr">Поверхностная</td>
+								<td class="s2" dir="ltr" rowspan="3">Тёмно-серые, чёрные</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Диабаз</td>
+								<td class="s2" dir="ltr">Порфировая</td>
+								<td class="s2" dir="ltr" rowspan="2">Плотная</td>
+								<td class="s2" dir="ltr">Полуглубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Габбро</td>
+								<td class="s2" dir="ltr">Полнокристаллическая</td>
+								<td class="s2" dir="ltr">Глубинная</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr" rowspan="3">Ультраосновные (менее 40)</td>
+								<td class="s2" dir="ltr">Пироксенит</td>
+								<td class="s2" dir="ltr">Пироксен**</td>
+								<td class="s2" dir="ltr">Оливин**</td>
+								<td class="s2" dir="ltr" rowspan="3">Полнокристаллическая</td>
+								<td class="s2" dir="ltr" rowspan="3">Плотная</td>
+								<td class="s2" dir="ltr" rowspan="3">Глубинная</td>
+								<td class="s2" dir="ltr" rowspan="3">Чёрые или тёмно-зелёные</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Перидотит</td>
+								<td class="s2" dir="ltr">Пироксен**, оливин*</td>
+								<td class="s2"></td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s2" dir="ltr">Дунит</td>
+								<td class="s2" dir="ltr">Оливин*</td>
+								<td class="s2" dir="ltr">Пироксен**</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+								<td class="s3"></td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s3" dir="ltr">Примечания:</td>
+								<td class="s4" dir="ltr" colspan="7">* — минералы, обозначенные звездочкой, являются показателем кислотности пород;</td>
+							</tr>
+							<tr style="height: 20px">
+								<td class="s3" dir="ltr"></td>
+								<td class="s3" dir="ltr" colspan="7">** — к группе пироксенов относится авгит и другие минералы из класса ценных силикатов.</td>
+							</tr>
+						</tbody>
+					</table>
+					В таблицу не входят следующие породы:
+					<ol>
+						<li>
+							Пегматиты — крупно- и гигантозернистые горные породы. Различают пегматиты, связанные с кислыми, основными
+							и другими полнокристаллическими породами. Пегматиты являются источниками многих полезных ископаемых
+							(слюды, пьезосырья, драгоценных камней, редкоземельных элементов и т.д.).
+						</li>
+						<li>
+							Обсидианы — вулканические стекла, представляющие собой стекловидную породу различного цвета
+							(преобладают черные, серые и бурые цвета, с раковистым изломом. По составу обсидианы чаще кислые,
+							но бывают средние и основные.
+						</li>
+						<li>
+							Пемзы — пористые, стекловатые породы, возникающие при вулканических извержениях кислых, средних,
+							реже основных, богатых газами лав. Из-за большой пористости плотность пемз очень низкая (менее
+							1,0 г/см3, плавают в воде).
+						</li>
+						<li>
+							Пирокластические породы — возникают в результате вулканических выбросов частиц еще не застывшей лавы
+							и обломков пород, слагающих жерло и кратер вулкана. Различают:
+							<ol>
+								<li>вулканический пепел, размер частиц менее 0,5 мм;</li>
+								<li>вулканический песок, размер частиц 0,5–2,0 мм;</li>
+								<li>лапилли, размер частиц 20 – 30 мм;</li>
+								<li>вулканические бомбы, размер частиц более 30 мм;</li>
+								<li>вулканический туф, спекшиеся вулканические пепел и песок, содержащие более крупные обломки.</li>
+							</ol>
+						</li>
+					</ol>
+				</details>
+				<details>
+					<summary>Таблица осадочных горных пород</summary>
+						<table class="tg">
+						<thead>
+						  <tr>
+							<th class="tg-0lax" colspan="6">Обломочные</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<td class="tg-0pky">Размер<br>обломков,<br>мм</td>
+							<td class="tg-0pky">Окатанные</td>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Неокатанные</td>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Структура</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Рыхлые</td>
+							<td class="tg-0pky">Сцементированные</td>
+							<td class="tg-0pky">Рыхлые</td>
+							<td class="tg-0pky">Сцементированные</td>
+							<td class="tg-0pky"></td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">0.01-0.1</td>
+							<td class="tg-0pky">Алевролиты</td>
+							<td class="tg-0pky">Алевролиты</td>
+							<td class="tg-0pky">Алевролиты</td>
+							<td class="tg-0pky">Алевролиты</td>
+							<td class="tg-0pky">Пылеватая</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">0.1-2.0</td>
+							<td class="tg-0pky">Пески</td>
+							<td class="tg-0pky">Песчаники</td>
+							<td class="tg-0pky">Пески</td>
+							<td class="tg-0pky">Песчаники</td>
+							<td class="tg-0pky">Песчаная</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">2.0-10.0</td>
+							<td class="tg-0pky">Гравий</td>
+							<td class="tg-0pky">Гравийные<br>конгломераты</td>
+							<td class="tg-0pky">Дресва</td>
+							<td class="tg-0pky">Брекчия</td>
+							<td class="tg-0pky" rowspan="3">Грубообломочная</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">10.0-100.0</td>
+							<td class="tg-0pky">Галька</td>
+							<td class="tg-0pky">Галечниковые<br>конгломераты</td>
+							<td class="tg-0pky">Щебень</td>
+							<td class="tg-0pky">Брекция</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Более 100.0</td>
+							<td class="tg-0pky">Валуны</td>
+							<td class="tg-0pky">Валунные<br>конгломераты</td>
+							<td class="tg-0pky">Глыбы</td>
+							<td class="tg-0pky">Глыбовая брекчия</td>
+						  </tr>
+						</tbody>
+						</table>
+						<table class="tg">
+						<thead>
+							<tr>
+							<th class="tg-0lax" colspan="4">Хемогенные и органогенные</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+							<td class="tg-0pky">Название подгрупп</td>
+							<td class="tg-0pky">Хемогенные<br>(гидрохимические)</td>
+							<td class="tg-0pky">Органогенные</td>
+							<td class="tg-0pky">Минералогический состав</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky" rowspan="3">Карбонатные</td>
+							<td class="tg-0pky">Известняки плотные,<br>оолитовые, натёчные</td>
+							<td class="tg-0pky">Известняки коралловые,<br>ракушечники, детритусовые,<br>мел</td>
+							<td class="tg-0pky">Кальцит</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky">Доломиты</td>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Доломит</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky">Мергели</td>
+							<td class="tg-0pky">-</td>
+							<td class="tg-0pky">Кальцит 50%<br>Глинистые минералы 50%</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky">Кремнистые</td>
+							<td class="tg-0pky">Трепела</td>
+							<td class="tg-0pky">Опоки, Диатомиты</td>
+							<td class="tg-0pky">Опал, Халцедон</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky">Железистые</td>
+							<td class="tg-0pky">Бурые железняки</td>
+							<td class="tg-0pky">Бурые железняки</td>
+							<td class="tg-0pky">Лимонит</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky">Галоидные</td>
+							<td class="tg-0pky">Каменная соль</td>
+							<td class="tg-0pky">-</td>
+							<td class="tg-0pky">Галит, Сильвин</td>
+							</tr>
+							<tr>
+							<td class="tg-0pky" rowspan="2">Сернокислые</td>
+							<td class="tg-0pky"> Гипсы</td>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Гипс</td>
+							</tr>
+							<tr>
+							<td class="tg-0lax">Ангидриты</td>
+							<td class="tg-0lax">-</td>
+							<td class="tg-0lax">Ангидрит</td>
+							</tr>
+							<tr>
+							<td class="tg-0lax">Фосфатные</td>
+							<td class="tg-0lax">Фосфориты</td>
+							<td class="tg-0lax">Фосфориты</td>
+							<td class="tg-0lax">Фосфорит</td>
+							</tr>
+							<tr>
+							<td class="tg-0lax">Каустобиолиты</td>
+							<td class="tg-0lax"></td>
+							<td class="tg-0lax">Торф, Бурые угли,<br>Каменные угли, Антрациты,<br>Нефть</td>
+							<td class="tg-0lax"></td>
+							</tr>
+						</tbody>
+						</table>
+				</details>
+				<details>
+					<summary>Таблица метаморфических горных пород</summary>
+						<table class="tg">
+						<thead>
+						  <tr>
+							<td class="tg-0pky">Исходные породы</td>
+							<td class="tg-0pky">Метаморфические породы</td>
+							<td class="tg-0pky">Текстура</td>
+							<td class="tg-0pky">Минеральный состав</td>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<td class="tg-0pky">Известняки</td>
+							<td class="tg-0pky">Мрамор</td>
+							<td class="tg-0pky">Массивная</td>
+							<td class="tg-0pky">Кальцит</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky" rowspan="3">Глинистые породы</td>
+							<td class="tg-0pky">Аргиллиты,<br>Глинистые сланцы</td>
+							<td class="tg-0pky">Сланцевая</td>
+							<td class="tg-0pky">Глинистые минералы,<br>кварц</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Филлиты</td>
+							<td class="tg-0pky">-</td>
+							<td class="tg-0pky">Серицит, хлорит, кварц</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Слюдяные сланцы</td>
+							<td class="tg-0pky"></td>
+							<td class="tg-0pky">Мусковит, полевые шпаты</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky" rowspan="3">Глинистые и<br>песчаные породы</td>
+							<td class="tg-0pky" rowspan="2">Кристаллические сланцы</td>
+							<td class="tg-0pky" rowspan="2">Сланцеватая</td>
+							<td class="tg-0pky">Кварц, мусковит, биотит,<br>полевые шпаты</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Роговая обманка</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Гнейсы (парагнейсы)</td>
+							<td class="tg-0pky">Полосчатая,<br>очковая</td>
+							<td class="tg-0pky">Кварц, полевые шпаты,<br>мусковит, биотит, роговая обманка</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Кварцевые пески</td>
+							<td class="tg-0pky">Кварциты</td>
+							<td class="tg-0pky">Массивная</td>
+							<td class="tg-0pky">Кварц</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Кварцевые пески,<br>обогащённые<br>оксидами железа</td>
+							<td class="tg-0pky">Железистые кварциты</td>
+							<td class="tg-0pky">Массивная,<br>полосчатая</td>
+							<td class="tg-0pky">Кварц, магнетит, гематит</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Кислые и средние<br>породы</td>
+							<td class="tg-0pky">Гнейсы (ортогнейсы)</td>
+							<td class="tg-0pky">Полосчатая,<br>очковая</td>
+							<td class="tg-0pky">Кварц, полевые шпаты,<br>мусковит, биотит, роговая обманка</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Основные породы</td>
+							<td class="tg-0pky">Хлоритовые сланцы</td>
+							<td class="tg-0pky">Сланцеватая</td>
+							<td class="tg-0pky">Хлорит с примесью<br>талька и плагиоклаза</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Ультраосновные<br>породы</td>
+							<td class="tg-0pky">Тальковые сланцы</td>
+							<td class="tg-0pky">Сланцеватая</td>
+							<td class="tg-0pky">Тальк с примесью хлорита</td>
+						  </tr>
+						  <tr>
+							<td class="tg-0pky">Ультраосновные<br>породы</td>
+							<td class="tg-0pky">Серпентинит</td>
+							<td class="tg-0pky">Массивная<br>развальцованная</td>
+							<td class="tg-0pky">Серпентинин с прожилками<br>асбеста</td>
+						  </tr>
+						</tbody>
+						</table>
+				</details>
+			</section>
 		</main>
 		<!-- Guess script -->
 		<script>

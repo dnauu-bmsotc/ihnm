@@ -39,9 +39,6 @@ function createSvgArc(x, y, radius, startRadians, endRadians) {
   return d;
 }
 
-// Идея: сделать кастомные элементы для каждого представления углов, чтобы
-// можно было потом подключить скрипт с каждым представлением.
-
 // Custom sign input element
 class InputSign extends HTMLElement {
 	connectedCallback() {
@@ -73,7 +70,7 @@ class InputDMS extends HTMLElement {
 	}
 	get value() {
 		return numberIn($(this).find(".input-dms--sign")) * (
-				numberIn($(this).find(".input-dms--d"))
+			numberIn($(this).find(".input-dms--d"))
 			+ numberIn($(this).find(".input-dms--m")) / 60
 			+ numberIn($(this).find(".input-dms--s")) / 60 / 60).toString();
 	}
@@ -103,6 +100,11 @@ function addRepresentation(r) {
 	});
 	$("#list").append($li);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector("#li-dd input").value = 0;
+	document.querySelector("#li-dd").dispatchEvent(new Event("input"));
+});
 
 // Градусы, минуты, секунды
 addRepresentation({
@@ -187,7 +189,6 @@ addRepresentation({
 // Тригонометрический круг (tcm - trigonometric circle mathematical)
 addRepresentation({
 	groupName: "li-tcm",
-	hidden: true,
 	html: `
 		<span>Тригонометрический круг</span>
 		<svg id="tcm" viewBox="0 0 100 100" style="width: 120px; height: 120px; vertical-align: middle" onClick="allRepresentations['li-tcm'].tcmClick(event)">
@@ -231,7 +232,6 @@ addRepresentation({
 // Дирекционный угол (tcg - trigonometric circle geodesic)
 addRepresentation({
 	groupName: "li-tcg",
-	hidden: true,
 	html: `
 		<span>Дирекционный угол</span>
 		<svg id="tcg" viewBox="0 0 100 100" style="width: 100px; height: 100px; vertical-align: middle" onClick="allRepresentations['li-tcg'].tcgClick(event)">
@@ -280,7 +280,6 @@ addRepresentation({
 // Румб
 addRepresentation({
 	groupName: "li-rum",
-	hidden: true,
 	html: `
 		Направление
 		<select id="rdir">

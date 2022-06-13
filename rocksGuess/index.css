@@ -1,0 +1,47 @@
+body {
+    font-family: sans-serif;
+    font-size: 14px;
+}
+#answer {
+    height: 1em;
+}
+details {
+    margin: 2em 0;
+}
+#details-section {
+    width: 60em;
+}
+/* Minerals table styles */
+.mineral-class {
+    margin: 8px;
+    padding: 4px;
+}
+.mineral {
+    display: inline-block;
+    border: 1px solid black;
+    margin: 4px;
+    padding: 4px;
+}
+/* guess styles */
+button {
+    margin: 1em;
+}
+#imgdiv {
+    overflow:hidden;
+}
+#img {
+    height: 256px;
+}
+/* rock tables styles */
+table {
+    border-collapse: collapse;
+    margin: 2em 0;
+}
+table td {
+    border: 1px solid black;
+    padding: 4px;
+}
+/* Changing mathjax styles */
+mjx-container[jax="CHTML"][display="true"] {
+    margin: 0.5em 0 0 0 !important;
+}
