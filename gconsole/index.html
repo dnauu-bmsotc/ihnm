@@ -10,18 +10,22 @@
 	</head>
 	<body>
 		<main>
-            <section id="buttons-section">
-                <input name="data" type="file" onchange="getFile(event)">
-                <button onclick="getTestFile('./testTraverse.txt')">Использовать тестовый файл</button>
-                <a href="./testTraverse.txt" download> Скачать тестовый файл</a>
-                <button onclick="clearConsole()">Очистить консоль</button>
-            </section>
             <section id="console">
                 <div id="history-box"></div>
                 <div id="input-box">
                     <input id="input-box--input" onkeydown="onKeydown(event)"></input>
                     <button id="input-box--enter-btn" onclick="onEnter()">enter</button>
                 </div>
+            </section>
+            <section id="commands-sequence-section">
+                <section id="buttons-section">
+                    <input name="data" type="file" onchange="getFile(event)" onclick="this.value=null">
+                    <button onclick="getTestFile('./testTraverse.txt')">Использовать тестовый файл</button>
+                    <a href="./testTraverse.txt" download> Скачать тестовый файл</a>
+                    <button onclick="clearConsole()">Очистить консоль</button>
+                    <button onclick="processFile(document.getElementById('commands-sequence').value)">Запустить</button>
+                </section>
+                <textarea id="commands-sequence"></textarea>
             </section>
             <section id="documentation">
                 <h3>Функции</h3>

@@ -26,8 +26,7 @@ p {
 
 #console {
     border: 2px solid #90867e;
-    height: 80vh;
-    max-height: 80vh;
+    height: 70vh;
     display: flex;
     flex-flow: column nowrap;
 }
@@ -123,4 +122,13 @@ p {
 
 #buttons-section {
     margin: 4px;
+}
+
+#commands-sequence-section {
+    margin: 2em 0;
+}
+
+#commands-sequence {
+    display: block;
+    width: 100%;
 }

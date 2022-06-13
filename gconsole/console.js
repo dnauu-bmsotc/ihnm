@@ -94,13 +94,19 @@ function selectOnClick(el) {
 }
 
 async function getFile(e) {
-    processFile(await e.target.files[0].text());
+    const txt = await e.target.files[0].text();
+    document.getElementById("commands-sequence").value = txt;
+    document.getElementById("commands-sequence").dispatchEvent(new Event("input"));
+    processFile(txt);
 }
  
 async function getTestFile(path) {
     let testfile = await fetchNoCache(path);
     if (testfile.ok) {
-        processFile(await testfile.text());
+        const txt = await testfile.text();
+        document.getElementById("commands-sequence").value = txt;
+        document.getElementById("commands-sequence").dispatchEvent(new Event("input"));
+        processFile(txt);
     }
 }
 
@@ -127,3 +133,16 @@ async function fetchNoCache(path) {
 function clearConsole() {
     document.getElementById("history-box").innerHTML = "";
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tx = document.getElementsByTagName("textarea");
+    for (let i = 0; i < tx.length; i++) {
+      tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+      tx[i].addEventListener("input", OnTextareaInput, false);
+    }
+    
+    function OnTextareaInput() {
+      this.style.height = "auto";
+      this.style.height = (this.scrollHeight) + "px";
+    }
+});
