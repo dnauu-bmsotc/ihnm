@@ -134,6 +134,7 @@ function clearConsole() {
     document.getElementById("history-box").innerHTML = "";
 }
 
+// https://stackoverflow.com/questions/454202
 document.addEventListener('DOMContentLoaded', function() {
     const tx = document.getElementsByTagName("textarea");
     for (let i = 0; i < tx.length; i++) {

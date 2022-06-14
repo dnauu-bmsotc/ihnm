@@ -43,6 +43,11 @@ class Angle {
   to360 () {
     return new Angle((360 + this.degrees % 360) % 360);
   }
+  groundMinutes(n=1) {
+    const d = Math.trunc(this.degrees);
+    const m = ground(this.degrees % 1 * 60, n);
+    return new Angle(d + m / 60);
+  }
   get abs() {
     return new Angle(Math.abs(this.degrees));
   }
@@ -56,7 +61,7 @@ class Angle {
 
 function ground(n, d=2) {
   // https://stackoverflow.com/questions/3108986
-  let x = Math.floor(n * Math.pow(10, d + 1)) / 10;
+  let x = Math.trunc(n * Math.pow(10, d + 1)) / 10;
   let r = Math.round(x);
   let br = Math.abs(x) % 1 === 0.5 ? (r % 2 === 0 ? r : r-1) : r;
   return br / Math.pow(10, d);
@@ -129,7 +134,7 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
   const lastStation = !vr1;
   const horl = new Angle(hl2).minus(hl1).to360();
   const horr = new Angle(hr2).minus(hr1).to360();
-  const hor = horl.plus(horr).divide(2);
+  const hor = horl.plus(horr).divide(2).groundMinutes(1);
   const MOl = new Angle(vl1).plus(vl2).divide(2);
   const MOr = new Angle(vr1).plus(vr2).divide(2);
   const vl = new Angle(vl1).minus(vl2).divide(2);
@@ -273,7 +278,7 @@ function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1
 
 function add_s_from_traverse(arr) {
   if (arr.length) {
-    arr[arr.length - 1] = ground((arr[arr.length-1] + traverseStation.s_backward) / 2);
+    arr[arr.length - 1] = ground((arr[arr.length-1] + traverseStation.s_backward) / 2, 1);
   }
   if ((arr.length === 0) || (traverseStation.s_forward)) {
     arr.push(traverseStation.s_forward);
@@ -323,7 +328,7 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   html += `<div>S</div>`;
   for (let s of s_arr) {
     html += `<div></div>`;
-    html += `<div class="userinputed">${ground(s, 1)}</div>`;
+    html += `<div class="userinputed">${s}</div>`;
   }
   html += `<div></div>`;
   html += `<div>${ssum}</div>`;
@@ -347,20 +352,13 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   // v
   html += `<div class="grow">`;
   html += `<div>Поправка v</div>`;
-  let v_arr = [];
-  for (let i = 0; i < s_arr.length; i++) {
-    v_arr.push({id: i, s: s_arr[i], v: 0});
-  }
-  v_arr.sort((a, b) => b.s - a.s);
-  for (let i = 0; i < Math.round(Math.abs(fsum - (Hn - H1))*100); i++) {
-    v_arr[i % s_arr.length].v += 0.01;
-  }
+  const v_arr = calculate_v(s_arr.length, i => s_arr[i], (a, b) => b.k - a.k, fsum - (Hn - H1), 2, false);
   for (let i = 0; i < s_arr.length; i++) {
     html += `<div></div>`;
-    html += `<div>${v_arr.find((el, ind, arr) => el.id === i).v}</div>`;
+    html += `<div>${v_arr[i]}</div>`;
   }
   html += `<div></div>`;
-  html += `<div>${ground(v_arr.reduce((partialSum, a) => partialSum + a.v, 0), 2)}</div>`;
+  html += `<div>${ground(v_arr.reduce((partialSum, a) => partialSum + a, 0), 2)}</div>`;
   html += `<div></div>`;
   html += `<div></div>`;
   html += `<div></div>`;
@@ -371,7 +369,7 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   html += `<div>h испр</div>`;
   for (let i = 0; i < s_arr.length; i++) {
     html += `<div></div>`;
-    hv.push(ground(h_arr[i] + v_arr.find((el, ind, arr) => el.id === i).v, 2));
+    hv.push(ground(h_arr[i] + v_arr[i], 2));
     html += `<div>${hv[i]}</div>`;
   }
   html += `<div></div>`;
@@ -400,6 +398,162 @@ function linkHeights(H1, Hn, s_arr, h_arr) {
   html += `</div>`;
   table.innerHTML = html;
   return table;
+}
+
+
+function* rectangularCoordinatesSheet(alpha1, alphan, X1, Xn, Y1, Yn, b_arr, s_arr) {
+  // Вычисление поправок в углы
+  const b_sum_measured = b_arr.reduce((partialSum, a) => partialSum.plus(a), new Angle(0));
+  const b_sum_theoretical = alphan.minus(alpha1).plus(180 * b_arr.length);
+  const fb = b_sum_measured.minus(b_sum_theoretical);
+  const s_sum = s_arr.reduce((partialSum, a) => partialSum + a, 0);
+  const bv_arr = calculate_v(b_arr.length, i => (i === 0 || i === b_arr.length - 1 ? s_sum : s_arr[i - 1] + s_arr[i]), (a, b) => a.k - b.k, fb.abs.degrees * 60, 1, true);
+  // Вычисление дирекционных углов
+  const alpha_arr = [alpha1];
+  for (let i = 0; i < b_arr.length; i++) {
+    const alpha_plus_b = alpha_arr[alpha_arr.length - 1].plus(b_arr[i]).plus(bv_arr[i] / 60).groundMinutes(1);
+    const alpha_pm_180 = alpha_plus_b.plus(alpha_plus_b.degrees < 180 ? +180 : -180);
+    alpha_arr.push(alpha_pm_180.to360().groundMinutes(1));
+  }
+  // Вычисление приращений
+  const dx = [], dy = [];
+  for (let i = 0; i < s_arr.length; i++) {
+    dx.push(ground(s_arr[i] * Math.cos(alpha_arr[i + 1].radians), 1));
+    dy.push(ground(s_arr[i] * Math.sin(alpha_arr[i + 1].radians), 1));
+  }
+  // Вычисление поправок в приращения
+  const sdx = dx.reduce((partialSum, a) => partialSum + a, 0);
+  const sdy = dy.reduce((partialSum, a) => partialSum + a, 0);
+  const fx = ground(sdx - (Xn - X1), 1);
+  const fy = ground(sdy - (Yn - Y1), 1);
+  const fs = ground(Math.sqrt(Math.pow(fx, 2) + Math.pow(fy, 2)), 1);
+  const xv_arr = calculate_v(dx.length, i => s_arr[i], (a, b) => b.k - a.k, fx, 1, false);
+  const yv_arr = calculate_v(dy.length, i => s_arr[i], (a, b) => b.k - a.k, fy, 1, false);
+  // Вычисление прямоугольных координат
+  const x_arr = [X1], y_arr = [Y1];
+  for (let i = 0; i < s_arr.length; i++) {
+    x_arr.push(ground(x_arr[x_arr.length - 1] + dx[i] + xv_arr[i], 1));
+    y_arr.push(ground(y_arr[y_arr.length - 1] + dy[i] + yv_arr[i], 1));
+  }
+  // Построение таблицы
+  const table = document.createElement("div");
+  table.classList.add("gtable");
+  let tableHtml = ``;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">Углы поворота</div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  for (let i = 0; i < b_arr.length; i++) {
+    tableHtml += `<div>${bv_arr[i]}</div>`;
+    tableHtml += `<div class="userinputed">${b_arr[i].toFormat("d m.1")}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div>${b_sum_measured.toFormat("d m.1")}</div>`;
+  tableHtml += `<div>${b_sum_theoretical.toFormat("d m.1")}</div>`;
+  tableHtml += `</div>`;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">Дирекционные</div>`;
+  tableHtml += `<div class="userinputed">${alpha_arr[0].toFormat("d m.1")}</div>`;
+  for (let i = 1; i < alpha_arr.length; i++) {
+    tableHtml += `<div>${alpha_arr[i].toFormat("d m.1")}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `</div>`; 
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">S</div>`;
+  tableHtml += `<div></div>`;
+  for (let s of s_arr) {
+    tableHtml += `<div class="userinputed">${s}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div>${s_sum}</div>`;
+  tableHtml += `</div>`;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">dx</div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  for (let i = 0; i < dx.length; i++) {
+    tableHtml += `<div>${xv_arr[i]}</div>`;
+    tableHtml += `<div>${dx[i]}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div>${sdx}</div>`;
+  tableHtml += `<div>${ground(Xn - X1, 1)}</div>`;
+  tableHtml += `</div>`;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">dy</div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  for (let i = 0; i < dy.length; i++) {
+    tableHtml += `<div>${yv_arr[i]}</div>`;
+    tableHtml += `<div>${dy[i]}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div>${sdy}</div>`;
+  tableHtml += `<div>${ground(Yn - Y1, 1)}</div>`;
+  tableHtml += `</div>`;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">X</div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div class="userinputed">${x_arr[0]}</div>`;
+  for (let i = 1; i < x_arr.length; i++) {
+    tableHtml += `<div>${x_arr[i]}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `</div>`;
+  tableHtml += `<div class="grow">`;
+  tableHtml += `<div class="gheader">Y</div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `<div class="userinputed">${y_arr[0]}</div>`;
+  for (let i = 1; i < y_arr.length; i++) {
+    tableHtml += `<div>${y_arr[i]}</div>`;
+  }
+  tableHtml += `<div></div>`;
+  tableHtml += `<div></div>`;
+  tableHtml += `</div>`;
+  table.innerHTML = tableHtml;
+  yield table;
+
+  const undertable = document.createElement("div");
+  undertable.innerHTML = `
+    <div>fb = ${ground(fb.degrees * 60, 1)}'</div>
+    <div>fb доп = ${ground(Math.sqrt(b_arr.length), 1)}'</div>
+    <div>fx = ${fx}м</div>
+    <div>fy = ${fy}м</div>
+    <div>fs = ${fs}м</div>
+    <div>Относительная ошибка = 1/${s_sum / fs}</div>
+  `;
+  return undertable;
+}
+
+function calculate_v(n, k_func, sort_func, f, accuracy, do_even) {
+  const arr_t = [];
+  for (let i = 0; i < n; i++) {
+    arr_t.push({id: i, k: k_func(i), v: 0});
+  }
+  let i_start = 0;
+  if (!do_even) {
+    const k_sum = arr_t.reduce((partialSum, a) => partialSum + a.k, 0);
+    for (let x of arr_t) {
+      x.v = Math.trunc(-x.k / k_sum * f * Math.pow(10, accuracy)) / Math.pow(10, accuracy);
+      i_start += Math.abs(x.v) * Math.pow(10, accuracy);
+    }
+  }
+  arr_t.sort(sort_func);
+  for (let i = Math.round(i_start); i < Math.abs(Math.round(f * Math.pow(10, accuracy))); i++) {
+    arr_t[(i - Math.round(i_start)) % arr_t.length].v -= Math.pow(10, -accuracy) * Math.sign(f);
+  }
+  return arr_t.sort((a, b) => a.id - b.id).map(x => ground(x.v, accuracy));
 }
 
 function levelingStation({bl_up_1, bl_mid_1, bl_up_2, bl_mid_2, red_2, red_1, d, dS}) {
@@ -483,7 +637,7 @@ function* levelingLog(H1, Hn, stations) {
   kstable.innerHTML = `
     <div>L = ${ks[21]}мм = ${levelingLog.L}км</div>
     <div>fh = ${ground(ks[18] - (Hn - H1) * 1000, 0)}мм</div>
-    <div>fh допустимое = 20мм sqrt(L) = ${ground(20 * Math.sqrt(levelingLog.L), 0)}</div>
+    <div>fh допустимое = 20мм sqrt(L) = ${ground(20 * Math.sqrt(levelingLog.L), 0)}мм</div>
   `;
   return kstable;
 }

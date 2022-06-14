@@ -2,6 +2,10 @@ alpha_1 = new Angle(288, 5.2); /* Начальный дирекционный у
 alpha_n = new Angle(309, 46.1);
 H_1 = 812.62;
 H_n = 816.29;
+X_1 = 5960.6;
+X_n = 5739.4;
+Y_1 = 4455.9;
+Y_n = 4200.9;
 
 P.init(100, -0.1, 150, -0.2, 200, -0.2);
 
@@ -103,6 +107,7 @@ drawTraverse(alpha_1, totalStation.s, [...totalStation.b, alpha_n], 1/15);
 
 linkHeights(H_1, H_n, totalStation.s, totalStation.h);
 
+rectangularCoordinatesSheet(alpha_1, alpha_n, X_1, X_n, Y_1, Y_n, totalStation.b, totalStation.s);
 
 
 /* Нивелирование */
