@@ -1,5 +1,8 @@
 "use strict"
 
+const Тип3Т5КП = 0;
+const Тип2Т5К = 1;
+
 // stores angle in pure degrees
 // Секунды лучше округлять до 9 знаков после запятйо
 class Angle {
@@ -129,16 +132,29 @@ function drawTraverse(a, s, b, scale=1/20) {
 // traverseStation.h_forward;
 // traverseStation.h;
 // traverseStation.b;
-function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback}) {
+function traverseStation({i, hl1, hl2, hr1, hr2, Vl, Vr, vl1, vl2, vr1, vr2, ll1, ll2, lr1, lr2, hback, type}) {
   const firstStation = !vl1;
   const lastStation = !vr1;
   const horl = new Angle(hl2).minus(hl1).to360();
   const horr = new Angle(hr2).minus(hr1).to360();
   const hor = horl.plus(horr).divide(2).groundMinutes(1);
-  const MOl = new Angle(vl1).plus(vl2).divide(2);
-  const MOr = new Angle(vr1).plus(vr2).divide(2);
-  const vl = new Angle(vl1).minus(vl2).divide(2);
-  const vr = new Angle(vr1).minus(vr2).divide(2);
+  let MOl, MOr, vl, vr;
+  switch (type) {
+    case Тип3Т5КП:
+      MOl = new Angle(vl1).minus(vl2).divide(2);
+      MOr = new Angle(vr1).minus(vr2).divide(2);
+      vl = new Angle(vl1).plus(vl2).divide(2);
+      vr = new Angle(vr1).plus(vr2).divide(2);
+      break;
+    case Тип2Т5К:
+      MOl = new Angle(vl1).plus(vl2).divide(2);
+      MOr = new Angle(vr1).plus(vr2).divide(2);
+      vl = new Angle(vl1).minus(vl2).divide(2);
+      vr = new Angle(vr1).minus(vr2).divide(2);
+      break;
+    default:
+      throw "Не установлен тип прибора";
+  }
   const ll = ground((ll1 + ll2) / 2, 1);
   const lr = ground((lr1 + lr2) / 2, 1);
   const Dl = ground(P(ll));
@@ -564,7 +580,7 @@ function levelingStation({bl_up_1, bl_mid_1, bl_up_2, bl_mid_2, red_2, red_1, d,
   levelingStation._5 = red_2;
   levelingStation._6 = red_1;
 
-  levelingStation._7 = levelingStation._2 - levelingStation._1;
+  levelingStation._7 = Math.abs(levelingStation._2 - levelingStation._1);
   levelingStation._8 = levelingStation._4 - levelingStation._3;
   levelingStation._9 = levelingStation._6 - levelingStation._2;
   levelingStation._10 = levelingStation._5 - levelingStation._4;
