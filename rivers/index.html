@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<title>Генератор рек и озёр</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+        <style>
+            main {
+                margin: auto;
+                max-width: 80%;
+                padding: 4em;
+            }
+            #button-panel {
+                text-align: center;
+                margin: 1em;
+            }
+            #generate-btn {
+                padding: 1em;
+            }
+            #canvas-container {
+                display: flex;
+                flex-flow: row nowrap;
+            }
+            .canvas {
+                width: 16em;
+                height: 16em;
+                padding: 2em;
+                border: 1px solid black;
+                margin: 2em;
+            }
+        </style>
+	</head>
+	<body>
+		<main>
+            <div id="button-panel">
+                <button onclick="generate_rivers()" id="generate-btn" disabled>Сгенерировать</button>
+            </div>
+            <div id="canvas-container">
+                <canvas id="canvas1" class="canvas"></canvas>
+                <canvas id="canvas2" class="canvas"></canvas>
+                <canvas id="canvas3" class="canvas"></canvas>
+            </div>
+		</main>
+        <script>
+            let vae_decoder, gan_generator, super_resolution;
+
+            function button_disable(state) {
+                document.getElementById('generate-btn').disabled = state;
+            }
+
+            document.addEventListener("DOMContentLoaded", async function() {
+                Promise.all([
+                    tf.loadGraphModel('./models/vae-decoder/model.json'),
+                    tf.loadGraphModel('./models/gan-generator/model.json'),
+                    tf.loadGraphModel('./models/sr/model.json')
+                ]).then(results => {
+                    [vae_decoder, gan_generator, super_resolution] = results;
+                    generate_rivers(); 
+                });
+            });
+
+            function create_vae_noise(n) {
+                return tf.randomNormal([n, 128], 0, 1)
+            }
+
+            function create_gan_noise(n) {
+                return tf.randomNormal([n, 1024], 0, 1)
+            }
+
+            function generate_river(canvas_id) {
+                let decoded_noise = vae_decoder.predict(create_vae_noise(1));
+                let generated_img = gan_generator.predict([decoded_noise, create_gan_noise(1)]);
+                let upscaled_imgs = tf.squeeze(super_resolution.predict(generated_img), 0);
+                return tf.browser.toPixels(upscaled_imgs, document.getElementById(canvas_id));
+            }
+
+            function generate_rivers() {
+                button_disable(true);
+                const promises = []
+                for (let i = 1; i <= 3; i++) {
+                    promises.push(generate_river('canvas' + i));
+                }
+                Promise.all(promises).then(results => button_disable(false));
+            }
+        </script>
+	</body>
+</html>
