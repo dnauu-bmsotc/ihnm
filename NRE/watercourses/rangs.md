@@ -19,7 +19,7 @@
 
 ### Лабораторная
 
-Для начала работы нужно в таблице атрибутов слоя "Гидрография" [создать новое поле](../other/add-attribute.html) "порядок".
+Для начала работы нужно [создать новое поле](../other/add-attribute.html) "порядок" в таблице атрибутов слоя "Гидрография".
 
 <img title="" src="rangs--new-attribute.png" alt="rangs--new-attribute.png" data-align="center" width="353">
 
@@ -40,6 +40,8 @@
 <img title="" src="rangs--split-edit-mode.png" alt="rangs--split-edit-mode.png" data-align="center" width="376">
 
 <img title="" src="rangs--split-tool.png" alt="rangs--split-tool.png" width="575" data-align="center">
+
+Лучше не разделять линии в местах пересечения с другим объектом того же слоя. Здесь что-то криво работает: либо QGSI либо моя голова.
 
 Если [включена привязка](../other/binding-parameters.html) к вершинам, то можно кликать на вершину и в ней произойдёт разделение линии на две. Если нужно разделить линию по середине, то с помощью кликов левой кнопкой мыши нужно провести секущую линию и нажать правую кнопку мыши.
 
@@ -64,3 +66,5 @@
 В итоге должно получиться что-то подобное:
 
 <img title="" src="rangs--result-1.png" alt="rangs--result-1.png" data-align="center" width="458">
+
+[Следующая часть](./pools.html)
