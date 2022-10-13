@@ -9,7 +9,7 @@ const path = require('path')
 module.exports = {
   siteName: 'IHNM',
   icon: './src/assets/icons/dial.png',
-  pathPrefix: "archive/summer2021/dist/",
+  pathPrefix: "ihnm/archive/summer2021/dist/",
   plugins: [
     {
       use: "gridsome-plugin-i18n",
