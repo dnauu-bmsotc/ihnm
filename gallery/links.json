@@ -1,0 +1,24 @@
+[
+    {
+        "name": "drawings",
+        "array": [
+            {
+                "name": "ink-first",
+                "original": "https://www.dropbox.com/s/xp6808rmprh4j3m/ink-first-3840-2716.jpeg?raw=1",
+                "compress": "https://www.dropbox.com/s/kffcy4mh2ej1cxu/ink-first-1024-724.jpg?raw=1",
+                "info": "Купил тушь для работ в ВУЗе.",
+                "date": "2021-09"
+            }
+        ]
+    },
+    {
+        "name": "photos",
+        "array": [
+            {
+                "name": "uzbekistan-sun-on-bedcover",
+                "original": "https://www.dropbox.com/s/hwh5ssaelmlbdlu/uzbekistan-sun-on-bedcover-1305-1958.png?raw=1",
+                "compress": "https://www.dropbox.com/s/qehvet4do4ivsu2/uzbekistan-sun-on-bedcover-682-1024.png?raw=1"
+            }
+        ]
+    }
+]
