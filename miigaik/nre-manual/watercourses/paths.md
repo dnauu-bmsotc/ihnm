@@ -18,7 +18,9 @@
 
 **Тальвег** – это водоток, возникающий эпизодически. Они могут возникать, например, после дождя. На топографических картах никак не обозначаются. Их следует искать по таким изгибам горизонталей:
 
-<img title="" src="paths-thalweg.jpg" alt="paths-thalweg.jpg" data-align="center" width="171">
+<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/miigaik/nre-manual/watercourses/paths--thalweg.jpg" alt="paths--thalweg.jpg" data-align="center" width="231">
+
+
 
 ## Лабораторная
 

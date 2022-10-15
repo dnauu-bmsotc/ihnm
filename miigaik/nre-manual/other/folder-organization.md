@@ -24,6 +24,6 @@
 
 Может оказаться, что топокарта находится не там, где надо. Это не помешает работе.
 
-<img title="" src="folder-organization-topomap-projection.png" alt="folder-organization-topomap-projection.png" data-align="center" width="583">
+![folder-organization--topomap-projection.png](D:\YandexDisk\Проекты\ihnm\ihnm\miigaik\nre-manual\other\folder-organization--topomap-projection.png)
 
-Если захочется исправить, то нужно [поменять проекцию слоя «Топокарта 1:25000» на EPSG:3785](../other/change-layer-projection.html).
+Но если захочется исправить, то нужно [поменять проекцию слоя «Топокарта 1:25000» на EPSG:3785](../other/change-layer-projection.html).
