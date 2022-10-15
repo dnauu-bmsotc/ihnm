@@ -1250,20 +1250,52 @@ pre[class*="language-"] {
 <body>
   <article class="markdown-body"><h2 class="atx" id="vydelenie-bassejnov">Выделение бассейнов</h2>
 <h3 class="atx" id="teoriya">Теория</h3>
-<p><strong>Бассейн</strong> – это территория, на которой вся вода попадает в данный водоток.</p>
+<p><strong>Бассейн</strong> – это территория, на которой вся вода попадает в данный водоток. Порядок бассейна соответствует порядку его водотока.</p>
 <h3 class="atx" id="laboratornaya">Лабораторная</h3>
 <p><a href="../other/add-layer.html">Создаём новый слой</a> с названием "Бассейны" и типом геометрии "Площадная". Ещё создаём поле "порядок" (тип "целое число"). </p>
 <img width="579" data-align="center" alt="pools--layer-settings.png" src="pools--layer-settings.png" title="">
 
-<p>Теперь начнём выделять бассейны. Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии не сойдутся или пока не дойдут до водораздела.</p>
+<p>Также стОит <a href="../other/binding-parameters.html">включить привязку</a> к вершинам созданного слоя.</p>
+<p>Теперь начнём выделять бассейны (<a href="../other/add-polygon.html">создавать полигоны</a>). Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии с обеих сторон не сойдутся или пока не дойдут до водораздела.</p>
+<img width="276" data-align="center" alt="pools-perpendicular-begin.png" src="pools--perpendicular-begin.png" title="">
+
 <p>Порядок бассейна соответствует порядку его водотока.</p>
+<img width="434" data-align="center" alt="pools--attributes.png" src="pools--attributes.png" title="">
+
+<p>После создания объекта скорее всего окажется что он непрозрачный и за ним ничего не видно.</p>
+<img width="437" data-align="center" alt="pools--opaque.png" src="pools--opaque.png" title="">
+
+<p>Заходим в стили слоя и устанавливаем подходящую прозрачность.</p>
+<img width="319" data-align="center" alt="pools--layer-properties.png" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/miigaik/nre-manual/watercourses/pools--layer-properties.png" title="">
+
+<img width="458" data-align="center" alt="pools--transparency.png" src="pools--transparency.png" title="">
+
+<p>Пример ситуации, когда линии не сходятся, их прерывает водораздел:</p>
+<img width="486" data-align="center" alt="pools--watershed.png" src="pools--watershed.png" title="">
+
+<p>После создания бассейнов нужно создать стили для каждого порядка. Заходим в свойства слоя, устанавливаем следующие настройки:</p>
+<ul>
+<li><p>"Символизацию по уникальным значениям"</p>
+</li>
+<li><p>Значение "порядок"</p>
+</li>
+</ul>
+<p>Нажимаем "классифицировать", "ок".</p>
+<img width="296" data-align="center" alt="pools--layer-properties.png" src="pools--layer-properties.png" title="">
+
+<img width="619" data-align="center" alt="pools--layer-classification.png" src="pools--layer-classification.png" title="">
+
+<p>В итоге должно получиться что-то подобное:</p>
 <ul>
 <li><p>На полуквадрате не должно остаться пустых мест;</p>
 </li>
 <li><p>Линии должны быть плавными;</p>
 </li>
+<li><p>Контуры бассейнов должны быть перпендикулярны к горизонталям;</p>
+</li>
+<li><p>Бассейны более высокого порядка включают в себя бассейны низших порядков.</p>
+</li>
 </ul>
-<p>В итоге должно получиться что-то подобное:</p>
 <img width="413" data-align="center" alt="pools--result-1.png" src="pools--result-1.png" title="">
 
 <p>За границами своего полуквадрата можно, конечно, и не рисовать.</p>
