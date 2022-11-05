@@ -10,12 +10,13 @@
 
 1. Водные ресурсы
    
-   1. [Часть 1: Выделение водотоков](./watercourses/paths.html)
+   1. [Часть 1: Водотоки](./water-resourses/paths.html)
    
-   2. [Часть 2: Выделение порядков водотоков](./watercourses/rangs.html)
+   2. [Часть 2: Порядки водотоков](./water-resourses/rangs.html)
    
-   3. [Часть 3: Выделение бассейнов](./watercourses/pools.html)
+   3. [Часть 3: Бассейны](./water-resourses/pools.html)
 
 2. Биологические ресурсы
    
-   1. [Земельные угодья](./landuse/landuse.html)
+   1. [Часть 1: Земельные угодья](./biological-resourses/landuse.html)
+   2. [Часть 2: Формула леса](./biological-resourses/forest-formula.html)
