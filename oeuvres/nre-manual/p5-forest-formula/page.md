@@ -68,27 +68,27 @@
 
 Чтобы получить представление о том, как выглядят на космическом снимке разные породы деревьев, можно посмотреть на деревья, отмеченные как "Точки полевой проверки".
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--field-check-points.png" alt="forest-formula--field-check-points.png" data-align="center" width="320">
+<img title="" src="forest-formula--field-check-points.png" alt="forest-formula--field-check-points.png" data-align="center" width="320">
 
 Выделим слой "Точки полевой проверки".
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--select-field-check-points-layer.png" alt="forest-formula--select-field-check-points-layer.png" data-align="center" width="384">
+<img title="" src="forest-formula--select-field-check-points-layer.png" alt="forest-formula--select-field-check-points-layer.png" data-align="center" width="384">
 
 Включаем инструмент "Определить объекты" и нажимаем на любую из точек полевой проверки. Должно высветиться окно, в котором будет отображена порода дерева.
 
 <img title="" src="forest-formula--define-objects.png" alt="forest-formula--define-objects.png" data-align="center" width="510">
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--defined-object.png" alt="forest-formula--defined-object.png" data-align="center" width="577">
+<img title="" src="forest-formula--defined-object.png" alt="forest-formula--defined-object.png" data-align="center" width="577">
 
 Для более точной классификации можно использовать числовые значения цвета каждой породы. Наш космоснимок состоит из трёх каналов: красного, зелёного и синего. Для разных пород характерны различные значения этих каналов.
 
 Чтобы увидеть числовые значения пикселя на космоснимке, нужно сначала выделить слой "Космоснимок 50 cm"
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--select-cosmophoto-layer.png" alt="forest-formula--select-cosmophoto-layer.png" data-align="center" width="424">
+<img title="" src="forest-formula--select-cosmophoto-layer.png" alt="forest-formula--select-cosmophoto-layer.png" data-align="center" width="424">
 
 Затем всё тем же инструментом "Определить объекты" нажимаем на любой пиксель на космоснимке. Должно высветиться окно со значениями каждого канала.
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--defined-pixel.png" alt="forest-formula--defined-pixel.png" data-align="center" width="385">
+<img title="" src="forest-formula--defined-pixel.png" alt="forest-formula--defined-pixel.png" data-align="center" width="385">
 
 - Канал 1 &mdash; красный канал;
 
@@ -102,11 +102,11 @@
 
 Для определения формулы леса нам необходимы выборки. Это участки леса, которые хорошо репрезентуют остальной лес.
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--samples.png" alt="forest-formula--samples.png" width="232" data-align="center">
+<img title="" src="forest-formula--samples.png" alt="forest-formula--samples.png" width="232" data-align="center">
 
 Так как в формуле леса максимум указываются три породы, можно [создать слой](../other/add-layer/page.html) со следующими полями:
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--samples-layer.png" alt="forest-formula--samples-layer.png" data-align="center" width="494">
+<img title="" src="forest-formula--samples-layer.png" alt="forest-formula--samples-layer.png" data-align="center" width="494">
 
 То есть:
 
@@ -130,15 +130,15 @@
 
 Все леса необходимо [раскрасить](../other/styling/page.html) соответственно их формуле. Ещё можно [добавить подписи](../other/add-captions/page.html) формул:
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--styles.png" alt="forest-formula--styles.png" data-align="center" width="577">
+<img title="" src="forest-formula--styles.png" alt="forest-formula--styles.png" data-align="center" width="577">
 
 В результате должно получиться что-то такое:
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--result-1.png" alt="forest-formula--result-1.png" data-align="center" width="439">
+<img title="" src="forest-formula--result-1.png" alt="forest-formula--result-1.png" data-align="center" width="439">
 
 Или такое:
 
-<img src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/p5-forest-formula/forest-formula--result-2.png" title="" alt="forest-formula--result-2.png" data-align="center">
+<img title="" src="forest-formula--result-2.png" alt="forest-formula--result-2.png" data-align="center">
 
 [Следующая часть](../p6-fire-hazard/page.html)
 
