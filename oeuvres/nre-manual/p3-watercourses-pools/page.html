@@ -1248,29 +1248,62 @@ pre[class*="language-"] {
   <style>.markdown-body{}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
-  <article class="markdown-body"><h1 class="atx" id="prirodnye-resursy-zemli">Природные ресурсы Земли</h1>
-<p>Методичка неофициальная.</p>
-<p>При написании методички использовалась QGIS версии 3.22.10-Białowieża. При использовании другой версии, вероятно, будет некоторое несовпадение интерфейса программы с указаниями в методичке.</p>
-<p>Перед выполнением работы необходимо скачать папку с начальными данными. На момент 08.10.2022 она доступна для скачивания с <a href="https://drive.google.com/file/d/1b1pg9z7ZPq7tGAe7XHAkz3RetYH8QjD0/view?usp=sharing">Гуглодиска</a> или <a href="https://disk.yandex.ru/d/9mWN-YshBk2ifw">Ядодиска</a>.</p>
-<h2 class="atx" id="spisok-rabot">Список работ</h2>
-<ol>
-<li><p><a href="./p1-watercourses-paths/page.html">Водотоки</a>;</p>
+  <article class="markdown-body"><h2 class="atx" id="vydelenie-bassejnov">Выделение бассейнов</h2>
+<h3 class="atx" id="teoriya">Теория</h3>
+<p><strong>Бассейн</strong> – это территория, на которой вся вода попадает в данный водоток. Порядок бассейна соответствует порядку его водотока.</p>
+<h3 class="atx" id="laboratornaya">Лабораторная</h3>
+<p><a href="../other/add-layer/page.html">Создаём новый слой</a> с названием "Бассейны" и типом геометрии "Площадная". Ещё создаём поле "порядок" (тип "целое число"). </p>
+<img width="579" data-align="center" alt="pools--layer-settings.png" src="pools--layer-settings.png" title="">
+
+<p>Также стОит <a href="../other/binding-parameters/page.html">включить привязку</a> к вершинам созданного слоя.</p>
+<p>Теперь начнём выделять бассейны (<a href="../other/add-polygon/page.html">создавать полигоны</a>). Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии с обеих сторон не сойдутся или пока не дойдут до водораздела.</p>
+<img width="276" data-align="center" alt="pools-perpendicular-begin.png" src="pools--perpendicular-begin.png" title="">
+
+<p>Порядок бассейна соответствует порядку его водотока.</p>
+<img width="434" data-align="center" alt="pools--attributes.png" src="pools--attributes.png" title="">
+
+<p>После создания объекта скорее всего окажется что он непрозрачный и за ним ничего не видно.</p>
+<img width="437" data-align="center" alt="pools--opaque.png" src="pools--opaque.png" title="">
+
+<p>Заходим в стили слоя и устанавливаем подходящую прозрачность.</p>
+<img width="319" data-align="center" alt="pools--layer-properties.png" src="pools--layer-properties.png" title="">
+
+<img width="458" data-align="center" alt="pools--transparency.png" src="pools--transparency.png" title="">
+
+<p>Пример ситуации, когда линии не сходятся, их прерывает водораздел:</p>
+<img width="486" data-align="center" alt="pools--watershed.png" src="pools--watershed.png" title="">
+
+<p>После создания бассейнов нужно создать стили для каждого порядка. Заходим в свойства слоя, устанавливаем следующие настройки:</p>
+<ul>
+<li><p>"Символизацию по уникальным значениям"</p>
 </li>
-<li><p><a href="./p2-watercourses-rangs/page.html">Порядки водотоков</a>;</p>
+<li><p>Значение "порядок"</p>
 </li>
-<li><p><a href="./p3-watercourses-pools/page.html">Бассейны водотоков</a>;</p>
+</ul>
+<p>Нажимаем "классифицировать", "ок".</p>
+<img width="296" data-align="center" alt="pools--layer-properties.png" src="pools--layer-properties.png" title="">
+
+<img width="619" data-align="center" alt="pools--layer-classification.png" src="pools--layer-classification.png" title="">
+
+<p>В итоге должно получиться что-то подобное:</p>
+<ul>
+<li><p>На полуквадрате не должно остаться пустых мест;</p>
 </li>
-<li><p><a href="./p4-landuse/page.html">Земельные угодья</a>;</p>
+<li><p>Линии должны быть плавными;</p>
 </li>
-<li><p><a href="./p5-forest-formula/page.html">Формула леса</a>;</p>
+<li><p>Контуры бассейнов должны быть перпендикулярны к горизонталям;</p>
 </li>
-<li><p><a href="./p6-fire-hazard">Пожароопасность</a>.</p>
+<li><p>Бассейны более высокого порядка включают в себя бассейны низших порядков.</p>
 </li>
-</ol>
-<h2 class="atx" id="faq">FAQ</h2>
-<ol>
-<li></li>
-</ol>
+</ul>
+<img width="413" data-align="center" alt="pools--result-1.png" src="pools--result-1.png" title="">
+
+<p>За границами своего полуквадрата можно, конечно, и не рисовать.</p>
+<img width="326" data-align="center" alt="pools--result-2.png" src="pools--result-2.png" title="">
+
+<p>На этом с водными ресурсами всё.</p>
+<p><a href="../p4-landuse/page.html">Следующая работа</a></p>
+<p><a href="../index.html">Вернуться на главную</a></p>
 </article>
 </body>
 </html>

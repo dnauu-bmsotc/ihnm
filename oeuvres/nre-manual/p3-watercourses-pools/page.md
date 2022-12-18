@@ -6,13 +6,13 @@
 
 ### Лабораторная
 
-[Создаём новый слой](../other/add-layer.html) с названием "Бассейны" и типом геометрии "Площадная". Ещё создаём поле "порядок" (тип "целое число"). 
+[Создаём новый слой](../other/add-layer/page.html) с названием "Бассейны" и типом геометрии "Площадная". Ещё создаём поле "порядок" (тип "целое число"). 
 
 <img title="" src="pools--layer-settings.png" alt="pools--layer-settings.png" data-align="center" width="579">
 
-Также стОит [включить привязку](../other/binding-parameters.html) к вершинам созданного слоя.
+Также стОит [включить привязку](../other/binding-parameters/page.html) к вершинам созданного слоя.
 
-Теперь начнём выделять бассейны ([создавать полигоны](../other/add-polygon.html)). Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии с обеих сторон не сойдутся или пока не дойдут до водораздела.
+Теперь начнём выделять бассейны ([создавать полигоны](../other/add-polygon/page.html)). Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии с обеих сторон не сойдутся или пока не дойдут до водораздела.
 
 <img title="" src="pools--perpendicular-begin.png" alt="pools-perpendicular-begin.png" data-align="center" width="276">
 
@@ -26,7 +26,7 @@
 
 Заходим в стили слоя и устанавливаем подходящую прозрачность.
 
-<img title="" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/miigaik/nre-manual/watercourses/pools--layer-properties.png" alt="pools--layer-properties.png" data-align="center" width="319">
+<img title="" src="pools--layer-properties.png" alt="pools--layer-properties.png" data-align="center" width="319">
 
 <img title="" src="pools--transparency.png" alt="pools--transparency.png" data-align="center" width="458">
 
@@ -63,5 +63,7 @@
 <img title="" src="pools--result-2.png" alt="pools--result-2.png" data-align="center" width="326">
 
 На этом с водными ресурсами всё.
+
+[Следующая работа](../p4-landuse/page.html)
 
 [Вернуться на главную](../index.html)

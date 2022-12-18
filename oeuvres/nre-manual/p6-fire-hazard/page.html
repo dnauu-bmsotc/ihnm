@@ -1248,61 +1248,66 @@ pre[class*="language-"] {
   <style>.markdown-body{}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
-  <article class="markdown-body"><h2 class="atx" id="vydelenie-bassejnov">Выделение бассейнов</h2>
-<h3 class="atx" id="teoriya">Теория</h3>
-<p><strong>Бассейн</strong> – это территория, на которой вся вода попадает в данный водоток. Порядок бассейна соответствует порядку его водотока.</p>
-<h3 class="atx" id="laboratornaya">Лабораторная</h3>
-<p><a href="../other/add-layer.html">Создаём новый слой</a> с названием "Бассейны" и типом геометрии "Площадная". Ещё создаём поле "порядок" (тип "целое число"). </p>
-<img width="579" data-align="center" alt="pools--layer-settings.png" src="pools--layer-settings.png" title="">
-
-<p>Также стОит <a href="../other/binding-parameters.html">включить привязку</a> к вершинам созданного слоя.</p>
-<p>Теперь начнём выделять бассейны (<a href="../other/add-polygon.html">создавать полигоны</a>). Начинать нужно от "устья" каждого водотока и идти наверх, перпендикулярно горизонталям, пока линии с обеих сторон не сойдутся или пока не дойдут до водораздела.</p>
-<img width="276" data-align="center" alt="pools-perpendicular-begin.png" src="pools--perpendicular-begin.png" title="">
-
-<p>Порядок бассейна соответствует порядку его водотока.</p>
-<img width="434" data-align="center" alt="pools--attributes.png" src="pools--attributes.png" title="">
-
-<p>После создания объекта скорее всего окажется что он непрозрачный и за ним ничего не видно.</p>
-<img width="437" data-align="center" alt="pools--opaque.png" src="pools--opaque.png" title="">
-
-<p>Заходим в стили слоя и устанавливаем подходящую прозрачность.</p>
-<img width="319" data-align="center" alt="pools--layer-properties.png" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/miigaik/nre-manual/watercourses/pools--layer-properties.png" title="">
-
-<img width="458" data-align="center" alt="pools--transparency.png" src="pools--transparency.png" title="">
-
-<p>Пример ситуации, когда линии не сходятся, их прерывает водораздел:</p>
-<img width="486" data-align="center" alt="pools--watershed.png" src="pools--watershed.png" title="">
-
-<p>После создания бассейнов нужно создать стили для каждого порядка. Заходим в свойства слоя, устанавливаем следующие настройки:</p>
+  <article class="markdown-body"><h1 class="atx" id="pozharoopasnost">Пожароопасность</h1>
+<h2 class="atx" id="teoriya">Теория</h2>
+<p>Источники возгарания:</p>
 <ul>
-<li><p>"Символизацию по уникальным значениям"</p>
+<li><p>Селитебные;</p>
 </li>
-<li><p>Значение "порядок"</p>
+<li><p>Дороги автомобильные и железнодорожные;</p>
+</li>
+<li><p>Пашни (пал травы);</p>
+</li>
+<li><p>Промышленные объекты.</p>
 </li>
 </ul>
-<p>Нажимаем "классифицировать", "ок".</p>
-<img width="296" data-align="center" alt="pools--layer-properties.png" src="pools--layer-properties.png" title="">
-
-<img width="619" data-align="center" alt="pools--layer-classification.png" src="pools--layer-classification.png" title="">
-
-<p>В итоге должно получиться что-то подобное:</p>
+<p>Горимость леса зависит от следующих характеристик:</p>
 <ul>
-<li><p>На полуквадрате не должно остаться пустых мест;</p>
+<li><p>Тип:</p>
+<ul>
+<li><p>Хвойные — 5 баллов;</p>
 </li>
-<li><p>Линии должны быть плавными;</p>
+<li><p>Смешанные — 4 балла;</p>
 </li>
-<li><p>Контуры бассейнов должны быть перпендикулярны к горизонталям;</p>
+<li><p>Лиственные — 3 балла;</p>
 </li>
-<li><p>Бассейны более высокого порядка включают в себя бассейны низших порядков.</p>
+<li><p>Ленточные — 2 балла.</p>
 </li>
 </ul>
-<img width="413" data-align="center" alt="pools--result-1.png" src="pools--result-1.png" title="">
-
-<p>За границами своего полуквадрата можно, конечно, и не рисовать.</p>
-<img width="326" data-align="center" alt="pools--result-2.png" src="pools--result-2.png" title="">
-
-<p>На этом с водными ресурсами всё.</p>
-<p><a href="../index.html">Вернуться на главную</a></p>
+</li>
+<li><p>Возраст:</p>
+<ul>
+<li><p>Зрелые — 3 балла;</p>
+</li>
+<li><p>Средневозрастные — 2 балла;</p>
+</li>
+<li><p>Молодые — 1 балл.</p>
+</li>
+</ul>
+</li>
+<li><p>Плотность:</p>
+<ul>
+<li><p>Сомкнутый лес (проективное покрытие составляет почти 100%) — 2 балла;</p>
+</li>
+<li><p>Слабосомкнутый лес — 1 балл;</p>
+</li>
+<li><p>Разреженный лес — 0 баллов.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>В зависимости от суммы баллов определяется категория горимости:</p>
+<ul>
+<li><p>8-10: очень высокая горимость;</p>
+</li>
+<li><p>6-8: высокая горимость;</p>
+</li>
+<li><p>4-6: слабая горимость;</p>
+</li>
+<li><p>&lt;4: практически негоримые.</p>
+</li>
+</ul>
+<h2 class="atx" id="laboratornaya">Лабораторная</h2>
 </article>
 </body>
 </html>

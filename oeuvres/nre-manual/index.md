@@ -6,17 +6,20 @@
 
 Перед выполнением работы необходимо скачать папку с начальными данными. На момент 08.10.2022 она доступна для скачивания с [Гуглодиска](https://drive.google.com/file/d/1b1pg9z7ZPq7tGAe7XHAkz3RetYH8QjD0/view?usp=sharing) или [Ядодиска](https://disk.yandex.ru/d/9mWN-YshBk2ifw).
 
-Список работ:
+## Список работ
 
-1. Водные ресурсы
-   
-   1. [Часть 1: Водотоки](./water-resourses/paths.html)
-   
-   2. [Часть 2: Порядки водотоков](./water-resourses/rangs.html)
-   
-   3. [Часть 3: Бассейны](./water-resourses/pools.html)
+1. [Водотоки](./p1-watercourses-paths/page.html);
 
-2. Биологические ресурсы
-   
-   1. [Часть 1: Земельные угодья](./biological-resourses/landuse.html)
-   2. [Часть 2: Формула леса](./biological-resourses/forest-formula.html)
+2. [Порядки водотоков](./p2-watercourses-rangs/page.html);
+
+3. [Бассейны водотоков](./p3-watercourses-pools/page.html);
+
+4. [Земельные угодья](./p4-landuse/page.html);
+
+5. [Формула леса](./p5-forest-formula/page.html);
+
+6. [Пожароопасность](./p6-fire-hazard).
+
+## FAQ
+
+1. 

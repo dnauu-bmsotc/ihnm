@@ -1248,62 +1248,22 @@ pre[class*="language-"] {
   <style>.markdown-body{}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
-  <article class="markdown-body"><h2 class="atx" id="vydelenie-poryakov-vodotokov">Выделение поряков водотоков</h2>
-<h3 class="atx" id="teoriya">Теория</h3>
-<p><strong>Водоток первого порядка</strong> – это элементарный водоток, который не принимает ни одного водотока, то есть является начальным.</p>
-<p><strong>Водоток второго порядка</strong> образуется при слиянии двух водотоков первого порядка.</p>
-<ul>
-<li><p>При слиянии водотоков первого и второго порядков результирующий водоток сохраняет второй порядок.</p>
-</li>
-<li><p>Порядок водотоков повышается при слиянии двух водотоков с одинаковыми порядками.</p>
-</li>
-</ul>
-<p>Есть схема выделения водотоков разными цветами:
-1 - чёрный, 2 - красный, 3 - зелёный, 4 - коричневый, 5 - жёлтый.
-Но следовать этой схеме необязательно.</p>
-<p>Если водоток берёт начало вне карты, то он называется водотоком <strong>неопределённого порядка</strong>. Такой водоток должен быть выделен отдельным цветом.
-Например, река Скнига является водотоком неопределённого порядка, так как исток реки по карте найти нельзя.</p>
-<h3 class="atx" id="laboratornaya">Лабораторная</h3>
-<p>Для начала работы нужно <a href="../other/add-attribute.html">создать новое поле</a> "порядок" в таблице атрибутов слоя "Гидрография".</p>
-<img width="353" data-align="center" alt="rangs--new-attribute.png" src="rangs--new-attribute.png" title="">
+  <article class="markdown-body"><h2 class="atx" id="dobavlenie-podpisej">Добавление подписей</h2>
+<img width="405" data-align="center" alt="add-captions--properties.png" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/other/add-captions/add-captions--properties.png" title="">
 
-<p>Теперь нужно присвоить каждому водотоку свой порядок. Это можно сделать двумя способами:</p>
+<p>Во вкладке "Надписи" выбираем опцию "Обычные подписи"</p>
+<img width="528" data-align="center" alt="add-captions--captions.png" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/other/add-captions/add-captions--captions.png" title="">
+
+<p>Появится куча настроек. Самыми основными являются:</p>
 <ol>
-<li><p>Если выделить объект в таблице атрибутов, то он подсветится на карте. Тогда можно посчитать порядок водотока и вписать значение в таблицу.</p>
-<img width="326" data-align="center" alt="rangs--table-map.png" src="rangs--table-map.png" title="">
+<li><p>Выбор поля, из которого будут выписываться надписи;</p>
 </li>
-<li><p>С помощью инструмента "Определить объекты" можно кликать на водотоки на карте, а затем изменить значения в их полях.</p>
-<img width="572" data-align="center" alt="rangs--define-objects.png" src="rangs--define-objects.png" title="">
-
-<img width="421" data-align="center" alt="rangs--map-table.png" src="rangs--map-table.png" title="">
-
+<li><p>Фон</p>
 </li>
 </ol>
-<p>Если водоток нужно разделить на два, то можно использовать инструмент "Разделить объекты". Сначала нужно выделить слой и войти в режим редактирования. Затем должен стать доступным инструмент "Разделить объекты".</p>
-<img width="376" data-align="center" alt="rangs--split-edit-mode.png" src="rangs--split-edit-mode.png" title="">
+<img width="576" data-align="center" alt="add-captions--settings.png" src="file:///D:/YandexDisk/Проекты/ihnm/ihnm/oeuvres/nre-manual/other/add-captions/add-captions--settings.png" title="">
 
-<img data-align="center" width="575" alt="rangs--split-tool.png" src="rangs--split-tool.png" title="">
 
-<p>Лучше не разделять линии в местах пересечения с другим объектом того же слоя. Инструмент будет либо криво работать, либо вылезет ошибка.</p>
-<p>Если <a href="../other/binding-parameters.html">включена привязка</a> к вершинам, то можно кликать на вершину и в ней произойдёт разделение линии на две. Если нужно разделить линию по середине, то с помощью кликов левой кнопкой мыши нужно провести секущую линию и нажать правую кнопку мыши.</p>
-<p>В результате поле "порядок" должно быть заполнено полностью.</p>
-<img width="434" data-align="center" alt="rangs--attributes-table.png" src="rangs--attributes-table.png" title="">
-
-<p>Создаём новый стиль с названием "порядки".</p>
-<img data-align="center" width="510" alt="rangs--add-style.png" src="rangs--add-style.png" title="">
-
-<img width="173" data-align="center" alt="rangs--style-name.png" src="rangs--style-name.png" title="">
-
-<p>Убедитесь, что стилей теперь два. Изменение нового стиля не должно повлиять на предыдущий.</p>
-<img width="468" data-align="center" alt="rangs--two-styles.png" src="rangs--two-styles.png" title="">
-
-<p>Заходим в свойства слоя, удаляем все знаки, выбираем значение "порядки". Нажимаем классифицировать. Можно изменить стили знаков. Нажимаем ок.</p>
-<img width="534" data-align="center" alt="rangs--style.png" src="rangs--style.png" title="">
-
-<p>В итоге должно получиться что-то подобное:</p>
-<img width="458" data-align="center" alt="rangs--result-1.png" src="rangs--result-1.png" title="">
-
-<p><a href="./pools.html">Следующая часть</a></p>
 </article>
 </body>
 </html>

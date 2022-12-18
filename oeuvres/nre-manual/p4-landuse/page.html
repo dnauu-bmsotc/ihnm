@@ -1248,22 +1248,130 @@ pre[class*="language-"] {
   <style>.markdown-body{}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
-  <article class="markdown-body"><h2 class="atx" id="kopirovanie-fajla-proekta">Копирование файла проекта</h2>
-<p>Открываем папку «КГС 3 курс».</p>
-<p>Файл проекта был сохранён в устаревшей версии, и чтобы его можно было свободно скопировать, его нужно сохранить в новой версии.</p>
-<p>Открываем файл «Проект QGIS», нажимаем Ctrl+S и закрываем.</p>
-<img width="511" data-align="center" alt="folder-organization--deprecated-version.png" src="copy-project-file--deprecated-version.png" title="">
+  <article class="markdown-body"><h2 class="atx" id="vydelenie-zemelnyh-ugodij">Выделение земельных угодий</h2>
+<h3 class="atx" id="teoriya">Теория</h3>
+<p>В проекте мы будем выделять следующие категории земельных угодий:</p>
+<ul>
+<li><p>Лесные</p>
+<ul>
+<li><p>хвойные, на снимке тёмные;</p>
+</li>
+<li><p>смешанные;</p>
+</li>
+<li><p>лиственные, на снимке более светлые;</p>
+</li>
+<li><p>гари (горельники), на снимке чаще всего несколько сторон являются линиями, остальные стороны – кривыми;</p>
+<img data-align="center" width="204" alt="cinder.png" src="landuse--cinder.png" title="">
+</li>
+<li><p>вырубки.</p>
+</li>
+</ul>
+</li>
+<li><p>Пахотные</p>
+<ul>
+<li><p>Пахотные (действующие). На спутниковых снимках это не всегда явно распашенные области. Часто пахотные угодья определяются только по следам распашки</p>
+</li>
+<li><p>Пахотные зарастающие. Заброшенные участки можно определить по наличию на них деревьев.</p>
+<img width="231" data-align="center" alt="landuse--overgrown.png" src="landuse--overgrown.png" title="">
+</li>
+</ul>
+</li>
+<li><p>Луговые</p>
+<ul>
+<li><p>Кормовые. Находятся на поймах и надпойменных террасах</p>
+</li>
+<li><p>Пастбищные</p>
+</li>
+<li><p>Неудобья. Например территория с могильниками около птицефабрики.</p>
+</li>
+</ul>
+</li>
+<li><p>Водоохранные</p>
+<ul>
+<li><p>Ленточные леса. Это леса которые растут вдоль рек.</p>
+<img width="372" data-align="center" alt="landuse--tape-forest.png" src="landuse--tape-forest.png" title="">
+</li>
+</ul>
+</li>
+<li><p>Селитебные</p>
+<ul>
+<li><p>Постоянного проживания</p>
+<ul>
+<li><p>Сельского типа: наличие огородов, дома немногоквартирные;</p>
+<img width="394" data-align="center" alt="landuse--village.png" src="landuse--village.png" title="">
+</li>
+<li><p>Городского типа: отсутствуют огороды, дома многоквартирные.</p>
+<img width="407" data-align="center" alt="landuse--city.png" src="landuse--city.png" title="">
+</li>
+</ul>
+</li>
+<li><p>Сезонного проживания</p>
+<ul>
+<li><p>Дачного типа: обычно маленькие участки одинаковых размеров</p>
+<img width="397" data-align="center" alt="landuse--dacha.png" src="landuse--dacha.png" title="">
+</li>
+<li><p>Коттеджи: дома находятся далеко друг от друга</p>
+<img width="384" data-align="center" alt="landuse--cottage.png" src="landuse--cottage.png" title="">
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Промышленные</p>
+</li>
+<li><p>Дорожная инфраструктура</p>
+<ul>
+<li><p>Автодорожные (только с покрытием). К области относятся также обочины и лесополосы.</p>
+</li>
+<li><p>Железнодорожные.</p>
+</li>
+</ul>
+</li>
+<li><p>Рекреационные (например санатории, пионерлагеря, туристические объекты, старые усадьбы, Заокский геополигон МИИГА*К);</p>
+</li>
+<li><p>Малоиспользуемые (например болота)</p>
+</li>
+</ul>
+<h3 class="atx" id="laboratornaya">Лабораторная</h3>
+<p>Каждый участок на поверхности земли является каким-либо угодьем. Определить тип угодья в нашем проекте можно по топокарте и космоснимку. Также можно использовать аэроснимок, если он дотягивается до нужного полуквадрата.</p>
+<img width="283" data-align="center" alt="landuse--aero-cosmo-topo.png" src="landuse--aero-cosmo-topo.png" title="">
 
-<p>После этого файл "Проект QGIS" можно скопировать куда надо.</p>
-<p>Открываем файл и видим сообщение о недостающих слоях. Нажимаем кнопку «Автопоиск».</p>
-<img width="517" data-align="center" alt="folder-organization--no-layers-1.png" src="copy-project-file--no-layers-1.png" title="">
+<p>На топокарте можно определить, например, состав крупных лесов, луговые территории и некоторые объекты, которые неразличимы на космоснимке.</p>
+<p>Теперь приступим к выделению угодий.</p>
+<ol>
+<li><p>Так как некоторые угодья могут содержать в себе угодья другого типа, то удобнее будет сначала выделять те угодья, внутри которых нет других угодий.</p>
+<img width="498" data-align="center" alt="landuse--order.png" src="landuse--order.png" title="">
 
-<p>После этого Кугис должен найти все слои кроме трёх. Нажимаем применить изменения и закрываем окно.</p>
-<img width="506" data-align="center" alt="folder-organization--no-layers-2.png" src="copy-project-file--no-layers-2.png" title="">
+<p>Например, в данном случае, луговое угодье (неудобье) содержит в себе лесное угодье, дорожную инфраструктуру и промышленное угодье. Удобнее будет сначала выделить их, и только после – луг.</p>
+</li>
+<li><p><a href="../other/add-layer/page.html">Создаём слой</a> для лесных угодий, тип "Площадная". В список полей добавляем поле типа (чтобы разделить хвойные, лиственные и смешанные леса).</p>
+<p><img width="489" data-align="center" alt="landuse--add-layer.png" src="landuse--add-layer.png" title="">Тип лесных угодий (хвойные, лиственные или смешанные) нужно определять по топографической карте или по цвету крон на космоснимке.</p>
+</li>
+<li><p>После выделения внутренних угодий, приступаем к выделению луговых угодий. Чтобы можно было выделить луговое угодье, не накладывая его на внутренние угодья, необходимо включить функцию "вырезать наложение".</p>
+<p>Заходим в <a href="../other/binding-parameters/page.html">параметры привязки</a>, включаем режим "Согласно расширенной настройки". Затем включаем привязку и "Вырезать наложение" для внутренних слоёв.</p>
+<img width="539" data-align="center" alt="landuse--cut-overlay-3.png" src="landuse--cut-overlay-3.png" title="">
+</li>
+<li><p>После этого можно создать новый слой "Луговые угодья" и выделить луг следующим образом:<img width="367" data-align="center" alt="landuse--cut-overlay.png" src="landuse--cut-overlay.png" title="">Если всё сделано правильно, то должно получиться подобное:</p>
+<img width="364" data-align="center" alt="landuse--cut-overlay-2.png" src="landuse--cut-overlay-2.png" title="">
 
-<p>Может оказаться, что топокарта находится не там, где надо.</p>
-<p><img alt="folder-organization--topomap-projection.png" src="copy-project-file--topomap-projection.png"></p>
-<p>Нужно <a href="../other/change-layer-projection.html">поменять проекцию слоя «Топокарта 1:25000» на EPSG:3785</a>.</p>
+<p>Если при попытке создать новый объект вылезает ошибка о недействительной геометрии, нужно проверить, чтобы "Вырезать наложение" было включено только в тех слоях, в которых это нужно.</p>
+<img width="580" data-align="center" alt="landuse--invalid-geometry.png" src="landuse--invalid-geometry.png" title="">
+</li>
+<li><p>Продолжаем выделять угодья. На полуквадрате не должно остаться невыделенных мест.</p>
+</li>
+</ol>
+<p>В результате должно получиться что-то подобное:</p>
+<img data-align="center" width="636" alt="landuse--result.png" src="landuse--result.png" title="">
+
+<p>Замечания:</p>
+<ul>
+<li>Внутри селитебных не нужно выделять дороги;</li>
+<li>Пахотные угодья лучше выделять жёлтыми;</li>
+<li>Нарушенные участки (селитебные) лучше выделять красноватыми;</li>
+<li>Леса лучше выделять зелёными.</li>
+</ul>
+<p><a href="../p5-forest-formula/page.html">Следующая часть</a></p>
+<p><a href="../index.html">На главную</a></p>
 </article>
 </body>
 </html>
