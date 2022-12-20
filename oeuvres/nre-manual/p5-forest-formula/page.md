@@ -138,10 +138,10 @@
 
 Или такое:
 
-<img title="" src="forest-formula--result-2.png" alt="forest-formula--result-2.png" data-align="center">
+<img title="" src="forest-formula--result-2.png" alt="forest-formula--result-2.png" data-align="center" width="511">
 
 Или такое:
 
-<img title="" src="forest-formula--result-3.png" alt="forest-formula--result-3.png" data-align="center" width="587">
+<img title="" src="forest-formula--result-3.png" alt="forest-formula--result-3.png" data-align="center" width="646">
 
 [На главную](../index.html)
