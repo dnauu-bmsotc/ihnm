@@ -1248,136 +1248,39 @@ pre[class*="language-"] {
   <style>.markdown-body{}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
-  <article class="markdown-body"><h2 class="atx" id="opredelenie-formuly-lesa">Определение формулы леса</h2>
-<h3 class="atx" id="teoriya">Теория</h3>
-<p>Проективное перекрытие — процент площади, которую занимает крона.</p>
-<img width="528" data-align="center" alt="forest-formula--projective-cover.png" src="forest-formula--projective-cover.png" title="">
+  <article class="markdown-body"><h1 class="atx" id="peremeshenie-iz-sloya-v-sloj">Перемещение из слоя в слой</h1>
+<p>Допустим, необходимо перенести объект из слоя "Селитебные постоянного проживания" в слой "Селитебные сезонного проживания".</p>
+<img width="399" data-align="center" alt="move-objects--two-layers.png" src="move-objects--two-layers.png" title="">
 
-<p>Если проективное покрытие составляет менее 40%, то участок считается редколесьем.</p>
-<h3 class="atx" id="opredelenie-formuly-lesa-1">Определение формулы леса</h3>
 <ol>
-<li><p>Выбирают наиболее характерный участок местности размером 20x20 м;</p>
+<li><p>Оба слоя должны быть в режиме правки;</p>
+<img width="369" data-align="center" alt="move-objects--edit-mode.png" src="move-objects--edit-mode.png" title="">
 </li>
-<li><p>Считают количество деревьев (всего и по породам);</p>
+<li><p>С помощью инструмента "Выбрать объекты..." необходимо выделить нужный объект в слое "Селитебные постоянного проживания";</p>
+<img width="538" data-align="center" alt="move-objects--select-objects.png" src="move-objects--select-objects.png" title="">
 </li>
-<li><p>Определяют процентное соотношение.</p>
+<li><p>Выделенный объект подсветится жёлтым цветом;</p>
+<img width="456" data-align="center" alt="move-objects--selected-object.png" src="move-objects--selected-object.png" title="">
+</li>
+<li><p>Правка -&gt; Вырезать объекты (или просто Ctrl+X);</p>
+<img width="416" data-align="center" alt="move-objects--ctrl-x.png" src="move-objects--ctrl-x.png" title="">
+</li>
+<li><p>Активируем слой "Селитебные сезонного проживания";</p>
+<img width="415" data-align="center" alt="move-objects--activate-layer.png" src="move-objects--activate-layer.png" title="">
+</li>
+<li><p>Правка -&gt; Вставить объекты (или просто Ctrl+V);</p>
+<img width="295" data-align="center" alt="move-objects--ctrl-v.png" src="move-objects--ctrl-v.png" title="">
+</li>
+<li><p>Должно появиться сообщение о том, что объекты были успешно вставлены;</p>
+<img width="383" data-align="center" alt="move-objects--infobox.png" src="move-objects--infobox.png" title="">
+
 </li>
 </ol>
-<p>Примеры:</p>
-<ul>
-<li><p>На участке насчитали 12 (60%) сосен и 8 (40%) берёз. Тогда формула леса будет следующей: <strong>6С4Б</strong>, где</p>
-<ul>
-<li><p>6 — десятки процентов сосен;</p>
-</li>
-<li><p>С — сосна;</p>
-</li>
-<li><p>4 — десятки процентов берёз;</p>
-</li>
-<li><p>Б — берёза.</p>
-</li>
-</ul>
-</li>
-<li><p>Насчитали 13 (65%) дубов, 5 (25%) лип и 2 (10%) сосны. Формула леса: <strong>7Д3Л+С</strong>. В основной части формулы леса не учитываются деревья, составляющие менее 15%. Они записываются после знака плюса.</p>
-</li>
-</ul>
-<h3 class="atx" id="cvetovye-oboznacheniya-tipov-lesov-po-sostavu">Цветовые обозначения типов лесов по составу</h3>
-<ul>
-<li><p>берёза (Б) — голубой;</p>
-</li>
-<li><p>осина (Ос) — зелёный;</p>
-</li>
-<li><p>липа (Л) — жёлтый;</p>
-</li>
-<li><p>дуб (Д) — грязно-зелёный/хаки;</p>
-</li>
-<li><p>ива (И) — розовый;</p>
-</li>
-<li><p>чёрная ольха (Оч) — фиолетовый;</p>
-</li>
-<li><p>тополь (Т) — сиреневый;</p>
-</li>
-<li><p>сосна (С) — оранжевый;</p>
-</li>
-<li><p>вяз (В) — горчичный;</p>
-</li>
-<li><p>ель (Е) — красный.</p>
-</li>
-</ul>
-<p>Если лес состоит из нескольких разных пород, то используется следующее обозначение:</p>
-<ul>
-<li><p>Цвет фона — цвет основной породы;</p>
-</li>
-<li><p>Цвет штриховки — цвет вторичной породы, толщина зависит от процентного соотношения основной и вторичной пород;</p>
-</li>
-<li><p>Кружочками обозначаются породы, составляющие менее 15% от общего числа деревьев.</p>
-</li>
-</ul>
-<img width="204" data-align="center" alt="forest-formula--coloring.png" src="forest-formula--coloring.png" title="">
+<p>Если QGIS говорит, что объекты были вставлены, но Вы их не видите, то, возможно, для них нет подходящего стиля.</p>
+<p>Нужно зайти в свойства слоя и настроить стили для новых объектов:</p>
+<img width="494" data-align="center" alt="move-objects--styles.png" src="move-objects--styles.png" title="">
 
-<h2 class="atx" id="laboratornaya">Лабораторная</h2>
-<h3 class="atx" id="prosmotr-tochek-polevoj-proverki">Просмотр точек полевой проверки</h3>
-<p>Чтобы получить представление о том, как выглядят на космическом снимке разные породы деревьев, можно посмотреть на деревья, отмеченные как "Точки полевой проверки".</p>
-<img width="320" data-align="center" alt="forest-formula--field-check-points.png" src="forest-formula--field-check-points.png" title="">
 
-<p>Выделим слой "Точки полевой проверки".</p>
-<img width="384" data-align="center" alt="forest-formula--select-field-check-points-layer.png" src="forest-formula--select-field-check-points-layer.png" title="">
-
-<p>Включаем инструмент "Определить объекты" и нажимаем на любую из точек полевой проверки. Должно высветиться окно, в котором будет отображена порода дерева.</p>
-<img width="510" data-align="center" alt="forest-formula--define-objects.png" src="forest-formula--define-objects.png" title="">
-
-<img width="577" data-align="center" alt="forest-formula--defined-object.png" src="forest-formula--defined-object.png" title="">
-
-<p>Для более точной классификации можно использовать числовые значения цвета каждой породы. Наш космоснимок состоит из трёх каналов: красного, зелёного и синего. Для разных пород характерны различные значения этих каналов.</p>
-<p>Чтобы увидеть числовые значения пикселя на космоснимке, нужно сначала выделить слой "Космоснимок 50 cm"</p>
-<img width="424" data-align="center" alt="forest-formula--select-cosmophoto-layer.png" src="forest-formula--select-cosmophoto-layer.png" title="">
-
-<p>Затем всё тем же инструментом "Определить объекты" нажимаем на любой пиксель на космоснимке. Должно высветиться окно со значениями каждого канала.</p>
-<img width="385" data-align="center" alt="forest-formula--defined-pixel.png" src="forest-formula--defined-pixel.png" title="">
-
-<ul>
-<li><p>Канал 1 — красный канал;</p>
-</li>
-<li><p>Канал 2 — зелёный канал;</p>
-</li>
-<li><p>Канал 3 — синий канал.</p>
-</li>
-</ul>
-<p>Используйте эту информацию как хотите.</p>
-<h3 class="atx" id="vyborki-lesov">Выборки лесов</h3>
-<p>Для определения формулы леса нам необходимы выборки. Это участки леса, которые хорошо репрезентуют остальной лес.</p>
-<img data-align="center" width="232" alt="forest-formula--samples.png" src="forest-formula--samples.png" title="">
-
-<p>Так как в формуле леса максимум указываются три породы, можно <a href="../other/add-layer/page.html">создать слой</a> со следующими полями:</p>
-<img width="494" data-align="center" alt="forest-formula--samples-layer.png" src="forest-formula--samples-layer.png" title="">
-
-<p>То есть:</p>
-<ul>
-<li><p>пор1 — первая порода; кол1 — количество деревьев этой породы;</p>
-</li>
-<li><p>пор2 — вторая порода; кол2 — количество деревьев этой породы;</p>
-</li>
-<li><p>пор3 — третья порода.</p>
-</li>
-</ul>
-<p>Однако, конечно, выбор способа выполнения задания остаётся за Вами. Можно делать даже в экселе. Главное — показать, что Вы умеете выражать формулу леса.</p>
-<p>Нарисовав выборки, необходимо определить породы деревьев в площади выборки, их количество, посчитать формулу.</p>
-<p>При определении породы дерева необходимо опираться не только на цвет кроны, но и на её размер, на обозначения на топографических картах и на интуицию.</p>
-<h3 class="atx" id="raskrashivanie-znakov-i-podpisi-k-nim">Раскрашивание знаков и подписи к ним</h3>
-<p>После определения формул необходимо раскрасить леса в соответствующие цвета.</p>
-<p>Чтобы не обводить леса заново, можно <a href="../other/copy-layer/page.html">скопировать слой</a> из предыдущей работы (по земельным угодьям).</p>
-<p>Все леса необходимо <a href="../other/styling/page.html">раскрасить</a> соответственно их формуле. Ещё можно <a href="../other/add-captions/page.html">добавить подписи</a> формул:</p>
-<img width="577" data-align="center" alt="forest-formula--styles.png" src="forest-formula--styles.png" title="">
-
-<p>В результате должно получиться что-то такое:</p>
-<img width="439" data-align="center" alt="forest-formula--result-1.png" src="forest-formula--result-1.png" title="">
-
-<p>Или такое:</p>
-<img data-align="center" alt="forest-formula--result-2.png" src="forest-formula--result-2.png" title="">
-
-<p>Или такое:</p>
-<img width="587" data-align="center" alt="forest-formula--result-3.png" src="forest-formula--result-3.png" title="">
-
-<p><a href="../index.html">На главную</a></p>
 </article>
 </body>
 </html>

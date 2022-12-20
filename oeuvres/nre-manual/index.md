@@ -16,10 +16,10 @@
 
 4. [Земельные угодья](./p4-landuse/page.html);
 
-5. [Формула леса](./p5-forest-formula/page.html);
-
-6. [Пожароопасность](./p6-fire-hazard).
+5. [Формула леса](./p5-forest-formula/page.html).
 
 ## FAQ
 
-1. 
+1. [Как переместить объекты с одного слоя на другой?](./other/move-objects/page.html)
+2. [Как добавить отверстие в площадной объект?](./other/add-hole/page.html)
+3. [Что такое Avoid Intersections?](./other/avoid-intersections/page.html)

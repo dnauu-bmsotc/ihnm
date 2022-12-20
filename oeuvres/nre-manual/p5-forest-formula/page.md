@@ -140,6 +140,8 @@
 
 <img title="" src="forest-formula--result-2.png" alt="forest-formula--result-2.png" data-align="center">
 
-[Следующая часть](../p6-fire-hazard/page.html)
+Или такое:
+
+<img title="" src="forest-formula--result-3.png" alt="forest-formula--result-3.png" data-align="center" width="587">
 
 [На главную](../index.html)
