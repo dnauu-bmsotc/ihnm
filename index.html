@@ -4,38 +4,99 @@
 		<title>ihnm</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
+		<style>
+			#container {
+				display: flex;
+				flex-wrap: wrap;
+				margin: auto;
+				align-items: center;
+				justify-content: center;
+			}
+			.cell {
+				width: 14em;
+				margin: 1em;
+				padding: 0;
+				border: 1px solid lightgray;
+				border-radius: 16px;
+				background-color: #fffbf9;
+			}
+			.cell a {
+				display: flex;
+				flex-direction: column;
+				flex-wrap: nowrap;
+				box-sizing: border-box;
+				padding: 1em;
+				height: 100%;
+				width: 100%;
+				text-decoration: none;
+			}
+			.cell-name {
+				display: inline-block;
+				text-align: center;
+				width: 100%;
+			}
+			.cell-image {
+				position: relative;
+			}
+			.cell-image-front, .cell-image-rear {
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				overflow: hidden;
+				height: 10em;
+				width: 10em;
+			}
+			.cell-image-front {
+				position: absolute;
+				z-index: +1;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				border-radius: 8px;
+			}
+			.cell-image-rear {
+				filter: blur(1em) opacity(40%);
+				height: 11em;
+				width: 11em;
+				z-index: -1;
+				margin: auto;
+			}
+		</style>
 	</head>
 	<body>
 		<main>
 			<h2>Список страниц</h2>
-				<ul>
-					<li>
-						МИИГАиК:
-						<ul>
-							<li><a href="./archive/november2021/questions">Генератор вопросов</a></li>
-							<li><a href="./oeuvres/rocks-guess">Угадай камень</a></li>
-							<li><a href="./oeuvres/gconsole">Геодезическая консоль</a></li>
-							<li><a href="./oeuvres/nre-manual">Методичка по природным ресурсам Земли</a></li>
-						</ul>
-					</li>
-					<li>
-						Интерфейсы:
-						<ul>
-							<li><a href="./archive/summer2021/dist/number-systems">Системы счисления</a></li>
-							<li><a href="./archive/summer2021/dist/wheel-of-fortune">Колесо Фортуны</a></li>
-							<li><a href="./oeuvres/angles">Представление углов</a></li>
-						</ul>
-					</li>
-					<li>
-						Другое:
-						<ul>
-							<li><a href="./oeuvres/rivers">Генератор рек и озёр</a></li>
-							<li><a href="./oeuvres/gallery">Галерея</a></li>
-							<li><a href="./oeuvres/rect-in-sector">Прямоугольник в секторе</a></li>
-						</ul>
-					</li>
-				</ul>
+			<div id="container"></div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
+		<script>
+			const container = document.getElementById("container");
+			pages = [
+				{href: "./archive/summer2021/dist/number-systems", name: "Системы счисления", preview: "./previews/number-systems.png"},
+				{href: "./archive/november2021/questions", name: "Генератор вопросов", preview: "./previews/questions.png"},
+				{href: "./archive/summer2021/dist/wheel-of-fortune", name: "Колесо Фортуны", preview: "./previews/wheel-of-fortune.png"},
+				{href: "./oeuvres/gconsole", name: "Геодезическая консоль", preview: "./previews/gconsole.png"},
+				{href: "./oeuvres/rocks-guess", name: "Угадай камень", preview: "./previews/rocks-guess.png"},
+				{href: "./oeuvres/nre-manual", name: "Методичка по природным ресурсам Земли", preview: "./previews/nre-manual.png"},
+				{href: "./oeuvres/angles", name: "Представление углов", preview: "./previews/angles.png"},
+				{href: "./oeuvres/rect-in-sector", name: "Прямоугольник в секторе", preview: "./previews/rect-in-sector.png"},
+				{href: "./oeuvres/rivers", name: "Генератор рек и озёр", preview: "./previews/rivers.png"},
+				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", preview: ""},
+			];
+			for (page of pages) {
+				const cell = document.createElement("div");
+				cell.classList.add("cell");
+				cell.innerHTML = `
+					<a href="${page.href}">
+						<div class="cell-name">${page.name}</div>
+						<div class="cell-image">
+							<div class="cell-image-front" style="background-image: url(${page.preview})"></div>
+							<div class="cell-image-rear" style="background-image: url(${page.preview})"></div>
+						</div>
+					</a>
+				`;
+				container.appendChild(cell);
+			}
+		</script>
 	</body>
 </html>
