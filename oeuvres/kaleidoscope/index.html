@@ -48,12 +48,25 @@
 			(sliderX = createSliderAnimation(onXChange, speed))();
 			(sliderY = createSliderAnimation(onYChange, speed))();
 			
-			createPentagonalTilingType5(document.getElementById("lens-svg"), "url(#pattern1)", {x: 50, y: 50}, 5, 3, 130, 4);
-
+			tiling = new PentagonalTilingType5({
+				size1: 5,
+				size2: 5,
+				angle: 120,
+				nLayers: 3
+			});
+			tiling.deployAtSVG(
+				document.getElementById("lens-svg"), 50, 50, {
+					fill: "url(#pattern1)",
+					stroke: "black",
+					strokeWidth: "0.1"
+				}
+			);
+			// tiling.animate(5, 7, 120);
+			
 			function onXChange(position) {
 				document.getElementById("svg-dot").setAttributeNS(null, "cx", position * 100);
 			}
-			
+
 			function onYChange(position) {
 				document.getElementById("svg-dot").setAttributeNS(null, "cy", position * 100);
 			}
