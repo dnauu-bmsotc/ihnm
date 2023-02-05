@@ -49,19 +49,20 @@
 			(sliderY = createSliderAnimation(onYChange, speed))();
 			
 			tiling = new PentagonalTilingType5({
-				size1: 5,
-				size2: 5,
+				size1: 1,
+				size2: 1,
 				angle: 120,
 				nLayers: 3
 			});
 			tiling.deployAtSVG(
 				document.getElementById("lens-svg"), 50, 50, {
-					fill: "url(#pattern1)",
+					fill: "white",
 					stroke: "black",
 					strokeWidth: "0.1"
 				}
 			);
-			// tiling.animate(5, 7, 120);
+			tiling.animate(4, 5, 150, "2s", () => tiling.startRandomAnimations());
+
 			
 			function onXChange(position) {
 				document.getElementById("svg-dot").setAttributeNS(null, "cx", position * 100);

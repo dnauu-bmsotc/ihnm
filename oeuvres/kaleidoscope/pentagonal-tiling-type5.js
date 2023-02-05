@@ -1,15 +1,25 @@
 "use strict"
 
 class PentagonalTilingType5 {
-    constructor({size1, size2, angle, nLayers}) {
+    constructor({size1, size2, angle, nLayers, ns}) {
         this.parameters = {
             s1: size1,
             s2: size2,
             a: angle,
             n: nLayers
         };
-        this.cells = [];
-        this.createTiling();
+        this.initCells();
+        this.calculateTiling();
+    }
+    initCells() {
+        const n = 1 + 6 * this.parameters.n / 2 * (this.parameters.n - 1);
+        this.cells = Array.from(
+            {length: n}, _ => Array.from(
+                {length: 6}, _ => Array.from(
+                    {length: 5}, _ => ({x: 0, y: 0})
+                )
+            )
+        );
     }
     cos(degrees) {
         return Math.cos(degrees / 180 * Math.PI);
@@ -20,61 +30,102 @@ class PentagonalTilingType5 {
     asin(sin) {
         return Math.asin(sin) / Math.PI * 180;
     }
-    pushPointTowards(arr, distance, angle) {
-        arr.push({
-            x: arr[arr.length - 1].x + distance * this.cos(angle),
-            y: arr[arr.length - 1].y + distance * this.sin(angle)
-        });
+    calculateNextPoint(arr, ind, distance, angle) {
+        arr[ind].x = arr[ind - 1].x + distance * this.cos(angle);
+        arr[ind].y = arr[ind - 1].y + distance * this.sin(angle);
     }
-    createSingleTile() {
-        const points = [{x: 0, y: 0}];
+    calculateSingleTile(tile) {
         const p = this.parameters;
-        const v = Math.sqrt(p.s1**2 + p.s2**2 - 2*p.s1*p.s2*this.cos(p.a - 60));
-        const u = this.asin(p.s1 / v * this.sin(p.a - 60)) + 30;
-        this.pushPointTowards(points, p.s1, 0);
-        this.pushPointTowards(points, p.s2, p.a - 180);
-        this.pushPointTowards(points, v / Math.sqrt(3), p.a + u - 360);
-        this.pushPointTowards(points, v / Math.sqrt(3), p.a + u - 420);
-        return points;
+        const v = Math.sqrt(p.s1**2 + p.s2**2 - 2*p.s1*p.s2*this.cos(p.a-60));
+        const u = this.asin(p.s1 / v * this.sin(p.a-60)) + 30;
+        tile[0].x = tile[0].y = 0;
+        this.calculateNextPoint(tile, 1, p.s1, 0);
+        this.calculateNextPoint(tile, 2, p.s2, p.a - 180);
+        this.calculateNextPoint(tile, 3, v / Math.sqrt(3), p.a + u);
+        this.calculateNextPoint(tile, 4, v / Math.sqrt(3), p.a + u - 60);
     }
-    createPrimitiveCell(x, y) {
-        const cell = {
-            x: x,
-            y: y,
-            tiles: []
-        };
+    calculatePrimitiveCell(cell, x, y) {
+        cell.x = x;
+        cell.y = y;
         const p = this.parameters;
         const v = Math.sqrt(p.s1**2 + (p.s2/2)**2 - 2*p.s1*(p.s2/2)*this.cos(p.a));
-        const r = this.asin((p.s2/2) / v * this.sin(p.a));
-        for (let rotation = 0; rotation < 360; rotation += 60) {
-            cell.tiles.push(this.createSingleTile());
-            cell.tiles[cell.tiles.length - 1].transform = {
-                rotate: rotation + r
+        // r - rotation needed to combine two tiles
+        const r = this.asin(p.s2*this.sin(p.a) / (2*v));
+        for (let i = 0; i < 6; i++) {
+            this.calculateSingleTile(cell[i]);
+            cell[i].transform = {
+                rotate: i*60 + r
             };
         }
-        return cell;
     }
-    createTiling() {
+    calculateTiling() {
         const p = this.parameters;
-        const s = 6 * (p.s1**2*Math.sqrt(3)/4 + 1/2*p.s1*p.s2*this.sin(p.a-60) + Math.sqrt(3)/12*(p.s1**2+p.s2**2-2*p.s1*p.s2*this.cos(p.a-60)));
+        const sq3 = Math.sqrt(3);
+        // s - square of a single tile
+        const s = 2*sq3*p.s1**2 + 3*p.s1*p.s2*this.sin(p.a-60) - sq3*p.s1*p.s2*this.cos(p.a-60) + sq3*p.s2**2/2;
+        // step - distance between centers of regular hexagons with squares of s
         const step = Math.pow(108, 1/4)/3*Math.sqrt(s);
-        this.cells.push(this.createPrimitiveCell(0, 0));
+        this.calculatePrimitiveCell(this.cells[0], 0, 0);
+        let counter = 1;
         for (let layer = 1; layer < p.n; layer++) {
             for (let angle = 0; angle < 360; angle += 60) {
                 for (let i = 0; i < layer; i++) {
-                    this.cells.push(this.createPrimitiveCell(
+                    this.calculatePrimitiveCell(
+                        this.cells[counter++],
                         layer*step*this.cos(angle) + i*step*this.cos(angle + 120),
                         layer*step*this.sin(angle) + i*step*this.sin(angle + 120)
-                    ));
+                    );
                 }
             }
         }
     }
-    deployAtSVG(svgcanvas, x, y, tileStyle) {
+    anAnimationEnded() {
+        this.currentAnimationsCount -= 1;
+        if (this.currentAnimationsCount <= 0) {
+            this.animationEndCallback && this.animationEndCallback(this);
+        }
+    }
+    setCellTranslation(cell, tox, toy, duration) {
+        cell.animateTransform.setAttribute("from", cell.animateTransform.getAttribute("to"));
+        cell.animateTransform.setAttribute("to", `${tox} ${toy}`);
+        cell.animateTransform.setAttribute("dur", duration);
+    }
+    setTilePoints(tile, duration) {
+        tile.animate.setAttribute("from", tile.animate.getAttribute("to"));
+        tile.animate.setAttribute("to", tile.map(p => `${p.x},${p.y}`).join(" "));
+        tile.animate.setAttribute("dur", duration);
+        tile.animateTransform.setAttribute("from", tile.animateTransform.getAttribute("to"));
+        tile.animateTransform.setAttribute("to", tile.transform.rotate);
+        tile.animateTransform.setAttribute("dur", duration);
+    }
+    createAnimate(attribute) {
+        const animate = document.createElementNS(this.ns, "animate");
+        animate.setAttribute("attributeName", attribute);
+        animate.setAttribute("fill", "freeze");
+        animate.addEventListener("endEvent", () => this.anAnimationEnded());
+        return animate;
+    }
+    createAnimateTransform(attribute) {
+        const animate = document.createElementNS(this.ns, "animateTransform");
+        animate.setAttribute("attributeName", "transform");
+        animate.setAttribute("attributeType", "XML");
+        animate.setAttribute("type", attribute);
+        animate.setAttribute("fill", "freeze");
+        // animate.setAttribute("keySplines", "0 0 0.5 1 ; 0 0 0.5 1 ; 0 0 0.5 1 ; 0 0 0.5 1");
+        // animate.setAttribute("keyTimes", "0;0.2;0.4;0.6;1");
+        animate.addEventListener("endEvent", () => this.anAnimationEnded());
+        return animate;
+    }
+    deployAtSVG(svgcanvas, x, y, tileStyle, ns) {
+        this.ns = ns || "http://www.w3.org/2000/svg";
+        this.currentAnimationsCount = 0;
+        this.canvas = svgcanvas;
+        this.cells.x = x;
+        this.cells.y = y;
         for (let cell of this.cells) {
-            cell.el = document.createElementNS("http://www.w3.org/2000/svg", "g");
-            for (let tile of cell.tiles) {
-                tile.el = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            cell.el = document.createElementNS(this.ns, "g");
+            for (let tile of cell) {
+                tile.el = document.createElementNS(this.ns, "polygon");
                 for (let point of tile) {
                     const p = svgcanvas.createSVGPoint();
                     p.x = point.x;
@@ -84,29 +135,45 @@ class PentagonalTilingType5 {
                         tile.el.style[k]=tileStyle[k];
                     }
                 }
-                tile.el.setAttribute("transform", `rotate(${tile.transform.rotate})`);
-                cell.el.appendChild(tile.el);
-                tile.animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+                tile.animate = this.createAnimate("points");
+                tile.animateTransform = this.createAnimateTransform("rotate");
+                this.setTilePoints(tile, "0.1s");
                 tile.el.appendChild(tile.animate);
+                tile.el.appendChild(tile.animateTransform);
+                cell.el.appendChild(tile.el);
             }
-            cell.el.setAttribute("transform", `translate(${x + cell.x}, ${y + cell.y})`);
+            cell.animateTransform = this.createAnimateTransform("translate");
+            this.setCellTranslation(cell, x + cell.x, y + cell.y, "0.1s");
+            cell.el.appendChild(cell.animateTransform);
             svgcanvas.appendChild(cell.el);
-            cell.animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
-            cell.el.appendChild(cell.animate);
         }
     }
-    // animate(size1, size2, angle, callback) {
-    //     this.cells = [];
-    //     this.parameters.s1 = size1;
-    //     this.parameters.s2 = size2;
-    //     this.parameters.a = angle;
-    //     this.createTiling();
-    //     for (let cell of this.cells) {
-    //         const animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
-    //         animate.attributeName = "transform";
-    //         animate.from = cell.transform;
-    //         animate.to = `translate(${0}, ${0})`;
-    //         cell.animate.replaceWith(animate);
-    //     }
-    // }
+    animate(size1, size2, angle, dur, callback) {
+        this.parameters.s1 = size1;
+        this.parameters.s2 = size2;
+        this.parameters.a = angle;
+        this.calculateTiling();
+        for (let cell of this.cells) {
+            this.setCellTranslation(cell, this.cells.x + cell.x, this.cells.y + cell.y, dur);
+            for (let tile of cell) {
+                this.setTilePoints(tile, dur);
+            }
+        }
+        const animationElements = this.canvas.querySelectorAll("animate, animateTransform");
+        this.currentAnimationsCount = animationElements.length;
+        this.animationEndCallback = callback;
+        animationElements.forEach(a => a.beginElement());
+    }
+    randomParameter(min, max) {
+        return Math.min(Math.max(min + Math.random() * (max-min), min), max);
+    }
+    startRandomAnimations() {
+        this.animate(
+            this.randomParameter(this.parameters.s1, 4.5, 5.5),
+            this.randomParameter(this.parameters.s2, 4, 6),
+            this.randomParameter(this.parameters.a, 90, 270),
+            this.randomParameter(5, 4, 6) + "s",
+            this.startRandomAnimations
+        );
+    }
 }
