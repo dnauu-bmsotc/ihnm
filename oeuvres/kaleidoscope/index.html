@@ -4,7 +4,8 @@
 		<title>Калейдоскоп</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<script src="slider-animation.js"></script>
+		<script src="./slider-animation.js"></script>
+		<script src="./pentagonal-tiling-type5.js"></script>
 		<style>
 			#lever {
 				display: inline-grid;
@@ -28,7 +29,7 @@
 			<div id="lens">
 				<svg id="lens-svg" width="500" height="500" viewBox="0 0 100 100">
 					<defs>
-						<pattern id='pattern1' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(0.15) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M10-10L20 0v10L10 0zM20 0L10-10V0l10 10zm0 10L10 0v10l10 10zm0 10L10 10v10l10 10zM0 20l10-10v10L0 30zm0-10L10 0v10L0 20zM0 0l10-10V0L0 10z'  stroke-width='0.5' stroke='hsla(258.5,59.4%,59.4%,1)' fill='none'/></pattern>
+						<pattern id='pattern1' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(0.1) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M10-10L20 0v10L10 0zM20 0L10-10V0l10 10zm0 10L10 0v10l10 10zm0 10L10 10v10l10 10zM0 20l10-10v10L0 30zm0-10L10 0v10L0 20zM0 0l10-10V0L0 10z'  stroke-width='0.5' stroke='hsla(258.5,59.4%,59.4%,1)' fill='none'/></pattern>
 					</defs>
 				</svg>
 			</div>
@@ -46,66 +47,20 @@
 			let speed = Number(document.getElementById('speed-slider').value);
 			(sliderX = createSliderAnimation(onXChange, speed))();
 			(sliderY = createSliderAnimation(onYChange, speed))();
+			
+			createPentagonalTilingType5(document.getElementById("lens-svg"), "url(#pattern1)", {x: 50, y: 50}, 5, 3, 130, 4);
 
 			function onXChange(position) {
 				document.getElementById("svg-dot").setAttributeNS(null, "cx", position * 100);
 			}
+			
 			function onYChange(position) {
 				document.getElementById("svg-dot").setAttributeNS(null, "cy", position * 100);
 			}
+
 			function onSpeedChange(value) {
 				sliderX.setSpeed(Number(value));
 				sliderY.setSpeed(Number(value));
-			}
-		</script>
-		<script>
-			createPentagonalTilingType5(document.getElementById("lens-svg"), "url(#pattern1)", {x: 10, y: 10}, 10, 5, 150, 2);
-
-			function createPentagonalTilingType5(svgcanvas, fill, start, size, count, parameterAngle, parameterSegment) {
-				function createPrimitiveCell(center) {
-					function createSingleTile(center, angle) {
-						const tile = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-						const points = [svgcanvas.createSVGPoint()];
-						points[0].x = center.x;
-						points[0].y = center.y;
-						function addPointOff(distance, angle) {
-							p = svgcanvas.createSVGPoint();
-							p.x = points[points.length - 1].x;
-							p.y = points[points.length - 1].y;
-							p.x += distance * Math.cos(angle / 180 * Math.PI);
-							p.y += distance * Math.sin(angle / 180 * Math.PI);
-							points.push(p);
-						}
-						addPointOff(size, angle);
-						addPointOff(parameterSegment, angle - (180 - parameterAngle));
-						const u = (parameterAngle - 60) * Math.PI / 180;
-						const x = Math.sqrt(size**2 + parameterSegment**2 - 2*size*parameterSegment*Math.cos(u));
-						const a = Math.asin(size / x * Math.sin(u)) * 180 / Math.PI + 30;
-						addPointOff(x / Math.sqrt(3), angle - (180 - parameterAngle) - (180 - a));
-						addPointOff(x / Math.sqrt(3), angle - (180 - parameterAngle) - (180 - a) - 60);
-						for (point of points) {
-							tile.points.appendItem(point);
-						}
-						tile.style.fill = fill;
-						return tile;
-					}
-					for (angle = 0; angle < 360; angle += 60) {
-						const tile = createSingleTile({x: 0, y: 0}, 0);
-						tile.setAttribute("transform", `translate(${center.x}, ${center.y}) rotate(${angle})`);
-						tile.style.stroke = "black";
-						svgcanvas.appendChild(tile);
-					}
-				}
-				stepX = 2 * size * Math.sin(30 * Math.PI / 180);
-				stepY = 2 * size * Math.cos(30 * Math.PI / 180);
-				for (i = 0; i < count; i++) {
-					for (j = 0; j < 1; j++) {
-						createPrimitiveCell({
-							x: start.x + stepX * i + stepY * j,
-							y: start.y + stepX * j + stepY * i
-						});
-					}
-				}
 			}
 		</script>
 	</body>

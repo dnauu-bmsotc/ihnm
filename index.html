@@ -13,12 +13,20 @@
 				justify-content: center;
 			}
 			.cell {
+				position: relative;
 				width: 14em;
 				margin: 1em;
 				padding: 0;
 				border: 1px solid lightgray;
 				border-radius: 16px;
 				background-color: #fffbf9;
+				top: 0;
+				filter: drop-shadow(8px 8px 8px #efefef);
+				transition: top 2s, filter 2s;
+			}
+			.cell:hover {
+				top: -2px;
+				filter: drop-shadow(8px 8px 8px #e5e5e5);
 			}
 			.cell a {
 				display: flex;
@@ -34,6 +42,8 @@
 				display: inline-block;
 				text-align: center;
 				width: 100%;
+				font-family: sans;
+				margin-bottom: 0.5em;
 			}
 			.cell-image {
 				position: relative;
@@ -55,7 +65,7 @@
 				border-radius: 8px;
 			}
 			.cell-image-rear {
-				filter: blur(1em) opacity(40%);
+				filter: blur(0.8em) opacity(50%);
 				height: 11em;
 				width: 11em;
 				z-index: -1;
