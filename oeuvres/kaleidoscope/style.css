@@ -15,17 +15,18 @@ main {
     animation: unblur cubic-bezier(.92,1.63,.56,.11) 1s;
 }
 @keyframes unblur {
-      0% {filter: blur(12px);}
-    100% {filter: blur(0);}
+      0% { filter: blur(12px) brightness(100%); }
+     50% { filter: blur(4px)  brightness(120%) }
+    100% { filter: blur(0)    brightness(100%); }
 }
 #tiling-buttons-container {
     margin: 1em;
 }
 #lever {
     box-shadow: 4px 4px 12px gray;
-    overflow: hidden;
+    /* overflow: hidden;
     height: 128px;
-    width: 128px;
+    width: 128px; */
     border: 1px solid black;
     border-radius: 5px;
 }

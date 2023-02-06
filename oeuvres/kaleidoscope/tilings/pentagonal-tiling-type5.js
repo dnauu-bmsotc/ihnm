@@ -136,6 +136,8 @@ class PentagonalTilingType5 {
             cell.el.appendChild(cell.animateTransform);
             svgcanvas.appendChild(cell.el);
         }
+        this.animate(4, 5, 150, "1s");
+        this.loopID = setInterval(() => this.animateRandom({t: 4+1*Math.random()+"s"}), 6000);
     }
     animate(size1, size2, angle, dur, callback) {
         this.endAnimations();
@@ -165,9 +167,16 @@ class PentagonalTilingType5 {
     animateRandom({s1, s2, a, t}) {
         this.animate(
             s1 || this.randomParameter(4.5, 5.5),
-            s2 || this.randomParameter(2, 6),
+            s2 || this.randomParameter(3, 6),
             a || this.randomParameter(90, 270),
             t || this.randomParameter(4, 6) + "s",
         );
+    }
+    delete() {
+        this.endAnimations();
+        clearInterval(this.loopID);
+        for (let cell of this.cells) {
+            cell.el.remove();
+        }
     }
 }

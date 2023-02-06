@@ -1,57 +1,54 @@
 "use strict"
 
-function newRandomDestination(position, velocity, acceleration) {
-    let lbound, rbound, brakingDistance = (velocity ** 2) / (2 * acceleration);
-    if (velocity > 0) {
-        rbound = position + brakingDistance;
-        lbound = rbound / 2;
+class SliderAnimation {
+    constructor(onchange, acceleration, startPosition=0.5) {
+        this.callback = onchange;
+        this.position = startPosition;
+        this.velocity = null;
+        this.destination = null;
+        this.setAcceleration(acceleration);
+        this.setRandomDestination();
+        this.frameRequestTime = performance.now();
+        requestAnimationFrame(this.animate.bind(this));
     }
-    else {
-        lbound = position - brakingDistance;
-        rbound = 0.5 + lbound / 2;
+    setAcceleration(newVal) {
+        this.acceleration = newVal**3 / 10**11;
+        this.velocity = this.acceleration;
     }
-    return lbound + (rbound - lbound) * Math.random();
-}
+    setRandomDestination() {
+        const brakingDistance = (this.velocity ** 2) / (2 * this.acceleration);
+        let lbound, rbound;
+        if (this.velocity > 0) {
+            rbound = this.position + brakingDistance;
+            lbound = rbound / 2;
+        }
+        else {
+            lbound = this.position - brakingDistance;
+            rbound = 0.5 + lbound / 2;
+        }
+        this.destination = lbound + (rbound - lbound) * Math.random();
+    }
+    animate(time) {
+        let dt = Math.min(time - this.frameRequestTime, 100);
+        this.frameRequestTime = time;
 
-function createSliderAnimation(onchange, speed) {
-    return function animateSlider(startPosition = 0.5) {
-        let s = animateSlider;
+        // When destination is reached a new one is choosed
+        if ((this.velocity + this.acceleration * dt) * this.velocity <= 0) {
+            this.setRandomDestination();
+        }
 
-        s.acceleration = null;
-        s.velocity = 0;
-        s.position = startPosition;
-        s.onchange = onchange;
+        // On extreme points acceleration's sign changes
+        if ((this.velocity > 0) && (this.destination < this.position)) {
+            this.acceleration = Math.abs(this.acceleration) * -1;
+        }
+        if ((this.velocity < 0) && (this.position < this.destination)) {
+            this.acceleration = Math.abs(this.acceleration) * +1;
+        }
 
-        (s.setSpeed = function (speed) {
-            s.acceleration = speed**3 / 10**11;
-            s.velocity = s.acceleration;
-        })(speed);
+        this.velocity += this.acceleration * dt;
+        this.position += this.velocity * dt;
 
-        let timestamp = performance.now();
-        let destination = s.position;
-
-        requestAnimationFrame(function animate(time) {
-            let dt = Math.min(time - timestamp, 100);
-            timestamp = time;
-
-            // When destination is reached a new one is choosed
-            if ((s.velocity + s.acceleration * dt) * s.velocity <= 0) {
-                destination = newRandomDestination(s.position, s.velocity, s.acceleration);
-            }
-
-            // On extreme points acceleration's sign changes
-            if ((s.velocity > 0) && (destination < s.position)) {
-                s.acceleration = Math.abs(s.acceleration) * -1;
-            }
-            if ((s.velocity < 0) && (s.position < destination)) {
-                s.acceleration = Math.abs(s.acceleration) * +1;
-            }
-
-            s.velocity += s.acceleration * dt;
-            s.position += s.velocity * dt;
-            s.onchange(s.position);
-
-            requestAnimationFrame(animate);
-        });
+        this.callback(this.position);
+        requestAnimationFrame(this.animate.bind(this));
     }
 }

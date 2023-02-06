@@ -14,15 +14,15 @@
 			}
 			.cell {
 				position: relative;
-				width: 14em;
+				width: 12em;
 				margin: 1em;
 				padding: 0;
 				border: 1px solid lightgray;
 				border-radius: 16px;
-				background-color: #fffbf9;
 				top: 0;
 				filter: drop-shadow(8px 8px 8px #efefef);
 				transition: top 2s, filter 2s;
+				overflow: hidden;
 			}
 			.cell:hover {
 				top: -2px;
@@ -53,8 +53,8 @@
 				background-repeat: no-repeat;
 				background-position: center;
 				overflow: hidden;
-				height: 10em;
-				width: 10em;
+				height: 9em;
+				width: 9em;
 			}
 			.cell-image-front {
 				position: absolute;
@@ -65,9 +65,9 @@
 				border-radius: 8px;
 			}
 			.cell-image-rear {
-				filter: blur(0.8em) opacity(50%);
-				height: 11em;
-				width: 11em;
+				filter: blur(2em) opacity(40%) saturate(200%);
+				height: 9em;
+				width: 9em;
 				z-index: -1;
 				margin: auto;
 			}
