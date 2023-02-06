@@ -23,7 +23,7 @@ function createSliderAnimation(onchange, speed) {
         s.onchange = onchange;
 
         (s.setSpeed = function (speed) {
-            s.acceleration = speed**2 / 10**9;
+            s.acceleration = speed**3 / 10**11;
             s.velocity = s.acceleration;
         })(speed);
 

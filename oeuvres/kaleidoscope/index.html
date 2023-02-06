@@ -4,77 +4,107 @@
 		<title>Калейдоскоп</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
+		<link rel="stylesheet" href="style.css">
 		<script src="./slider-animation.js"></script>
 		<script src="./pentagonal-tiling-type5.js"></script>
-		<style>
-			#lever {
-				display: inline-grid;
-				grid-template-columns: 1fr 1fr;
-				grid-template-rows: 1fr 1fr;
-			}
-			#slider-y {
-				transform: rotate(90deg);
-			}
-			svg {
-				border: 1px solid black;
-			}
-			#lever {
-				display: inline-flex;
-				flex-flow: column nowrap;
-			}
-		</style>
 	</head>
 	<body>
 		<main>
 			<div id="lens">
-				<svg id="lens-svg" width="500" height="500" viewBox="0 0 100 100">
+				<svg id="lens-svg" width="400" height="400" viewBox="0 0 100 100">
 					<defs>
-						<pattern id='pattern1' patternUnits='userSpaceOnUse' width='20' height='20' patternTransform='scale(0.1) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M10-10L20 0v10L10 0zM20 0L10-10V0l10 10zm0 10L10 0v10l10 10zm0 10L10 10v10l10 10zM0 20l10-10v10L0 30zm0-10L10 0v10L0 20zM0 0l10-10V0L0 10z'  stroke-width='0.5' stroke='hsla(258.5,59.4%,59.4%,1)' fill='none'/></pattern>
+						<pattern id="pattern" patternUnits="userSpaceOnUse" width="8" height="8">
+							<image id="pattern-image" x="0" y="0" width="8" height="8" />
+						</pattern>
 					</defs>
 				</svg>
 			</div>
+			<div id="tiling-buttons-container">
+				<button disabled>Пятиугольный паркет p6 (632)</button>
+			</div>
 			<div id="lever">
-				<label>
-					Скорость:
-					<input type="range" min="1" max="99" value="10" id="speed-slider" oninput="onSpeedChange(this.value)">
-				</label>
-				<svg width="200" height="200" id="lever-svg" viewBox="0 0 100 100">
-					<circle id="svg-dot" cx="50" cy="50" r="3"></circle>
+				<svg width="128" height="128" id="lever-svg" viewBox="0 0 100 100">
+					<image id="pattern-image-preview" x="0" y="0" width="100" height="100" />
+					<circle id="svg-dot" cx="50" cy="50" r="3" stroke="black" fill="white"></circle>
 				</svg>
 			</div>
+			<label id="speed-label">
+				<span>Скорость:</span>
+				<input type="range" min="10" max="100" value="20" id="speed-slider" oninput="onSpeedChange(this.value)">
+			</label>
+			<div id="image-buttons-container">
+				<button onclick="setPatternImage('./images/img1.png')">Small Squares</button>
+				<button onclick="setPatternImage('./images/img2.png')">Pastel Stuff</button>
+				<button onclick="setPatternImage('./images/img3.jpg')">Дерево</button>
+				<button onclick="setPatternImage('./images/img4.jpg')">Потолок</button>
+				<button onclick="setPatternImage('./images/img5.jpg')">Луна</button>
+				<button onclick="setPatternImage('./images/img6.jpg')">Виноград</button>
+				<button onclick="setPatternImage('./images/img7.jpg')">Дорога</button>
+				<button onclick="setPatternImage('./images/img8.jpg')">Ноутбук</button>
+				<button onclick="setPatternImage('./images/img9.jpg')">Акварель</button>
+				<button onclick="setPatternImage('./images/img10.jpg')">Рисунок</button>
+				<button onclick="setPatternImage('./images/img11.png')">Свет</button>
+				<button onclick="setPatternImage('./images/img12.png')">Дельта Козерога</button>
+			</div>
+			<label>Загрузить изображение <input type="file" accept="image/png, image/jpeg" oninput="loadImage(this)"></label>
 		</main>
 		<script>
-			let speed = Number(document.getElementById('speed-slider').value);
-			(sliderX = createSliderAnimation(onXChange, speed))();
-			(sliderY = createSliderAnimation(onYChange, speed))();
+			(sliderX = createSliderAnimation(onXChange, Number(document.getElementById('speed-slider').value)))();
+			(sliderY = createSliderAnimation(onYChange, Number(document.getElementById('speed-slider').value)))();
 			
 			tiling = new PentagonalTilingType5({
-				size1: 1,
-				size2: 1,
+				size1: 2,
+				size2: 2,
 				angle: 120,
 				nLayers: 3
 			});
+			
 			tiling.deployAtSVG(
 				document.getElementById("lens-svg"), 50, 50, {
-					fill: "white",
+					fill: "url(#pattern)",
 					stroke: "black",
 					strokeWidth: "0.1"
 				}
 			);
-			tiling.animate(4, 5, 150, "2s", () => tiling.startRandomAnimations());
 
-			
+			tiling.animate(4, 5, 150, "1s");
+			animationLoopID = setAnimationLoop();
+			document.getElementById("image-buttons-container").firstElementChild.click();
+
+			function setAnimationLoop() {
+				setAnimationLoop.id && clearInterval(setAnimationLoop.id);
+				setAnimationLoop.id = setInterval(() => tiling.animateRandom({t: 4+1*Math.random()+"s"}), 6000);
+				return setAnimationLoop.id
+			}
+
 			function onXChange(position) {
-				document.getElementById("svg-dot").setAttributeNS(null, "cx", position * 100);
+				document.getElementById("svg-dot").setAttributeNS(null, "cx", sliderX.position * 100);
+				document.getElementById("svg-dot").setAttributeNS(null, "cy", sliderY.position * 100);
+				document.getElementById("pattern").setAttributeNS(null, "x", sliderX.position * 8);
+				document.getElementById("pattern").setAttributeNS(null, "y", sliderY.position * 8);
 			}
 
 			function onYChange(position) {
-				document.getElementById("svg-dot").setAttributeNS(null, "cy", position * 100);
 			}
 
 			function onSpeedChange(value) {
 				sliderX.setSpeed(Number(value));
 				sliderY.setSpeed(Number(value));
+			}
+
+			function setPatternImage(href) {
+				document.getElementById("pattern-image").setAttribute("href", href);
+				document.getElementById("pattern-image-preview").setAttribute("href", href);
+				// https://stackoverflow.com/questions/6268508
+				document.getElementById("lens").style.animation = 'none';
+				document.getElementById("lens").offsetHeight;
+				document.getElementById("lens").style.animation = null;
+			}
+
+			function loadImage(el) {
+				const image = el.files[0];
+				const url = URL.createObjectURL(image);
+				setPatternImage(url);
 			}
 		</script>
 	</body>

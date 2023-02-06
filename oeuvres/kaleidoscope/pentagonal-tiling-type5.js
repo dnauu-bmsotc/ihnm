@@ -79,12 +79,6 @@ class PentagonalTilingType5 {
             }
         }
     }
-    anAnimationEnded() {
-        this.currentAnimationsCount -= 1;
-        if (this.currentAnimationsCount <= 0) {
-            this.animationEndCallback && this.animationEndCallback(this);
-        }
-    }
     setCellTranslation(cell, tox, toy, duration) {
         cell.animateTransform.setAttribute("from", cell.animateTransform.getAttribute("to"));
         cell.animateTransform.setAttribute("to", `${tox} ${toy}`);
@@ -102,7 +96,6 @@ class PentagonalTilingType5 {
         const animate = document.createElementNS(this.ns, "animate");
         animate.setAttribute("attributeName", attribute);
         animate.setAttribute("fill", "freeze");
-        animate.addEventListener("endEvent", () => this.anAnimationEnded());
         return animate;
     }
     createAnimateTransform(attribute) {
@@ -111,14 +104,10 @@ class PentagonalTilingType5 {
         animate.setAttribute("attributeType", "XML");
         animate.setAttribute("type", attribute);
         animate.setAttribute("fill", "freeze");
-        // animate.setAttribute("keySplines", "0 0 0.5 1 ; 0 0 0.5 1 ; 0 0 0.5 1 ; 0 0 0.5 1");
-        // animate.setAttribute("keyTimes", "0;0.2;0.4;0.6;1");
-        animate.addEventListener("endEvent", () => this.anAnimationEnded());
         return animate;
     }
     deployAtSVG(svgcanvas, x, y, tileStyle, ns) {
         this.ns = ns || "http://www.w3.org/2000/svg";
-        this.currentAnimationsCount = 0;
         this.canvas = svgcanvas;
         this.cells.x = x;
         this.cells.y = y;
@@ -149,6 +138,7 @@ class PentagonalTilingType5 {
         }
     }
     animate(size1, size2, angle, dur, callback) {
+        this.endAnimations();
         this.parameters.s1 = size1;
         this.parameters.s2 = size2;
         this.parameters.a = angle;
@@ -159,21 +149,25 @@ class PentagonalTilingType5 {
                 this.setTilePoints(tile, dur);
             }
         }
+        this.beginAnimations();
+    }
+    beginAnimations() {
         const animationElements = this.canvas.querySelectorAll("animate, animateTransform");
-        this.currentAnimationsCount = animationElements.length;
-        this.animationEndCallback = callback;
         animationElements.forEach(a => a.beginElement());
     }
-    randomParameter(min, max) {
-        return Math.min(Math.max(min + Math.random() * (max-min), min), max);
+    endAnimations() {
+        const animationElements = this.canvas.querySelectorAll("animate, animateTransform");
+        animationElements.forEach(a => a.endElement());
     }
-    startRandomAnimations() {
+    randomParameter(min, max) {
+        return min + Math.random() * (max-min);
+    }
+    animateRandom({s1, s2, a, t}) {
         this.animate(
-            this.randomParameter(this.parameters.s1, 4.5, 5.5),
-            this.randomParameter(this.parameters.s2, 4, 6),
-            this.randomParameter(this.parameters.a, 90, 270),
-            this.randomParameter(5, 4, 6) + "s",
-            this.startRandomAnimations
+            s1 || this.randomParameter(4.5, 5.5),
+            s2 || this.randomParameter(2, 6),
+            a || this.randomParameter(90, 270),
+            t || this.randomParameter(4, 6) + "s",
         );
     }
 }
