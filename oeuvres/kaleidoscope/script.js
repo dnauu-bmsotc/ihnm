@@ -20,6 +20,7 @@ function setPentagonalTiling() {
     );
     // function for removing elements from dom
     removeTiling = function() {
+        lever.delete();
         leverEl.remove();
         tiling.delete();
         removeTiling = null;
@@ -41,6 +42,7 @@ function setKisrhombilleTiling() {
     // function for removing elements from dom
     removeTiling = function() {
         tiling.delete();
+        lever.delete();
         leverEl.remove();
         removeTiling = null;
     }
@@ -63,6 +65,8 @@ function setSquareTiling() {
     // function for removing elements from dom
     removeTiling = function() {
         tiling.delete();
+        lever1.delete();
+        lever2.delete();
         lever1El.remove();
         lever2El.remove();
         removeTiling = null;
@@ -80,35 +84,6 @@ function setActiveLever(lever) {
     }
     setActiveLever.activeLever = lever;
     setActiveLever.activeLever.svgcanvas.classList.add("active-lever");
-}
-
-function createLever(id) {
-    const container = document.createElement("div");
-    container.classList.add("lever-svg-container");
-    document.getElementById("lever").appendChild(container);
-
-    const leverEl = document.createElementNS(ns, "svg");
-    leverEl.setAttributeNS(null, "width", 128);
-    leverEl.setAttributeNS(null, "height", 128);
-    leverEl.setAttributeNS(null, "viewBox", "0 0 100 100");
-    leverEl.classList.add("lever-svg");
-    container.appendChild(leverEl);
-
-    // const button1 = document.createElement("button");
-    // button1.textContent = "Спираль";
-    // container.appendChild(button1);
-
-    // const button2 = document.createElement("button");
-    // button2.textContent = "Светлячок";
-    // container.appendChild(button2);
-
-    const lever = new Lever(
-        leverEl, id, Number(document.getElementById('speed-slider').value)
-    );
-    leverEl.addEventListener("click", () => setActiveLever(lever));
-    leverEl.addEventListener("speedChange", e => lever.setSpeed(e.detail.value));
-
-    return [container, lever];
 }
 
 function loadImage(el) {

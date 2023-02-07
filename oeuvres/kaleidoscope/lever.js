@@ -39,4 +39,51 @@ class Lever {
         this.firefly.setAttributeNS(null, "cy", y * this.svgcanvasHeight);
         this.firefly.setAttributeNS(null, "r", 1 + 5*size);
     }
+    delete() {
+        this.svgcanvas.remove();
+        this.patternAnimation.delete();
+    }
+    setTypeChaos() {
+        this.patternAnimation.setTypeChaos();
+    }
+    setTypeSpiral() {
+        this.patternAnimation.setTypeSpiral();
+    }
+}
+
+function createLever(id) {
+    const container = document.createElement("div");
+    container.classList.add("lever-svg-container");
+    document.getElementById("lever").appendChild(container);
+
+    const leverEl = document.createElementNS(ns, "svg");
+    leverEl.setAttributeNS(null, "width", 128);
+    leverEl.setAttributeNS(null, "height", 128);
+    leverEl.setAttributeNS(null, "viewBox", "0 0 100 100");
+    leverEl.classList.add("lever-svg");
+    container.appendChild(leverEl);
+
+    const animationButtonsContainer = document.createElement("div");
+    animationButtonsContainer.classList.add("lever-animation-type-container");
+
+    const button1 = document.createElement("button");
+    button1.classList.add("animation-button-spiral");
+    button1.addEventListener("click", () => lever.setTypeSpiral());
+    animationButtonsContainer.appendChild(button1);
+
+    const button2 = document.createElement("button");
+    button2.classList.add("animation-button-chaos");
+    button2.addEventListener("click", () => lever.setTypeChaos());
+    animationButtonsContainer.appendChild(button2);
+
+    container.appendChild(animationButtonsContainer);
+
+    const lever = new Lever(
+        leverEl, id, Number(document.getElementById('speed-slider').value)
+    );
+    lever.setTypeChaos();
+    leverEl.addEventListener("click", () => setActiveLever(lever));
+    leverEl.addEventListener("speedChange", e => lever.setSpeed(e.detail.value));
+
+    return [container, lever];
 }

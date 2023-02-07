@@ -59,3 +59,21 @@ button {
     display: flex;
     flex-flow: column nowrap;
 }
+.lever-animation-type-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+.lever-animation-type-container > button {
+    width: 2em;
+    height: 2em;
+    margin: 0 0.5em 0 0.5em;
+}
+.animation-button-spiral {
+    background: url(./images/icon2.png);
+    background-size: contain;
+}
+.animation-button-chaos {
+    background: url(./images/icon1.png);
+    background-size: contain;
+}
