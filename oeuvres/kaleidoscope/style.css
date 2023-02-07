@@ -12,23 +12,14 @@ main {
     border-radius: 0px;
     outline: 8px outset #000000;
     outline-offset: 0px;
-    animation: unblur cubic-bezier(.92,1.63,.56,.11) 1s;
+    animation: unblur cubic-bezier(.88,1.63,.57,.52) 1s;
 }
 @keyframes unblur {
-      0% { filter: blur(12px) brightness(100%); }
-     50% { filter: blur(4px)  brightness(120%) }
+      0% { filter: blur(12px) brightness(120%); }
     100% { filter: blur(0)    brightness(100%); }
 }
 #tiling-buttons-container {
     margin: 1em;
-}
-#lever {
-    box-shadow: 4px 4px 12px gray;
-    /* overflow: hidden;
-    height: 128px;
-    width: 128px; */
-    border: 1px solid black;
-    border-radius: 5px;
 }
 label {
     display: flex;
@@ -47,4 +38,20 @@ label > * {
 button {
     margin: 0.5em;
     padding: 0.5em;
+}
+#lever {
+    display: flex;
+    flex-flow: row nowrap;
+}
+.active-lever {
+    outline: 4px solid black;
+}
+.lever-svg {
+    margin: 1em;
+    box-shadow: 4px 4px 12px gray;
+    border: 1px solid black;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 128px;
+    height: 128px;
 }

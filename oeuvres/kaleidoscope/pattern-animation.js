@@ -34,7 +34,7 @@ class PatternAnimation {
         this.image.setAttributeNS(null, "height", value);
     }
     onSizeChange(percentage) {
-        this.patternSize = 16 + 4 * percentage;
+        this.patternSize = 12 + 8 * percentage;
     }
     setImage(href) {
         this.image.setAttributeNS(null, "href", href);

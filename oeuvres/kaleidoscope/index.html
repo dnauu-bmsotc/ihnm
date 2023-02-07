@@ -9,6 +9,8 @@
 		<script src="./pattern-animation.js"></script>
 		<script src="./lever.js"></script>
 		<script src="./tilings/pentagonal-tiling-type5.js"></script>
+		<script src="./tilings/square-tiling.js"></script>
+		<script src="./tilings/triangular-tiling.js"></script>
 		<script src="./script.js"></script>
 	</head>
 	<body>
@@ -17,14 +19,14 @@
 				<svg id="lens-svg" width="400" height="400" viewBox="0 0 100 100"></svg>
 			</div>
 			<div id="tiling-buttons-container">
+				<button onclick="setSquareTiling()">Квадратный паркет с раскраской 1212</button>
 				<button onclick="setPentagonalTiling()">Пятиугольный паркет p6 (632)</button>
-				<button onclick="setSquareTiling()">Квадратный паркет раскраски 1212</button>
 				<button onclick="setTriangularTiling()">Треугольный паркет 3.3.3.3.3.3</button>
 			</div>
 			<div id="lever"></div>
 			<label id="speed-label">
 				<span>Скорость:</span>
-				<input type="range" min="10" max="100" value="20" id="speed-slider" oninput="setSpeed(Number(this.value))">
+				<input type="range" min="10" max="100" value="20" id="speed-slider" oninput="speedSliderInput(event)">
 			</label>
 			<div id="image-buttons-container">
 				<button onclick="setPatternImage('./images/img9.jpg')">Акварель</button>
@@ -39,6 +41,8 @@
 				<button onclick="setPatternImage('./images/img10.jpg')">Рисунок</button>
 				<button onclick="setPatternImage('./images/img11.png')">Свет</button>
 				<button onclick="setPatternImage('./images/img12.png')">Дельта Козерога</button>
+				<button onclick="setPatternImage('./images/img13.png')">Неон</button>
+				<button onclick="setPatternImage('./images/img14.png')">Зебра</button>
 			</div>
 			<label>
 				Загрузить изображение

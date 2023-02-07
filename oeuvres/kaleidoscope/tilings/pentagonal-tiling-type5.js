@@ -1,7 +1,7 @@
 "use strict"
 
 class PentagonalTilingType5 {
-    constructor({size1, size2, angle, nLayers, ns}) {
+    constructor({size1, size2, angle, nLayers}) {
         this.parameters = {
             s1: size1,
             s2: size2,
@@ -120,9 +120,9 @@ class PentagonalTilingType5 {
                     p.x = point.x;
                     p.y = point.y;
                     tile.el.points.appendItem(p);
-                    for (let k in tileStyle) {
-                        tile.el.style[k]=tileStyle[k];
-                    }
+                }
+                for (let k in tileStyle) {
+                    tile.el.style[k]=tileStyle[k];
                 }
                 tile.animate = this.createAnimate("points");
                 tile.animateTransform = this.createAnimateTransform("rotate");
@@ -134,7 +134,7 @@ class PentagonalTilingType5 {
             cell.animateTransform = this.createAnimateTransform("translate");
             this.setCellTranslation(cell, x + cell.x, y + cell.y, "0.1s");
             cell.el.appendChild(cell.animateTransform);
-            svgcanvas.appendChild(cell.el);
+            this.canvas.appendChild(cell.el);
         }
         this.animate(4, 5, 150, "1s");
         this.loopID = setInterval(() => this.animateRandom({t: 4+1*Math.random()+"s"}), 6000);
