@@ -19,8 +19,8 @@ class PatternAnimation {
         const x = this.sliderX.position,
               y = this.sliderY.position,
               s = this.sliderS.position;
-        this.svgpattern.setAttributeNS(null, "x", x * this.patternSize);
-        this.svgpattern.setAttributeNS(null, "y", y * this.patternSize);
+        this.svgpattern.setAttributeNS(null, "x", (0.5-x) * this.patternSize);
+        this.svgpattern.setAttributeNS(null, "y", (0.5-y) * this.patternSize);
         this.callback(x, y, s);
     }
     get patternSize() {

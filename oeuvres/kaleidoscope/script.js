@@ -29,12 +29,24 @@ function setPentagonalTiling() {
     document.getElementById("image-buttons-container").firstElementChild.click();
 }
 
-function setTriangularTiling() {
+function setKisrhombilleTiling() {
     removeTiling && removeTiling();
-    
+    // create levers and tiling
+    const [leverEl, lever] = createLever("pattern");
+    const tiling = new KisrhombilleTiling({size: 20, nLayers: 3});
+    tiling.deployAtSVG(
+        document.getElementById("lens-svg"), 50, 50,
+        {fill: "url(#pattern)", stroke: "black", strokeWidth: "0.1"}
+    );
+    // function for removing elements from dom
     removeTiling = function() {
+        tiling.delete();
+        leverEl.remove();
         removeTiling = null;
     }
+    // initial settings
+    setActiveLever(lever);
+    document.getElementById("image-buttons-container").firstElementChild.click();
 }
 
 function setSquareTiling() {
@@ -81,6 +93,14 @@ function createLever(id) {
     leverEl.setAttributeNS(null, "viewBox", "0 0 100 100");
     leverEl.classList.add("lever-svg");
     container.appendChild(leverEl);
+
+    // const button1 = document.createElement("button");
+    // button1.textContent = "Спираль";
+    // container.appendChild(button1);
+
+    // const button2 = document.createElement("button");
+    // button2.textContent = "Светлячок";
+    // container.appendChild(button2);
 
     const lever = new Lever(
         leverEl, id, Number(document.getElementById('speed-slider').value)

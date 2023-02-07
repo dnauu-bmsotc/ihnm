@@ -55,3 +55,7 @@ button {
     width: 128px;
     height: 128px;
 }
+.lever-svg-container {
+    display: flex;
+    flex-flow: column nowrap;
+}

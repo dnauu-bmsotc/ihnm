@@ -12,7 +12,7 @@ class SliderAnimation {
         requestAnimationFrame(this.animate.bind(this));
     }
     setAcceleration(newVal) {
-        this.acceleration = newVal**3 / 10**11;
+        this.acceleration = (2000 / (100 - newVal) - 20) / 10**8;
         this.velocity = this.acceleration;
     }
     setRandomDestination() {
