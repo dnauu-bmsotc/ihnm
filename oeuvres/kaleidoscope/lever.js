@@ -111,6 +111,9 @@ class Lever {
         this.pattern.setAttributeNS(null, "width", size);
         this.pattern.setAttributeNS(null, "height", size);
     }
+    setTransform(transform) {
+        this.patternImage.setAttributeNS(null, "transform", transform);
+    }
     onFireflyXChange(value) {
         const x = value * this.fireflyAreaScale;
         this.pattern.setAttributeNS(null, "x", x%this.patternSize);

@@ -35,13 +35,13 @@ class PentagonalCellType5 {
         this.calculate(s1, s2, a);
         this.constArea = this.computeArea(s1, s2, a);
         this.s1Animation = new SliderAnimation(val => {
-            this.s1 = 10 + 10 * val;
-        }, 200);
+            this.s1 = 2 + 20 * val;
+        }, 100);
         this.aAnimation = new SliderAnimation(val => {
             this.a = 90 + 150 * val;
             this.calculate(this.s1, this.s2, this.a);
             this.updateSVG();
-        }, 200);
+        }, 100);
     }
     calculateFurtherPoint(arr, ind, distance, angle) {
         arr[ind].x = arr[ind - 1].x + distance * cos(angle);
@@ -110,24 +110,27 @@ class PentagonalCellType5 {
 class SquareCell {
     constructor(size) {
         this.tiles = Array.from(
-            {length: 1}, _ => Array.from(
+            {length: 2}, _ => Array.from(
                 {length: 4}, _ => ({x: 0, y: 0})
             )
         );
         this.calculate(size);
     }
+    calculateTile(tile, x, y, size) {
+        tile[0].x = x;
+        tile[0].y = y;
+
+        tile[1].x = x + size;
+        tile[1].y = y;
+
+        tile[2].x = x + size;
+        tile[2].y = y + size;
+
+        tile[3].x = x;
+        tile[3].y = y + size;
+    }
     calculate(size) {
-        this.tiles[0][0].x = 0;
-        this.tiles[0][0].y = 0;
-
-        this.tiles[0][1].x = size;
-        this.tiles[0][1].y = 0;
-
-        this.tiles[0][2].x = size;
-        this.tiles[0][2].y = size;
-
-        this.tiles[0][3].x = 0;
-        this.tiles[0][3].y = size;
+        this.calculateTile(this.tiles[0], 0, 0, size);
     }
     deploy(container, ns, tileStyle) {
         this.el = document.createElementNS(ns, "g");

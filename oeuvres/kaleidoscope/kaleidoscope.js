@@ -10,6 +10,16 @@ class Kaleidoscope {
         this.levers = [];
         this.activeLever = null;
         this.reset();
+        
+        requestAnimationFrame(this.animateRotation.bind(this));
+    }
+    animateRotation(t) {
+        this.backgrounds.setAttributeNS(null, "transform", `
+            translate(+50 +50)
+            rotate(${60 + t/2000})
+            translate(-50 -50)
+        `);
+        requestAnimationFrame(this.animateRotation.bind(this));
     }
     reset() {
         this.svg.innerHTML = "";
@@ -22,8 +32,11 @@ class Kaleidoscope {
         this.levers = [];
         this.activeLever = null;
 
-        const defs = document.createElementNS(this.ns, "defs");
-        this.svg.appendChild(defs);
+        this.defs = document.createElementNS(this.ns, "defs");
+        this.svg.appendChild(this.defs);
+
+        this.backgrounds = document.createElementNS(this.ns, "g");
+        this.svg.appendChild(this.backgrounds);
     }
     createPattern(id, width, height, styles) {
         const pattern = document.createElementNS(this.ns, "pattern");
@@ -33,17 +46,18 @@ class Kaleidoscope {
         pattern.setAttributeNS(null, "height", height);
         pattern.setAttributeNS(null, "id", id);
         this.cell.deploy(pattern, this.ns, styles);
-        this.svg.querySelector("defs").appendChild(pattern);
+        this.defs.appendChild(pattern);
     }
     createBG(id, x, y) {
+        const diagonal = 100*Math.sqrt(2);
         const bg = document.createElementNS(this.ns, "rect");
-        bg.setAttributeNS(null, "x", -x);
-        bg.setAttributeNS(null, "y", -y);
-        bg.setAttributeNS(null, "width", 100);
-        bg.setAttributeNS(null, "height", 100);
+        bg.setAttributeNS(null, "x", -x - (diagonal - 100) / 2);
+        bg.setAttributeNS(null, "y", -y - (diagonal - 100) / 2);
+        bg.setAttributeNS(null, "width", diagonal);
+        bg.setAttributeNS(null, "height", diagonal);
         bg.setAttributeNS(null, "fill", `url(#${id})`);
         bg.setAttributeNS(null, "transform", `translate(${x} ${y})`);
-        this.svg.appendChild(bg);
+        this.backgrounds.appendChild(bg);
     }
     setTiling(type) {
         this.reset();
@@ -96,7 +110,7 @@ class Kaleidoscope {
         this.createBG("pentapattern", width/2 + width/4, height*3/4);
     }
     setSquareTiling() {
-        this.cell = new SquareCell(100);
+        this.cell = new SquareCell(100/2);
 
         const size = 100/3;
         const width = size, height = size;
@@ -109,6 +123,8 @@ class Kaleidoscope {
         this.createBG("squarepattern1", size/2, size/2);
 
         this.createLever("leverpattern2", 100, "./images/img10.png");
+        this.levers[this.levers.length - 1].setTransform(`
+            translate(50 50) scale(-1 -1) translate(-50 -50)`);
         this.createPattern("squarepattern2", width, height, {
             "fill": "url(#leverpattern2)", "stroke": "black", "stroke-width": "0.1",
         });
@@ -135,8 +151,9 @@ class Kaleidoscope {
         }
     }
     setSpeed(value) {
+        this.speed = Number(value);
         for (let lever of this.levers) {
-            lever.setSpeed(Number(value));
+            lever.setSpeed(this.speed);
         }
     }
 }
