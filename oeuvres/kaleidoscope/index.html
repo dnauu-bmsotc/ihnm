@@ -20,6 +20,7 @@
                 align-items: center;
                 justify-content: center;
                 margin: 1em;
+                max-width: 40em;
             }
             main > * > * {
                 margin: 0.5em;
@@ -35,8 +36,15 @@
                 100% { filter: blur(0) brightness(100%); }
             }
             .lever {
-                width: 128px;
-                height: 128px;
+                width: 100px;
+                height: 100px;
+                border: 1px solid black;
+                box-shadow: 2px 2px 4px gray;
+                transition: box-shadow 0.2s;
+            }
+            .lever.active {
+                box-shadow: 0 10px 16px gray;
+                transition: box-shadow 0.2s;
             }
         </style>
 	</head>
@@ -46,9 +54,9 @@
                 <svg id="lens" width="400" height="400" viewBox="0 0 100 100"></svg>
             </div>
 			<div id="tiling-buttons-container">
-				<button data-tiling="pentagonal">Пятиугольный паркет p6 (632)</button>
-				<button data-tiling="square">Квадратный паркет с раскраской 1212</button>
 				<button data-tiling="kisrhombille">Разделённый ромбический паркет V4.6.12</button>
+				<button data-tiling="square">Квадратный паркет с раскраской 1212</button>
+				<button data-tiling="pentagonal">Пятиугольный паркет p6 (632)</button>
 			</div>
             <div id="lever-container"></div>
 			<label id="label-speed">
@@ -56,16 +64,16 @@
 				<input id="input-speed" type="range" min="1" max="99" value="20" id="speed-slider">
 			</label>
 			<div id="image-buttons-container">
-				<button data-image="./images/img9.jpg">Акварель</button>
 				<button data-image="./images/img1.png">Small Squares</button>
 				<button data-image="./images/img2.png">Pastel Stuff</button>
-				<button data-image="./images/img3.jpg">Дерево</button>
-				<button data-image="./images/img4.jpg">Потолок</button>
-				<button data-image="./images/img5.jpg">Луна</button>
-				<button data-image="./images/img6.jpg">Виноград</button>
-				<button data-image="./images/img7.jpg">Дорога</button>
-				<button data-image="./images/img8.jpg">Ноутбук</button>
-				<button data-image="./images/img10.jpg">Рисунок</button>
+				<button data-image="./images/img3.png">Дерево</button>
+				<button data-image="./images/img4.png">Потолок</button>
+				<button data-image="./images/img5.png">Луна</button>
+				<button data-image="./images/img6.png">Виноград</button>
+				<button data-image="./images/img7.png">Дорога</button>
+				<button data-image="./images/img8.png">Ноутбук</button>
+				<button data-image="./images/img9.png">Акварель</button>
+				<button data-image="./images/img10.png">Рисунок</button>
 				<button data-image="./images/img11.png">Свет</button>
 				<button data-image="./images/img12.png">Дельта Козерога</button>
 				<button data-image="./images/img13.png">Неон</button>
@@ -81,7 +89,7 @@
                 Number(document.getElementById("input-speed").value)
             );
 
-            kaleidoscope.setTiling("pentagonal");
+            kaleidoscope.setTiling("kisrhombille");
             
             document.getElementById("tiling-buttons-container").addEventListener("click", function(e) {
                 if (e.target.tagName === "BUTTON") {
@@ -106,7 +114,9 @@
             });
 
             document.getElementById("lens").addEventListener("sharpChange", function(e) {
+                // https://stackoverflow.com/questions/6268508
                 document.getElementById("lens").style.animation = 'none';
+                document.getElementById("lens").offsetHeight;
                 setTimeout(() => document.getElementById("lens").style.animation = null, 0);
             });
         </script>

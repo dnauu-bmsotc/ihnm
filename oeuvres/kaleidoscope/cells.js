@@ -34,15 +34,14 @@ class PentagonalCellType5 {
         );
         this.calculate(s1, s2, a);
         this.constArea = this.computeArea(s1, s2, a);
-        // this.s1Animation = new SliderAnimation(val=>{this.s1 = 7 + 2*val}, 20);
-        this.s2Animation = new SliderAnimation(val => {
-            this.s2 = 5 + 10 * val;
-        }, 20);
+        this.s1Animation = new SliderAnimation(val => {
+            this.s1 = 10 + 10 * val;
+        }, 200);
         this.aAnimation = new SliderAnimation(val => {
-            this.a = 90 + 180 * val;
+            this.a = 90 + 150 * val;
             this.calculate(this.s1, this.s2, this.a);
             this.updateSVG();
-        }, 20);
+        }, 200);
     }
     calculateFurtherPoint(arr, ind, distance, angle) {
         arr[ind].x = arr[ind - 1].x + distance * cos(angle);
@@ -68,7 +67,16 @@ class PentagonalCellType5 {
         }
     }
     deploy(container, ns, tileStyle) {
-        this.initSVG(container, ns, tileStyle);
+        this.el = document.createElementNS(ns, "g");
+        for (let tile of this.tiles) {
+            tile.el = document.createElementNS(ns, "polygon");
+            for (let k in tileStyle) {
+                tile.el.style[k]=tileStyle[k];
+            }
+            this.el.appendChild(tile.el);
+        }
+        container.appendChild(this.el);
+
         this.updateSVG();
     }
     computeArea(s1, s2, a) {
@@ -83,17 +91,6 @@ class PentagonalCellType5 {
         const v = Math.sqrt(s1**2 + (s2/2)**2 - 2*s1*(s2/2)*cos(a));
         return asin(s2*sin(a) / (2*v));
     }
-    initSVG(container, ns, tileStyle) {
-        this.el = document.createElementNS(ns, "g");
-        for (let tile of this.tiles) {
-            tile.el = document.createElementNS(ns, "polygon");
-            for (let k in tileStyle) {
-                tile.el.style[k]=tileStyle[k];
-            }
-            this.el.appendChild(tile.el);
-        }
-        container.appendChild(this.el);
-    }
     updateSVG() {
         for (let tile of this.tiles) {
             const points = tile.map(p => p.x + "," + p.y).join(" ");
@@ -104,8 +101,103 @@ class PentagonalCellType5 {
         this.el.setAttributeNS(null, "transform", `scale(${scale})`);
     }
     delete() {
-        this.s2Animation.delete();
+        this.s1Animation.delete();
         this.aAnimation.delete();
         this.el.remove();
+    }
+}
+
+class SquareCell {
+    constructor(size) {
+        this.tiles = Array.from(
+            {length: 1}, _ => Array.from(
+                {length: 4}, _ => ({x: 0, y: 0})
+            )
+        );
+        this.calculate(size);
+    }
+    calculate(size) {
+        this.tiles[0][0].x = 0;
+        this.tiles[0][0].y = 0;
+
+        this.tiles[0][1].x = size;
+        this.tiles[0][1].y = 0;
+
+        this.tiles[0][2].x = size;
+        this.tiles[0][2].y = size;
+
+        this.tiles[0][3].x = 0;
+        this.tiles[0][3].y = size;
+    }
+    deploy(container, ns, tileStyle) {
+        this.el = document.createElementNS(ns, "g");
+        for (let tile of this.tiles) {
+            tile.el = document.createElementNS(ns, "polygon");
+            for (let k in tileStyle) {
+                tile.el.style[k]=tileStyle[k];
+            }
+            this.el.appendChild(tile.el);
+        }
+        container.appendChild(this.el);
+
+        this.updateSVG();
+    }
+    updateSVG() {
+        for (let tile of this.tiles) {
+            const points = tile.map(p => p.x + "," + p.y).join(" ");
+            tile.el.setAttributeNS(null, "points", points);
+        }
+    }
+    delete() {
+        this.el.remove();
+    }
+}
+
+class KisrhombilleCell {
+    constructor(size) {
+        this.tiles = Array.from(
+            {length: 12}, _ => Array.from(
+                {length: 3}, _ => ({x: 0, y: 0})
+            )
+        );
+        this.calculate(size);
+    }
+    calculateTile(tile, size) {
+        tile[0].x = 0;
+        tile[0].y = 0;
+        tile[1].x = size*cos(30);
+        tile[1].y = 0;
+        tile[2].x = size*cos(30);
+        tile[2].y = size*sin(30);
+    }
+    calculate(size) {
+        for (let i = 0; i < this.tiles.length; i++) {
+            this.calculateTile(this.tiles[i], size);
+        }
+    }
+    deploy(container, ns, tileStyle) {
+        this.el = document.createElementNS(ns, "g");
+        for (let tile of this.tiles) {
+            tile.el = document.createElementNS(ns, "polygon");
+            for (let k in tileStyle) {
+                tile.el.style[k]=tileStyle[k];
+            }
+            this.el.appendChild(tile.el);
+        }
+        container.appendChild(this.el);
+
+        this.updateSVG();
+    }
+    updateSVG() {
+        for (let i = 0; i < this.tiles.length; i++) {
+            const points = this.tiles[i].map(p => p.x + "," + p.y).join(" ");
+            this.tiles[i].el.setAttributeNS(null, "points", points);
+            this.tiles[i].el.setAttributeNS(null, "transform", `
+                rotate(${30*i + 30*(i%2)}) scale(1, ${1-2*(i%2)})
+            `);
+        }
+    }
+    delete() {
+        
     }
 }
