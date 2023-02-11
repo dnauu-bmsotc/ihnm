@@ -13,6 +13,7 @@
 		<main>
 			<div id="buttons">
 				<button onclick="takeCollection('minerals5')">Минералы (ящик №5)</button>
+				<button onclick="takeCollection('minerals5-2')">Минералы (ящик №5 2023)</button>
 				<button onclick="takeCollection('rocks5')">Горные породы (ящик №5)</button>
 			</div>
 			<div id="imgdiv">
@@ -415,7 +416,7 @@
 							if (!collectionsMap.has(folder)) {
 								collectionsMap.set(folder, {
 									past: [],
-									future: data.match(/[^\s]*.jpg/g),
+									future: data.match(/[^\s]*.jpg/gi),
 								});
 							}
 							if (collectionsMap.get(folder).future.length === 0) {
@@ -443,7 +444,7 @@
 					});
 				}
 				else {
-					$("#answer").text($("#img").attr("src").match(/[^//]*.jpg/));
+					$("#answer").text($("#img").attr("src").match(/[^//]*.jpg/i));
 				}
 			}
 		</script>

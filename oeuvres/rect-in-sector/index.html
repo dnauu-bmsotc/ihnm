@@ -10,14 +10,16 @@
 		<main>
 			<p>Geogebra applet: <a href="https://www.geogebra.org/m/fzzbw9sw">https://www.geogebra.org/m/fzzbw9sw</a><p>
 			<p>libraries: <a href="https://p5js.org/">p5.js</a></p>
+			<div id="holder" style="display: inline-block"></div>
+			<img src="./proof.jpg" height="300"></img>
 		</main>
 		<script>
-			const w = 400;
-			const h = 400;
-			const r = 200;
+			const w = 300;
+			const h = 300;
+			const r = 120;
 
 			function setup() {
-				createCanvas(w, h);
+				createCanvas(w, h).parent("holder");
 			}
 
 			function draw() {
@@ -28,9 +30,9 @@
 				let rectRatio = 1 / (1 - mousey) - 1;
 				let sectorAngle = mousex * TWO_PI;
 				// Расчёт угла b образованного центром окружности и внешними точками прямоугольника
-				let tg1 = rectRatio / 2;
+				let tg1 = rectRatio;
 				let tg2 = Math.tan(Math.min(sectorAngle, Math.PI) / 2);
-				let b = 2 * Math.atan((tg1 * tg2) / (tg1 + tg2));
+				let b = 2 * Math.atan((tg1 * tg2) / (tg1 + 2*tg2));
 				// Ширина и высота отображаемого прямоугольника
 				let rectW = 2 * r * Math.sin(b / 2);
 				let rectH = rectW / rectRatio;
