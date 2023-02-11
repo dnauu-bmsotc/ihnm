@@ -4,49 +4,111 @@
 		<title>Калейдоскоп</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
-		<link rel="stylesheet" href="style.css">
-		<script src="./pattern-animation.js"></script>
+		<script src="./cells.js"></script>
 		<script src="./lever.js"></script>
-		<script src="./tilings/pentagonal-tiling-type5.js"></script>
-		<script src="./tilings/square-tiling.js"></script>
-		<script src="./tilings/kisrhombille-tiling.js"></script>
-		<script src="./script.js"></script>
+		<script src="./kaleidoscope.js"></script>
+        <style>
+            main {
+                display: flex;
+                flex-flow: column nowrap;
+                align-items: center;
+                justify-content: center;
+            }
+            main > * {
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+                justify-content: center;
+                margin: 1em;
+            }
+            main > * > * {
+                margin: 0.5em;
+            }
+            #lens {
+                background-color: black;
+                outline: 8px outset #000000;
+                outline-offset: 0px;
+                animation: unblur cubic-bezier(.88,1.63,.57,.52) 1s;
+            }
+            @keyframes unblur {
+                0% { filter: blur(12px) brightness(120%); }
+                100% { filter: blur(0) brightness(100%); }
+            }
+            .lever {
+                width: 128px;
+                height: 128px;
+            }
+        </style>
 	</head>
 	<body>
 		<main>
-			<div id="lens">
-				<svg id="lens-svg" width="400" height="400" viewBox="0 0 100 100"></svg>
-			</div>
+            <div id="lens-container">
+                <svg id="lens" width="400" height="400" viewBox="0 0 100 100"></svg>
+            </div>
 			<div id="tiling-buttons-container">
-				<button onclick="setPentagonalTiling()">Пятиугольный паркет p6 (632)</button>
-				<button onclick="setSquareTiling()">Квадратный паркет с раскраской 1212</button>
-				<button onclick="setKisrhombilleTiling()">Разделённый ромбический паркет V4.6.12</button>
+				<button data-tiling="pentagonal">Пятиугольный паркет p6 (632)</button>
+				<button data-tiling="square">Квадратный паркет с раскраской 1212</button>
+				<button data-tiling="kisrhombille">Разделённый ромбический паркет V4.6.12</button>
 			</div>
-			<div id="lever"></div>
-			<label id="speed-label">
+            <div id="lever-container"></div>
+			<label id="label-speed">
 				<span>Скорость:</span>
-				<input type="range" min="1" max="99" value="20" id="speed-slider" oninput="speedSliderInput(event)">
+				<input id="input-speed" type="range" min="1" max="99" value="20" id="speed-slider">
 			</label>
 			<div id="image-buttons-container">
-				<button onclick="setPatternImage('./images/img9.jpg')">Акварель</button>
-				<button onclick="setPatternImage('./images/img1.png')">Small Squares</button>
-				<button onclick="setPatternImage('./images/img2.png')">Pastel Stuff</button>
-				<button onclick="setPatternImage('./images/img3.jpg')">Дерево</button>
-				<button onclick="setPatternImage('./images/img4.jpg')">Потолок</button>
-				<button onclick="setPatternImage('./images/img5.jpg')">Луна</button>
-				<button onclick="setPatternImage('./images/img6.jpg')">Виноград</button>
-				<button onclick="setPatternImage('./images/img7.jpg')">Дорога</button>
-				<button onclick="setPatternImage('./images/img8.jpg')">Ноутбук</button>
-				<button onclick="setPatternImage('./images/img10.jpg')">Рисунок</button>
-				<button onclick="setPatternImage('./images/img11.png')">Свет</button>
-				<button onclick="setPatternImage('./images/img12.png')">Дельта Козерога</button>
-				<button onclick="setPatternImage('./images/img13.png')">Неон</button>
-				<button onclick="setPatternImage('./images/img14.png')">Зебра</button>
-			</div>
-			<label>
-				Загрузить изображение
-				<input data-image="" type="file" accept="image/png, image/jpeg" oninput="loadImage(this)">
-			</label>
+				<button data-image="./images/img9.jpg">Акварель</button>
+				<button data-image="./images/img1.png">Small Squares</button>
+				<button data-image="./images/img2.png">Pastel Stuff</button>
+				<button data-image="./images/img3.jpg">Дерево</button>
+				<button data-image="./images/img4.jpg">Потолок</button>
+				<button data-image="./images/img5.jpg">Луна</button>
+				<button data-image="./images/img6.jpg">Виноград</button>
+				<button data-image="./images/img7.jpg">Дорога</button>
+				<button data-image="./images/img8.jpg">Ноутбук</button>
+				<button data-image="./images/img10.jpg">Рисунок</button>
+				<button data-image="./images/img11.png">Свет</button>
+				<button data-image="./images/img12.png">Дельта Козерога</button>
+				<button data-image="./images/img13.png">Неон</button>
+				<button data-image="./images/img14.png">Зебра</button>
+				<input type="file" accept="image/png, image/jpeg">
+            </div>
 		</main>
+        <script>
+            const kaleidoscope = new Kaleidoscope(
+                document.getElementById("lens"),
+                document.getElementById("lever-container"),
+                "http://www.w3.org/2000/svg",
+                Number(document.getElementById("input-speed").value)
+            );
+
+            kaleidoscope.setTiling("pentagonal");
+            
+            document.getElementById("tiling-buttons-container").addEventListener("click", function(e) {
+                if (e.target.tagName === "BUTTON") {
+                    kaleidoscope.setTiling(e.target.dataset.tiling);
+                }
+            });
+
+            document.getElementById("image-buttons-container").addEventListener("click", function(e) {
+                if (e.target.tagName === "BUTTON") {
+                    kaleidoscope.setImage(e.target.dataset.image);
+                }
+            });
+
+            document.getElementById("image-buttons-container").addEventListener("input", function(e) {
+                if (e.target.tagName === "INPUT") {
+                    kaleidoscope.setImage(URL.createObjectURL(e.target.files[0]));
+                }
+            });
+
+            document.getElementById("input-speed").addEventListener("input", function(e) {
+                kaleidoscope.setSpeed(Number(e.target.value));
+            });
+
+            document.getElementById("lens").addEventListener("sharpChange", function(e) {
+                document.getElementById("lens").style.animation = 'none';
+                setTimeout(() => document.getElementById("lens").style.animation = null, 0);
+            });
+        </script>
 	</body>
 </html>
