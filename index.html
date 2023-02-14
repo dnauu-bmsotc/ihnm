@@ -77,18 +77,24 @@
 		<main>
 			<h2>Список страниц</h2>
 			<div id="container"></div>
+			<div>
+				<p>Неудачные страницы</p>
+				<ul>
+					<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
+					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
+					<li><a href="./archive/angles">Представления углов</a></li>
+				</ul>
+			</div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
 		<script>
 			const container = document.getElementById("container");
 			pages = [
 				{href: "./archive/summer2021/dist/number-systems", name: "Системы счисления", preview: "./previews/number-systems.png"},
-				{href: "./archive/november2021/questions", name: "Генератор вопросов", preview: "./previews/questions.png"},
+				{href: "./archive/november2021/questions", name: "ГСВ", preview: "./previews/questions.png"},
 				{href: "./archive/summer2021/dist/wheel-of-fortune", name: "Колесо Фортуны", preview: "./previews/wheel-of-fortune.png"},
-				{href: "./oeuvres/gconsole", name: "Геодезическая консоль", preview: "./previews/gconsole.png"},
 				{href: "./oeuvres/rocks-guess", name: "Угадай камень", preview: "./previews/rocks-guess.png"},
-				{href: "./oeuvres/nre-manual", name: "Методичка по природным ресурсам Земли", preview: "./previews/nre-manual.png"},
-				{href: "./oeuvres/angles", name: "Представление углов", preview: "./previews/angles.png"},
+				{href: "./oeuvres/nre-manual", name: "Методичка по ПРЗ", preview: "./previews/nre-manual.png"},
 				{href: "./oeuvres/rect-in-sector", name: "Прямоугольник в секторе", preview: "./previews/rect-in-sector.png"},
 				{href: "./oeuvres/rivers", name: "Генератор рек и озёр", preview: "./previews/rivers.png"},
 				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", preview: "./previews/kaleidoscope.png"},

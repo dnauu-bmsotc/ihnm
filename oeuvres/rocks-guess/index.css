@@ -2,11 +2,17 @@ body {
     font-family: sans-serif;
     font-size: 14px;
 }
-#answer {
-    height: 1em;
+main {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
 }
 details {
     margin: 2em 0;
+}
+summary {
+    color: blue;
 }
 #details-section {
     width: 60em;
@@ -25,12 +31,27 @@ details {
 /* guess styles */
 button {
     margin: 1em;
+    padding: 1em;
+}
+#container {
+    border: 1px solid lightgray;
+    padding: 1em;
+}
+#answer {
+    height: 1em;
+    font-size: 1.5em;
+    font-family: 'Times New Roman', Times, serif;
+}
+#loaddiv {
+    text-align: center;
 }
 #imgdiv {
     overflow:hidden;
 }
 #img {
     height: 256px;
+    width: 256px;
+    border: 1px solid gray;
 }
 /* rock tables styles */
 table {

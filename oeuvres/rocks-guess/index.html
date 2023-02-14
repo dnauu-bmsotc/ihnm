@@ -12,12 +12,17 @@
 	<body>
 		<main>
 			<div id="buttons">
+				<button onclick="takeCollection('minerals4')">Минералы (ящик №4)</button>
 				<button onclick="takeCollection('minerals5')">Минералы (ящик №5)</button>
-				<button onclick="takeCollection('minerals5-2')">Минералы (ящик №5 2023)</button>
 				<button onclick="takeCollection('rocks5')">Горные породы (ящик №5)</button>
 			</div>
-			<div id="imgdiv">
-				<img id="img"></img>
+			<div id="container">
+				<div id="loaddiv">
+					<span>Загрузка</span>
+				</div>
+				<div id="imgdiv">
+					<img id="img"></img>
+				</div>
 			</div>
 			<p id="answer"></p>
 			<section id="details-section">
@@ -407,6 +412,10 @@
 		</main>
 		<!-- Guess script -->
 		<script>
+			$("#img").on("load", function() {
+				$("#loaddiv").hide();
+			})
+
 			let collectionsMap = new Map();
 			function takeCollection(folder) {
 				if ($("#answer").text() || !$("#img").attr("src")) {
@@ -427,6 +436,7 @@
 							collectionsMap.get(folder).past.push(collectionsMap.get(folder).future[randomId]);
 							collectionsMap.get(folder).future.splice(randomId, 1);
 							$("#img").attr("src", ``); // remove image
+							$("#loaddiv").show();
 							$("#img").attr("src", `${folder}/${collectionsMap.get(folder).past[collectionsMap.get(folder).past.length - 1]}`);
 							$("#img").css("transform", `
 								scaleX(${1 - Math.floor(Math.random()*2)*2})
