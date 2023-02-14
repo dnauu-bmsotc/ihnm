@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Прямоугольник в секторе</title>
+        <style>
+            main {
+                display: flex;
+                flex-flow: column wrap;
+                align-items: center;
+                justify-content: center;
+            }
+            button {
+                padding: .5em;
+                margin: .5em;
+            }
+            #buttons-section {
+                display: flex;
+                flex-flow: row wrap;
+                align-items: center;
+                justify-content: center;
+                max-width: 60em;
+            }
+        </style>
+	</head>
+	<body>
+        <main>
+            <section id="buttons-section"></section>
+        </main>
+        <script>
+            const disciplines = [
+                {name: "Основы геодезии", file: ""},
+                {name: "Теория математической обработки геодезических измерений", file: ""},
+                {name: "Геоморфология", file: ""},
+                {name: "Природные ресурсы Земли", file: ""},
+                {name: "Физика природной среды", file: ""},
+                {name: "Картография", file: ""},
+                {name: "Теория вероятностей и математическая статистика", file: ""},
+                {name: "Астрономия", file: ""},
+                {name: "Системы координат", file: ""},
+            ];
+
+            for (let discipline of disciplines) {
+                const button = document.createElement("button");
+                button.textContent = discipline.name;
+
+                document.getElementById("buttons-section").appendChild(button);
+            }
+        </script>
+	</body>
+</html>
