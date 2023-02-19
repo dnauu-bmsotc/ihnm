@@ -11,24 +11,16 @@
             "id": "dc6fed7f14cce4f9",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "natural-resourses/Геоморфология с основами геологии.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           },
           {
             "id": "e6721c119e309f3c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "natural-resourses/Геоморфология с основами геологии.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           },
           {
@@ -173,10 +165,10 @@
   },
   "active": "242df3dace1f22cc",
   "lastOpenFiles": [
-    "media/geomorphology/gm-3-kora-75.png",
     "natural-resourses/Геоморфология с основами геологии.md",
+    "media/geomorphology/gm-3-kora-75.png",
     "media/geomorphology/gm-43-polytundra-80.png",
-    "media/geomorphology/gm-27-konus-40.png",
+    "media/geomorphology/gm-28-konus-40.png",
     "natural-resourses/Минералы и горные породы.md",
     "natural-resourses/Минеральные ресурсы.md",
     "media/geomorphology/gm-16-skladki-80.png",

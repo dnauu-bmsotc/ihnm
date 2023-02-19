@@ -1,0 +1,28 @@
+main {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+button {
+    padding: .5em;
+    margin: .5em;
+}
+
+#groups-section, #disciplines-section {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 60em;
+}
+
+#markdown-container {
+    max-width: 40em;
+}
+
+#markdown-container img {
+    display: block;
+    margin: auto;
+}

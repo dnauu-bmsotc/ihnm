@@ -3,50 +3,19 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Прямоугольник в секторе</title>
-        <style>
-            main {
-                display: flex;
-                flex-flow: column wrap;
-                align-items: center;
-                justify-content: center;
-            }
-            button {
-                padding: .5em;
-                margin: .5em;
-            }
-            #buttons-section {
-                display: flex;
-                flex-flow: row wrap;
-                align-items: center;
-                justify-content: center;
-                max-width: 60em;
-            }
-        </style>
+		<title>Конспекты</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="./disciplines.js"></script>
+        <script src="./script.js"></script>
+        <link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
         <main>
-            <section id="buttons-section"></section>
+            <section id="groups-section"></section>
+            <section id="disciplines-section"></section>
+            <section id="question">А расскажи-ка про...</section>
+            <section id="conspect"></section>
         </main>
-        <script>
-            const disciplines = [
-                {name: "Основы геодезии", file: ""},
-                {name: "Теория математической обработки геодезических измерений", file: ""},
-                {name: "Геоморфология", file: ""},
-                {name: "Природные ресурсы Земли", file: ""},
-                {name: "Физика природной среды", file: ""},
-                {name: "Картография", file: ""},
-                {name: "Теория вероятностей и математическая статистика", file: ""},
-                {name: "Астрономия", file: ""},
-                {name: "Системы координат", file: ""},
-            ];
-
-            for (let discipline of disciplines) {
-                const button = document.createElement("button");
-                button.textContent = discipline.name;
-
-                document.getElementById("buttons-section").appendChild(button);
-            }
-        </script>
 	</body>
 </html>
