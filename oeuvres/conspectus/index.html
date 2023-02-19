@@ -4,18 +4,32 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Конспекты</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="./functions.js"></script>
         <script src="./disciplines.js"></script>
         <script src="./script.js"></script>
         <link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
         <main>
-            <section id="groups-section"></section>
-            <section id="disciplines-section"></section>
-            <section id="question">А расскажи-ка про...</section>
+            <div id="groups-section-wrap">
+                <div id="groups-section"></div>
+            </div>
+
+            <div id="disciplines-section-wrap">
+                <div id="disciplines-section"></div>
+            </div>
+
+            <div id="question-wrap">
+                <div id="question">А расскажи-ка про...</div>
+            </div>
+
             <section id="conspect"></section>
         </main>
+        <button id="button-up">Наверх</button>
 	</body>
 </html>

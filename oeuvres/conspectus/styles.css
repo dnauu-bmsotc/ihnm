@@ -1,3 +1,9 @@
+body {
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
 main {
     display: flex;
     flex-flow: column wrap;
@@ -7,7 +13,32 @@ main {
 
 button {
     padding: .5em;
-    margin: .5em;
+    margin: .3em;
+    border-radius: 3px;
+    background-color: #f8f7f7;
+    font-size: 0.9em;
+    /* border-top: 2px solid #ebe5e2;
+    border-right: 2px solid #a79c99;
+    border-bottom: 2px solid #a79c99;
+    border-left: 2px solid #ebe5e2; */
+    border: 1px solid #beb0b0;
+    color: #673737;
+}
+
+#button-up {
+    position: sticky;
+    bottom: 1em;
+    right: 0;
+}
+
+#groups-section-wrap, #disciplines-section-wrap, #question-wrap {
+    width: 100%;
+    background-color: #f8f8f8;
+    margin: 1em 0;
+    padding: 0.5em 0;
+    border: 1px solid #e0dad9;
+    border-right-width: 0;
+    border-left-width: 0;
 }
 
 #groups-section, #disciplines-section {
@@ -16,6 +47,7 @@ button {
     align-items: center;
     justify-content: center;
     max-width: 60em;
+    margin: auto;
 }
 
 #markdown-container {
@@ -25,4 +57,63 @@ button {
 #markdown-container img {
     display: block;
     margin: auto;
+}
+
+#question-buttons-container button:after {
+    content: attr(data-counter);
+}
+
+#question-wrap {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5em 0;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#question {
+    display: inline-block;
+    font-size: 1.8em;
+    color: #654133;
+}
+
+#question-buttons-container {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 50em;
+}
+
+#question-buttons-container > button {
+    padding: 0.8em;
+    font-size: 1em;
+}
+
+#conspect {
+    max-width: 50em;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
+    color: #301711;
+}
+
+strong {
+    color: #962c21;
+}
+
+em {
+    color: #a32407;
+}
+
+.table-container {
+    overflow: scroll;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid black;
 }

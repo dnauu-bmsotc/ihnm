@@ -1,77 +1,51 @@
 "use strict"
 
-// https://gist.github.com/abalter/b5357657311349e06bc5b32222f37030
-function getListing(path, callback) {
-    $.get(path, data => {
-        callback(data
-            .match(/href="([%\d\w]+)/g) // pull out the hrefs
-            .map((x) => x.replace('href="', '')) // clean up
-        );
-    });
-}
-
-// https://stackoverflow.com/questions/6677035/scroll-to-an-element-with-jquery
-function scrollMarkdown(el, dur=1000) {
-    $([document.documentElement, document.body]).animate({
-        'scrollTop': $(el).offset().top
-    }, dur);  
-}
-
-class Lottery {
-    constructor(questions) {
-        this.freeQuestions = questions;
-        this.bookedQuestions = [];
-    }
-    select() {
-        if (!this.freeQuestions.length) {
-            this.freeQuestions = this.bookedQuestions;
-            this.bookedQuestions = [];
-        }
-        const idx = Math.trunc(Math.random() * this.freeQuestions.length);
-        this.bookedQuestions.push(this.freeQuestions[idx]);
-        this.freeQuestions.splice(idx, 1);
-        return this.bookedQuestions[this.bookedQuestions.length - 1];
-    }
-}
-
 class DefaultDiscipline {
-    constructor(groupFolder, name, $conspectContainer, $questionContainer) {
+    constructor(vault, groupFolder, name, $conspectContainer, $questionContainer) {
+        this.vault = vault;
         this.groupFolder = groupFolder;
         this.name = name;
         this.$conspectContainer = $conspectContainer;
         this.$questionContainer = $questionContainer;
     }
     deploy() {
-        const $buttonsContainer = $("<div></div>");
-        $buttonsContainer.attr("id", "question-buttons-container");
-        this.$conspectContainer.append($buttonsContainer);
+        this.appendQuestionButtonsContainer();
+        this.appendMarkdownContainer();
 
-        const $markdownContainer = $("<div></div>");
-        $markdownContainer.attr("id", "markdown-container");
-        this.$conspectContainer.append($markdownContainer);
-
-        $.get(this.groupFolder + this.name + ".md", data => {
-            $markdownContainer.append(this.$createMarkdown(this.groupFolder, data));
+        $.get(this.groupFolder + this.name + ".md", { "_": $.now() }, data => {
+            this.$markdownContainer.append(this.$createMarkdown(data));
             const questions = $.map(this.$conspectContainer.find("h2"), header => $(header).text());
-            const button = this.$createQuestionButton("Выбрать вопрос", questions, this.$questionContainer);
-            $buttonsContainer.append(button);
+            const button = this.$createQuestionButton("Случайный вопрос", questions, question => {
+                scrollPage(this.$conspectContainer.find(`h2:contains(${question})`)[0]);
+            });
+            this.$buttonsContainer.append(button);
+
+            renderKaTeX(this.$markdownContainer.get(0));
         });
     }
-    $createQuestionButton(text, questions) {
+    appendQuestionButtonsContainer() {
+        this.$buttonsContainer = $("<div></div>");
+        this.$buttonsContainer.attr("id", "question-buttons-container");
+        this.$conspectContainer.append(this.$buttonsContainer);
+    }
+    appendMarkdownContainer() {
+        this.$markdownContainer = $("<div></div>");
+        this.$markdownContainer.attr("id", "markdown-container");
+        this.$conspectContainer.append(this.$markdownContainer);
+    }
+    $createQuestionButton(text, questions, onclick) {
         const lottery = new Lottery(questions);
         const $button = $(`<button>${text}</button>`);
         $button.on("click", _ => {
             const text = lottery.select();
             const $question = $(`<div>${text}</div>`);
-            $question.on("click", _ => {
-                scrollMarkdown(this.$conspectContainer.find(`h2:contains(${text})`)[0]);
-            })
+            $question.on("click", _ => onclick(text));
             this.$questionContainer.html($question);
+            $button.attr("data-counter", ` (${lottery.counter}/${lottery.size})`);
         });
         return $button;
     }
-    $createMarkdown(folder, data) {
-        marked.setOptions({ baseUrl: folder + "../" });
+    $createMarkdown(data) {
         const $conspect = $(marked.parse(data));
         $conspect.find("img").each(function() {
             this.style.width = this.src.match(/(\d+).png/)[1] + "%";
@@ -81,12 +55,50 @@ class DefaultDiscipline {
 }
 
 class RocksGuessDiscipline extends DefaultDiscipline {
-    constructor(groupFolder, name, $conspectContainer, $questionContainer) {
-        super(groupFolder, name, $conspectContainer, $questionContainer);
+    constructor(vault, groupFolder, name, $conspectContainer, $questionContainer) {
+        super(vault, groupFolder, name, $conspectContainer, $questionContainer);
     }
     deploy() {
-    }
-    createBox() {
+        this.appendQuestionButtonsContainer();
+        
+        this.createBox(this.$buttonsContainer, "minerals5", "Минералы (ящ. №5)");
+        this.createBox(this.$buttonsContainer, "rocks3", "Горные породы (ящ. №3)");
 
+        this.appendMineralsTable();
+    }
+    createBox($container, folder, text) {
+        const boxFolder = this.groupFolder + "../../media/rocks-guess/" + folder + "/";
+        const $button = $(`<button>${text}</button>`);
+        $container.append($button);
+        
+        getListing(boxFolder, listing => {
+            listing = $.map(listing, name => decodeURIComponent(name));
+            const lottery = new Lottery(listing);
+            $button.on("click", _ => {
+                const img = $(`<img src="${boxFolder + lottery.select()}">`);
+                this.$questionContainer.html(img);
+                $button.attr("data-counter", ` (${lottery.counter}/${lottery.size})`);
+            })
+        });
+    }
+    appendMineralsTable() {
+        const headers = [
+            "Название", "Формула", "Цвет", "Блеск", "Плотность", "Излом",
+            "Спайность", "Черта", "Твёрдость", "Форма нахождения в природе",
+            "Происхождение", "Применение"
+        ];
+
+        $.getJSON(this.vault + "json/minerals.json", { "_": $.now() }, data => {
+            const $table = $tableFromJSON(data, headers);
+            this.$conspectContainer.append($table);
+
+            const mineralsNames = $.map(data, min => min["Название"]);
+
+            this.$buttonsContainer.append(this.$createQuestionButton("Минералы", mineralsNames, name => {
+                scrollPage(this.$conspectContainer.find(`td:contains(${name})`)[0]);
+            }));
+
+            renderKaTeX(this.$conspectContainer.get(0));
+        });
     }
 }

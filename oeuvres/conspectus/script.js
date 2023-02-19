@@ -1,6 +1,16 @@
 "use strict"
 
+$.ajaxSetup({'beforeSend': function(xhr){
+    if (xhr.overrideMimeType)
+        xhr.overrideMimeType("text/plain");
+    }
+});
+
+marked.setOptions({ baseUrl: "./src/markdown/" });
+
 $(document).ready(_ => {
+    $("#button-up").on("click", _ => scrollPage(document.body))
+
     const conspectus = new Conspectus("./src/", {
         $groupsContainer:      $("#groups-section"),
         $disciplinesContainer: $("#disciplines-section"),
@@ -34,7 +44,7 @@ class Conspectus {
         const path = this.folder + "markdown/" + name + "/";
         getListing(path, listing => {
             for (let discipline of listing) {
-                const name = decodeURIComponent(discipline);
+                const name = decodeURIComponent(discipline).replace(".md", "");
                 const button = $(`<button>${name}</button>`);
                 button.on("click", _ => this.setDiscipline(path, name));
                 this.$disciplinesContainer.append(button);
@@ -53,7 +63,8 @@ class Conspectus {
                 disciplineClass = DefaultDiscipline;
         }
         this.$conspectContainer.empty();
-        const discipline = new disciplineClass(path, name, this.$conspectContainer, this.$questionContainer);
+        const discipline = new disciplineClass(this.folder, path, name,
+            this.$conspectContainer, this.$questionContainer);
         discipline.deploy();
     }
 
