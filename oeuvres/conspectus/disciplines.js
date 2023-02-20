@@ -81,24 +81,29 @@ class RocksGuessDiscipline extends DefaultDiscipline {
             })
         });
     }
-    appendMineralsTable() {
-        const headers = [
-            "Название", "Формула", "Цвет", "Блеск", "Плотность", "Излом",
-            "Спайность", "Черта", "Твёрдость", "Форма нахождения в природе",
-            "Происхождение", "Применение"
-        ];
+    appendRocksTable(name, path) {
+        const $placeholder = $("<div></div>");
+        this.$conspectContainer.append($placeholder);
+        $.getJSON(path, { "_": $.now() }, data => {
+            const headers = Array.from(new Set(data.map(rock => Object.keys(rock)).flat()));
+            const $table = $tableFromJSON(name, data, headers);
+            $placeholder.replaceWith($table);
 
-        $.getJSON(this.vault + "json/minerals.json", { "_": $.now() }, data => {
-            const $table = $tableFromJSON(data, headers);
-            this.$conspectContainer.append($table);
-
-            const mineralsNames = $.map(data, min => min["Название"]);
-
-            this.$buttonsContainer.append(this.$createQuestionButton("Минералы", mineralsNames, name => {
-                scrollPage(this.$conspectContainer.find(`td:contains(${name})`)[0]);
-            }));
-
+            this.appendRockTheoryButton(name, data);
             renderKaTeX(this.$conspectContainer.get(0));
         });
+    }
+    appendRockTheoryButton(name, data, key="Название") {
+        const list = data.map(rock => rock[key]);
+        this.$buttonsContainer.append(this.$createQuestionButton(name, list, name => {
+            scrollPage(this.$conspectContainer.find(`td:contains(${name})`)[0]);
+        }));
+    }
+    appendMineralsTable() {
+        this.appendRocksTable("Минералы", this.vault + "json/minerals.json");
+        this.appendRocksTable("Магматические горные породы", this.vault + "json/magmatic-rocks.json");
+        this.appendRocksTable("Обломочные горные породы", this.vault + "json/clastic-rocks.json");
+        this.appendRocksTable("Хемогенные и органические горные породы", this.vault + "json/biochemogenic-rocks.json");
+        this.appendRocksTable("Метаморфические горные породы", this.vault + "json/metamorphic-rocks.json");
     }
 }

@@ -28,6 +28,7 @@ function renderKaTeX(element) {
             {left: '\\(', right: '\\)', display: false},
             {left: '\\[', right: '\\]', display: true}
         ],
+        strict: false,
     });
 }
 
@@ -54,11 +55,21 @@ class Lottery {
     }
 }
 
-function $tableFromJSON(obj, headersNames) {
-    const $tableContainer = $("<div></div>");
-    $tableContainer.addClass("table-container");
+function $tableFromJSON(name, obj, headersNames) {
     const $table = $("<table></table");
-    $tableContainer.append($table);
+
+    const $tableScroller = $("<div></div>");
+    $tableScroller.addClass("table-scroller");
+    $tableScroller.append($table);
+
+    const $tableName = $("<div></div>");
+    $tableName.addClass("table-name");
+    $tableName.text(name);
+    
+    const $tableWrap = $("<div></div>");
+    $tableWrap.addClass("table-wrap");
+    $tableWrap.append($tableName);
+    $tableWrap.append($tableScroller);
 
     const $headers = $("<tr></tr>");
     for (let header of headersNames) {
@@ -73,5 +84,5 @@ function $tableFromJSON(obj, headersNames) {
         }
         $table.append($row);
     }
-    return $tableContainer;
+    return $tableWrap;
 }

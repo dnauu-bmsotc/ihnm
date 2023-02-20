@@ -11,13 +11,24 @@ marked.setOptions({ baseUrl: "./src/markdown/" });
 $(document).ready(_ => {
     $("#button-up").on("click", _ => scrollPage(document.body))
 
-    const conspectus = new Conspectus("./src/", {
-        $groupsContainer:      $("#groups-section"),
-        $disciplinesContainer: $("#disciplines-section"),
-        $questionContainer:    $("#question"),
-        $conspectContainer:    $("#conspect"),
-    },
-    _ => conspectus.set("Природные ресурсы", "Геоморфология с основами геологии"));
+    const conspectus = new Conspectus(
+        "./src/",
+        {
+            $groupsContainer:      $("#groups-section"),
+            $disciplinesContainer: $("#disciplines-section"),
+            $questionContainer:    $("#question"),
+            $conspectContainer:    $("#conspect"),
+        },
+        _ => conspectus.set("Природные ресурсы", "Геоморфология с основами геологии")
+    );
+
+    const questionElObserver = new MutationObserver(function(mutations) {
+        $("#question-wrap").css("height", $("#question").height());
+    });
+    questionElObserver.observe(document.getElementById("question"), {
+        childList: true,
+        characterData: true
+    });
 });
 
 class Conspectus {
@@ -27,6 +38,8 @@ class Conspectus {
         this.$disciplinesContainer = $disciplinesContainer;
         this.$questionContainer    = $questionContainer;
         this.$conspectContainer    = $conspectContainer;
+        this.pressedGroupButton = null;
+        this.pressedDisciplineButton = null;
 
         getListing(folder + "markdown/", groups => {
             for (let g of groups) {
@@ -40,7 +53,11 @@ class Conspectus {
     }
 
     setGroup(name, callback) {
+        this.$pressedGroupButton && this.$pressedGroupButton.prop('disabled', false);
+        this.$pressedGroupButton = $(`#groups-section button:contains(${name})`);
+        this.$pressedGroupButton.prop('disabled', true);
         this.$disciplinesContainer.empty();
+        this.$conspectContainer.empty();
         const path = this.folder + "markdown/" + name + "/";
         getListing(path, listing => {
             for (let discipline of listing) {
@@ -54,6 +71,9 @@ class Conspectus {
     }
 
     setDiscipline(path, name) {
+        this.$pressedDisciplineButton && this.$pressedDisciplineButton.prop('disabled', false);
+        this.$pressedDisciplineButton = $(`#disciplines-section-wrap button:contains(${name})`);
+        this.$pressedDisciplineButton.prop('disabled', true);
         let disciplineClass = null;
         switch(name) {
             case "Минералы и горные породы":
@@ -62,6 +82,7 @@ class Conspectus {
             default:
                 disciplineClass = DefaultDiscipline;
         }
+        this.$questionContainer.text("А расскажи-ка про...");
         this.$conspectContainer.empty();
         const discipline = new disciplineClass(this.folder, path, name,
             this.$conspectContainer, this.$questionContainer);

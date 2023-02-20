@@ -17,12 +17,12 @@ button {
     border-radius: 3px;
     background-color: #f8f7f7;
     font-size: 0.9em;
-    /* border-top: 2px solid #ebe5e2;
-    border-right: 2px solid #a79c99;
-    border-bottom: 2px solid #a79c99;
-    border-left: 2px solid #ebe5e2; */
     border: 1px solid #beb0b0;
     color: #673737;
+}
+
+button:disabled {
+    background-color: #ebe8e8;
 }
 
 #button-up {
@@ -71,31 +71,44 @@ button {
     padding: 1.5em 0;
     text-align: center;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    transition: height cubic-bezier(.42,0,.49,1.17) 250ms;
+    overflow: hidden;
 }
 
 #question {
     display: inline-block;
     font-size: 1.8em;
     color: #654133;
+    font-variant: small-caps;
+}
+
+#question img {
+    width: 8em;
+    height: 8em;
+    border: 1px solid #1d1919;
+    box-shadow: 2px 2px 6px #a39999;
+    border-radius: 3px;
 }
 
 #question-buttons-container {
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: center;
     max-width: 50em;
+    margin: 0 0 1.5em 0;
 }
 
 #question-buttons-container > button {
-    padding: 0.8em;
+    padding: 0.6em;
     font-size: 1em;
+    margin: 0.4em;
 }
 
 #conspect {
     max-width: 50em;
     font-family:'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
-    color: #301711;
+    color: #362c29;
 }
 
 strong {
@@ -106,14 +119,44 @@ em {
     color: #a32407;
 }
 
-.table-container {
+.table-wrap {
+    margin: 1em;
+}
+
+.table-scroller {
     overflow: scroll;
+}
+
+.table-name {
+    text-align: center;
+    font-weight: bold;
+    color: #501f1f;
+    font-size: 1.2em;
+    font-variant: small-caps;
 }
 
 table {
     border-collapse: collapse;
+    font-size: 0.8em;
+    text-align: center;
+    margin: 1em;
+}
+
+tr:first-child {
+    font-weight: bold;
+    color: #875145;
+    font-size: 1.1em;
+}
+
+tr:nth-child(even) {
+    background-color: #f6f3f2;
 }
 
 td {
     border: 1px solid black;
+    padding: 5px;
+}
+
+li {
+    margin: 0.3em 0;
 }
