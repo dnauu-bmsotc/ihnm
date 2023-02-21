@@ -1,0 +1,57 @@
+main {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+main[hidden] {
+    display: none;
+}
+
+main > * {
+    display: flex;
+    flex-flow: column nowrap;
+    max-width: 40em;
+    margin: 1em auto;
+    border-top: 1px solid black;
+}
+
+svg {
+    border: 1px solid black;
+    width: 17em;
+    height: 17em;
+}
+
+img {
+    max-width: 100%;
+}
+
+#problem-buttons {
+    margin: 0.5em;
+}
+
+#problem-buttons::before, #condition::before, #sketch::before, #solution::before {
+    display: block;
+    margin: 1em;
+}
+
+#problem-buttons::before {
+    content: "Задачи:";
+}
+
+#condition::before {
+    content: "Условие:";
+}
+
+#sketch::before {
+    content: "Рисунок:";
+}
+
+#solution::before {
+    content: "Решение:";
+}
+
+p {
+    margin: 0 0 1em 0;
+    text-align: justify;
+    font-family:Arial, Helvetica, sans-serif;
+}
