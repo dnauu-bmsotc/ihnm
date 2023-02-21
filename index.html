@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 	<head>
-		<title>ihnm</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>ihnm</title>
+		<link rel="icon" type="image/png" href="./previews/favicon32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="./previews/favicon64x64.png" sizes="64x64">
 		<style>
 			#container {
 				display: flex;
@@ -84,6 +86,8 @@
 					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
 					<li><a href="./archive/angles">Представления углов</a></li>
 					<li><a href="./archive/rivers">Генератор рек и озёр</a></li>
+					<li><a href="./archive/rocks-guess">Угадай камень</a></li>
+					<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
 				</ul>
 			</div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
@@ -92,13 +96,11 @@
 			const container = document.getElementById("container");
 			pages = [
 				{href: "./archive/summer2021/dist/number-systems", name: "Системы счисления", preview: "./previews/number-systems.png"},
-				{href: "./archive/november2021/questions", name: "ГСВ", preview: "./previews/questions.png"},
 				{href: "./archive/summer2021/dist/wheel-of-fortune", name: "Колесо Фортуны", preview: "./previews/wheel-of-fortune.png"},
 				{href: "./oeuvres/rect-in-sector", name: "Прямоугольник в секторе", preview: "./previews/rect-in-sector.png"},
-				{href: "./oeuvres/rocks-guess", name: "Угадай камень", preview: "./previews/rocks-guess.png"},
 				{href: "./oeuvres/nre-manual", name: "Методичка по ПРЗ", preview: "./previews/nre-manual.png"},
 				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", preview: "./previews/kaleidoscope.png"},
-				{href: "./oeuvres/conspectus", name: "Конспекты", preview: ""},
+				{href: "./oeuvres/conspectus", name: "Конспекты", preview: "./previews/conspectus.png"},
 			];
 			for (page of pages) {
 				const cell = document.createElement("div");
