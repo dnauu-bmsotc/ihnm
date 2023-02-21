@@ -23,6 +23,8 @@ button {
 
 button:disabled {
     background-color: #ebe8e8;
+    color: #988c87;
+    font-weight: bold;
 }
 
 #button-up {
@@ -52,6 +54,7 @@ button:disabled {
 
 #markdown-container {
     max-width: 40em;
+    margin: auto;
 }
 
 #markdown-container img {
@@ -61,6 +64,7 @@ button:disabled {
 
 #question-buttons-container button:after {
     content: attr(data-counter);
+    color: #ab7979;
 }
 
 #question-wrap {
@@ -71,7 +75,7 @@ button:disabled {
     padding: 1.5em 0;
     text-align: center;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    transition: height cubic-bezier(.42,0,.49,1.17) 250ms;
+    transition: height cubic-bezier(.38,.08,.21,.98) 250ms;
     overflow: hidden;
 }
 
@@ -79,7 +83,6 @@ button:disabled {
     display: inline-block;
     font-size: 1.8em;
     color: #654133;
-    font-variant: small-caps;
 }
 
 #question img {
@@ -95,7 +98,6 @@ button:disabled {
     flex-flow: row wrap;
     align-items: center;
     justify-content: center;
-    max-width: 50em;
     margin: 0 0 1.5em 0;
 }
 
@@ -159,4 +161,17 @@ td {
 
 li {
     margin: 0.3em 0;
+}
+
+#errors {
+    color: #e26b5e;
+}
+
+#errors > div {
+    margin: 2em;
+}
+
+button.last-pressed {
+    background-color: #fff0ed;
+    text-decoration: underline;
 }

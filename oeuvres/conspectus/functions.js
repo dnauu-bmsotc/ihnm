@@ -11,7 +11,7 @@ function getListing(path, callback) {
 }
 
 // https://stackoverflow.com/questions/6677035/scroll-to-an-element-with-jquery
-function scrollPage(el, dur=1000) {
+function scrollPage(el, dur=600) {
     $([document.documentElement, document.body]).animate({
         'scrollTop': $(el).offset().top
     }, dur);  

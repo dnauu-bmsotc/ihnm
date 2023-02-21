@@ -7,18 +7,30 @@ class DefaultDiscipline {
         this.name = name;
         this.$conspectContainer = $conspectContainer;
         this.$questionContainer = $questionContainer;
+        this.$lastPressedButton = null;
     }
     deploy() {
         this.appendQuestionButtonsContainer();
         this.appendMarkdownContainer();
 
         $.get(this.groupFolder + this.name + ".md", { "_": $.now() }, data => {
-            this.$markdownContainer.append(this.$createMarkdown(data));
-            const questions = $.map(this.$conspectContainer.find("h2"), header => $(header).text());
-            const button = this.$createQuestionButton("Случайный вопрос", questions, question => {
-                scrollPage(this.$conspectContainer.find(`h2:contains(${question})`)[0]);
-            });
-            this.$buttonsContainer.append(button);
+            this.$markdownContainer.append(this.$createMarkdown(this.groupFolder, data));
+
+            const $chapters = this.$conspectContainer.find("h2");
+            for (let i = 0; i < $chapters.length; i++) {
+                let $between = null;
+                if (i < $chapters.length - 1) {
+                    $between = $($chapters[i]).nextUntil($($chapters[i+1]));
+                }
+                else {
+                    $between = $($chapters[i]).nextAll();
+                }
+                const questions = $.map($between.filter("h3"), header => $(header).text());
+                const $button = this.$createQuestionButton($chapters[i].textContent, questions, question => {
+                    scrollPage(this.$conspectContainer.find(`h3:contains(${question})`)[0]);
+                });
+                this.$buttonsContainer.append($button);
+            }
 
             renderKaTeX(this.$markdownContainer.get(0));
         });
@@ -42,15 +54,22 @@ class DefaultDiscipline {
             $question.on("click", _ => onclick(text));
             this.$questionContainer.html($question);
             $button.attr("data-counter", ` (${lottery.counter}/${lottery.size})`);
+            this.setLastPressedButton($button);
         });
         return $button;
     }
-    $createMarkdown(data) {
+    $createMarkdown(baseUrl, data) {
+        marked.setOptions({ baseUrl: baseUrl });
         const $conspect = $(marked.parse(data));
         $conspect.find("img").each(function() {
             this.style.width = this.src.match(/(\d+).png/)[1] + "%";
         });
         return $conspect;
+    }
+    setLastPressedButton($button) {
+        this.$lastPressedButton && this.$lastPressedButton.removeClass("last-pressed");
+        this.$lastPressedButton = $button;
+        this.$lastPressedButton.addClass("last-pressed");
     }
 }
 
@@ -61,8 +80,8 @@ class RocksGuessDiscipline extends DefaultDiscipline {
     deploy() {
         this.appendQuestionButtonsContainer();
         
-        this.createBox(this.$buttonsContainer, "minerals5", "Минералы (ящ. №5)");
-        this.createBox(this.$buttonsContainer, "rocks3", "Горные породы (ящ. №3)");
+        this.createBox(this.$buttonsContainer, "minerals5", "Минералы (фото) (ящ. №5)");
+        this.createBox(this.$buttonsContainer, "rocks3", "Горные породы (фото) (ящ. №3)");
 
         this.appendMineralsTable();
     }
@@ -75,35 +94,48 @@ class RocksGuessDiscipline extends DefaultDiscipline {
             listing = $.map(listing, name => decodeURIComponent(name));
             const lottery = new Lottery(listing);
             $button.on("click", _ => {
-                const img = $(`<img src="${boxFolder + lottery.select()}">`);
-                this.$questionContainer.html(img);
+                const filename = lottery.select();
+                const $img = $(`<img src="${boxFolder + filename}">`);
+                $img.on("click.showAnswer", _ => {
+                    this.$questionContainer.append(`<div>${filename}</div>`);
+                    $img.off("click.showAnswer");
+                });
+                this.$questionContainer.html($img);
                 $button.attr("data-counter", ` (${lottery.counter}/${lottery.size})`);
+                this.setLastPressedButton($button);
             })
         });
     }
-    appendRocksTable(name, path) {
-        const $placeholder = $("<div></div>");
-        this.$conspectContainer.append($placeholder);
-        $.getJSON(path, { "_": $.now() }, data => {
-            const headers = Array.from(new Set(data.map(rock => Object.keys(rock)).flat()));
-            const $table = $tableFromJSON(name, data, headers);
-            $placeholder.replaceWith($table);
+    appendRocksTables(buttonName, metadata, callback, index=0, lotteryList=[]) {
+        if (index < metadata.length) {
+            const $placeholder = $("<div></div>");
+            this.$conspectContainer.append($placeholder);
+            $.getJSON(metadata[index].path, { "_": $.now() }, data => {
+                const headers = Array.from(new Set(data.map(rock => Object.keys(rock)).flat()));
+                const $table = $tableFromJSON(metadata[index].name, data, headers);
+                $placeholder.replaceWith($table);
 
-            this.appendRockTheoryButton(name, data);
-            renderKaTeX(this.$conspectContainer.get(0));
-        });
-    }
-    appendRockTheoryButton(name, data, key="Название") {
-        const list = data.map(rock => rock[key]);
-        this.$buttonsContainer.append(this.$createQuestionButton(name, list, name => {
-            scrollPage(this.$conspectContainer.find(`td:contains(${name})`)[0]);
-        }));
+                lotteryList.push(...data.map(rock => rock["Название"]));
+                this.appendRocksTables(buttonName, metadata, callback, index + 1, lotteryList);
+            });
+        }
+        else {
+            this.$buttonsContainer.append(this.$createQuestionButton(buttonName, lotteryList, name => {
+                scrollPage(this.$conspectContainer.find(`td:contains(${name})`)[0]);
+            }));
+            callback && callback();
+        }
     }
     appendMineralsTable() {
-        this.appendRocksTable("Минералы", this.vault + "json/minerals.json");
-        this.appendRocksTable("Магматические горные породы", this.vault + "json/magmatic-rocks.json");
-        this.appendRocksTable("Обломочные горные породы", this.vault + "json/clastic-rocks.json");
-        this.appendRocksTable("Хемогенные и органические горные породы", this.vault + "json/biochemogenic-rocks.json");
-        this.appendRocksTable("Метаморфические горные породы", this.vault + "json/metamorphic-rocks.json");
+        this.appendRocksTables("Минералы (названия)", [
+            { name: "Минералы", path: this.vault + "json/minerals.json" }
+        ]);
+
+        this.appendRocksTables("Горные породы (названия)", [
+            { name: "Магматические горные породы", path: this.vault + "json/magmatic-rocks.json" },
+            { name: "Обломочные горные породы", path: this.vault + "json/clastic-rocks.json" },
+            { name: "Хемогенные и органические горные породы", path: this.vault + "json/biochemogenic-rocks.json" },
+            { name: "Метаморфические горные породы", path: this.vault + "json/metamorphic-rocks.json" }
+        ], _ => renderKaTeX(this.$conspectContainer.get(0)));
     }
 }

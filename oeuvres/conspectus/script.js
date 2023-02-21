@@ -6,7 +6,13 @@ $.ajaxSetup({'beforeSend': function(xhr){
     }
 });
 
-marked.setOptions({ baseUrl: "./src/markdown/" });
+window.onerror = function(error, url, line) {
+    $("#errors").append(`<div>
+        <div>message: ${error}</div>
+        <div>url: ${url}</div>
+        <div>line: ${line}</div>
+    </div>`);
+};
 
 $(document).ready(_ => {
     $("#button-up").on("click", _ => scrollPage(document.body))
@@ -19,7 +25,7 @@ $(document).ready(_ => {
             $questionContainer:    $("#question"),
             $conspectContainer:    $("#conspect"),
         },
-        _ => conspectus.set("Природные ресурсы", "Геоморфология с основами геологии")
+        _ => conspectus.set("Природные ресурсы", "Минералы и горные породы")
     );
 
     const questionElObserver = new MutationObserver(function(mutations) {
@@ -58,6 +64,7 @@ class Conspectus {
         this.$pressedGroupButton.prop('disabled', true);
         this.$disciplinesContainer.empty();
         this.$conspectContainer.empty();
+        this.$questionContainer.text("Пусть это будет...");
         const path = this.folder + "markdown/" + name + "/";
         getListing(path, listing => {
             for (let discipline of listing) {
