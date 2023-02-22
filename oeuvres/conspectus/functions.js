@@ -1,12 +1,21 @@
 "use strict"
 
-// https://gist.github.com/abalter/b5357657311349e06bc5b32222f37030
+// this doesn't work with github
+// // https://gist.github.com/abalter/b5357657311349e06bc5b32222f37030
+// function getListing(path, callback) {
+//     $.get(path, { "_": $.now() }, data => {
+//         callback(data
+//             .match(/href="([%\d\w.]+)/g) // pull out the hrefs
+//             .map((x) => x.replace('href="', '')) // clean up
+//         );
+//     });
+// }
+
 function getListing(path, callback) {
-    $.get(path, { "_": $.now() }, data => {
-        callback(data
-            .match(/href="([%\d\w.]+)/g) // pull out the hrefs
-            .map((x) => x.replace('href="', '')) // clean up
-        );
+    fetch('https://api.github.com/repos/dnauu-bmsotc/ihnm/contents/oeuvres/conspectus/' + path).then(response => {
+        response.json().then(data => {
+            callback(data.map(x => x.name));
+        });
     });
 }
 
