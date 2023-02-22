@@ -1,0 +1,105 @@
+[
+    {
+        "name": "Основы геодезии",
+        "chapters": [
+            {
+                "name": "О форме Земли",
+                "markdown": "markdown/Геодезия/О форме Земли.md"
+            },
+            {
+                "name": "Топографические планы",
+                "markdown": "markdown/Геодезия/Топографические планы.md"
+            },
+            {
+                "name": "Нивелирование"
+            },
+            {
+                "name": "Тахеометрические ходы"
+            },
+            {
+                "name": "Астрономия"
+            },
+            {
+                "name": "Картография"
+            },
+            {
+                "name": "Системы координат и высот"
+            },
+            {
+                "name": "ТМОГИ"
+            }
+        ]
+    },
+    {
+        "name": "Дистанционное зондирование",
+        "chapters": [
+            {
+                "name": "АКС"
+            }
+        ]
+    },
+    {
+        "name": "Математика",
+        "chapters": [
+            {
+                "name": "Линейная алгебра"
+            },
+            {
+                "name": "Аналитическая геометрия"
+            },
+            {
+                "name": "Математический анализ"
+            },
+            {
+                "name": "Теория вероятностей"
+            },
+            {
+                "name": "Математическая статистика"
+            }
+        ]
+    },
+    {
+        "name": "Природные ресурсы",
+        "chapters": [
+            {
+                "name": "Основы геологии",
+                "markdown": "markdown/Природные ресурсы/Основы геологии.md"
+            },
+            {
+                "name": "Эндогенные процессы"
+            },
+            {
+                "name": "Экзогенные процессы"
+            },
+            {
+                "name": "Минеральные ресурсы",
+                "markdown": "markdown/Природные ресурсы/Минералы и горные породы.md"
+            },
+            {
+                "name": "Ящик с минералами",
+                "type": "guess-by-image",
+                "images": "media/rocks-guess/minerals5.zip",
+                "tables": [
+                    "json/rocks/minerals.json"
+                ]
+            },
+            {
+                "name": "Ящик с горными породами",
+                "type": "guess-by-image",
+                "images": "media/rocks-guess/rocks3.zip",
+                "tables": [
+                    "json/rocks/biochemogenic-rocks.json",
+                    "json/rocks/clastic-rocks.json",
+                    "json/rocks/magmatic-rocks.json",
+                    "json/rocks/metamorphic-rocks.json"
+                ]
+            },
+            {
+                "name": "Физика атмосферы"
+            },
+            {
+                "name": "Физика морей и океанов"
+            }
+        ]
+    }
+]
