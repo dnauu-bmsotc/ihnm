@@ -110,22 +110,39 @@ class Conspectus {
     }
     loadZip(path) {
         return new Promise((resolve, reject) => {
-            new JSZip.external.Promise((resolve, reject) => {
-                JSZipUtils.getBinaryContent(path, (err, data) => {
-                    resolve(data);
-                });
-            })
-            .then(data => JSZip.loadAsync(data))
-            .then(zip => resolve(zip));
+            fetch(path)
+                .then(res => res.blob())
+                .then(out => {
+                    const zipFileReader = new zip.BlobReader(out);
+                    const zipReader = new zip.ZipReader(zipFileReader);
+                    const entries = zipReader.getEntries();
+                    zipReader.close();
+                    return entries;
+                })
+                .then(entries => resolve(entries));
         });
     }
     createChapterLottery(chapter) {
         return new Promise((resolve, reject) => {
             switch (chapter.type) {
                 case "guess-by-image":
-                    this.loadZip(this.srcPath + chapter.images).then(zip => {
-                        chapter.zip = zip;
-                        chapter.lottery = new Lottery(Object.keys(zip.files).slice(1));
+                    this.loadZip(this.srcPath + chapter.images).then(entries => {
+                        chapter.zip = entries;
+                        const promises = [];
+                        for (let entry of entries.slice(1)) {
+                            promises.push(entry.getData(new zip.BlobWriter()));
+                        }
+                        return Promise.all(promises);
+                    })
+                    .then(blobs => {
+                        const tickets = [];
+                        for (let i = 0; i < blobs.length; i++) {
+                            tickets.push({
+                                filename: chapter.zip[i].filename,
+                                blob: blobs[i]
+                            });
+                        }
+                        chapter.lottery = new Lottery(tickets);
                         resolve();
                     });
                     break;
@@ -143,19 +160,19 @@ class Conspectus {
         return new Promise((resolve, reject) => {
             switch (chapter.type) {
                 case "guess-by-image":
-                    const imageFilename = chapter.lottery.select();
-                    chapter.zip.file(imageFilename).async("blob")
-                        .then(blob => {
+                    const ticket = chapter.lottery.select();
+                    // chapter.zip.file(imageFilename).async("blob")
+                    //     .then(blob => {
                             const img = document.createElement("img");
-                            img.src = URL.createObjectURL(blob);
+                            img.src = URL.createObjectURL(ticket.blob);
                             img.addEventListener("click", _ => {
                                 const answer = document.createElement("div");
-                                answer.textContent = imageFilename.match(/.*\/(.*)/)[1];
+                                answer.textContent = blob.match(/.*\/(.*)/)[1];
                                 this.questionContainer.appendChild(answer);
                             }, { once: true });
                             this.questionContainer.append(img);
-                            resolve();
-                        });
+                    //         resolve();
+                    //     });
                     break;
     
                 default:
