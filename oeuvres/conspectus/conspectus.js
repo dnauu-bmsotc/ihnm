@@ -9,10 +9,12 @@ class Conspectus {
         this.chaptersContainer = chaptersContainer;
         this.conspectContainer = conspectContainer;
         this.srcPath = srcPath;
+
+        this.cache = "no-store";
     }
     deploy() {
         return new Promise((resolve, reject) => {
-            fetch(this.srcPath + "json/structure.json")
+            fetch(this.srcPath + "json/structure.json", {cache: this.cache})
             .then(res => res.json())
             .then(out => this.parseStructureJSON(out))
             .then(_ => resolve());
@@ -72,7 +74,7 @@ class Conspectus {
         this.conspectContainer.appendChild(mdDiv);
 
         return new Promise((resolve, reject) => {
-            fetch(path)
+            fetch(path, {cache: this.cache})
                 .then(res => res.text())
                 .then(out => {
                     mdDiv.replaceWith(this.parseMarkdown(out));
@@ -85,7 +87,7 @@ class Conspectus {
         this.conspectContainer.appendChild(tDiv);
 
         return new Promise((resolve, reject) => {
-            fetch(path)
+            fetch(path, {cache: this.cache})
                 .then(res => res.json())
                 .then(obj => {
                     tDiv.replaceWith(this.parseTableJSON(obj));
@@ -109,32 +111,37 @@ class Conspectus {
         return Promise.all(promises);
     }
     loadZip(path) {
+        let zipReader = null;
         return new Promise((resolve, reject) => {
-            fetch(path)
+            fetch(path, {cache: this.cache})
                 .then(res => res.blob())
                 .then(out => {
                     const zipFileReader = new zip.BlobReader(out);
-                    const zipReader = new zip.ZipReader(zipFileReader);
-                    const entries = zipReader.getEntries();
-                    zipReader.close();
-                    return entries;
+                    zipReader = new zip.ZipReader(zipFileReader);
+                    return zipReader.getEntries();
                 })
-                .then(entries => resolve(entries));
+                .then(entries => {
+                    zipReader.close();
+                    resolve(entries);
+                });
         });
     }
     createChapterLottery(chapter) {
         return new Promise((resolve, reject) => {
             switch (chapter.type) {
                 case "guess-by-image":
-                    this.loadZip(this.srcPath + chapter.images).then(entries => {
+                    this.loadZip(this.srcPath + chapter.images)
+                    .then(entries => {
                         chapter.zip = entries;
                         const promises = [];
                         for (let entry of entries.slice(1)) {
                             promises.push(entry.getData(new zip.BlobWriter()));
                         }
+                        console.log(promises)
                         return Promise.all(promises);
                     })
                     .then(blobs => {
+                        console.log(blobs)
                         const tickets = [];
                         for (let i = 0; i < blobs.length; i++) {
                             tickets.push({
@@ -161,18 +168,14 @@ class Conspectus {
             switch (chapter.type) {
                 case "guess-by-image":
                     const ticket = chapter.lottery.select();
-                    // chapter.zip.file(imageFilename).async("blob")
-                    //     .then(blob => {
-                            const img = document.createElement("img");
-                            img.src = URL.createObjectURL(ticket.blob);
-                            img.addEventListener("click", _ => {
-                                const answer = document.createElement("div");
-                                answer.textContent = blob.match(/.*\/(.*)/)[1];
-                                this.questionContainer.appendChild(answer);
-                            }, { once: true });
-                            this.questionContainer.append(img);
-                    //         resolve();
-                    //     });
+                    const img = document.createElement("img");
+                    img.src = URL.createObjectURL(ticket.blob);
+                    img.addEventListener("click", _ => {
+                        const answer = document.createElement("div");
+                        answer.textContent = blob.match(/.*\/(.*)/)[1];
+                        this.questionContainer.appendChild(answer);
+                    }, { once: true });
+                    this.questionContainer.append(img);
                     break;
     
                 default:
