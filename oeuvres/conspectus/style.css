@@ -20,7 +20,7 @@ main > * > * {
 #buffer {
     height: 50vh;
     background-color: #ab7979;
-    margin: 2em 10em;
+    margin: 2em 5em;
     background: linear-gradient(#f6f1ef, white);
 }
 
@@ -125,6 +125,7 @@ button:disabled {
     max-width: 50em;
     font-family:'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
     color: #362c29;
+    overflow: hidden;
 }
 
 #conspect img {
