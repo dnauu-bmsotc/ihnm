@@ -20,7 +20,8 @@
                 "name": "Астрономию"
             },
             {
-                "name": "Картографию"
+                "name": "Картографию",
+                "markdown": "markdown/Геодезия/Основы картографии.md"
             },
             {
                 "name": "Системы координат и высот"
@@ -39,40 +40,44 @@
         ]
     },
     {
-        "name": "Математика",
+        "name": "Математика и физика",
         "chapters": [
             {
                 "name": "Линейную алгебру"
             },
             {
-                "name": "Аналитическую геометрию"
-            },
-            {
                 "name": "Математический анализ"
             },
             {
-                "name": "Теорию вероятностей"
+                "name": "Тер-Вер и Мат-стат"
             },
             {
-                "name": "Математическую статистику"
+                "name": "Физику атмосферы",
+                "markdown": "markdown/Природные ресурсы/Физика атмосферы.md"
+            },
+            {
+                "name": "Физику морей и океанов",
+                "markdown": "markdown/Природные ресурсы/Физика морей и океанов.md"
             }
         ]
     },
     {
-        "name": "Природные ресурсы",
+        "name": "Земная кора",
         "chapters": [
             {
                 "name": "Основы геологии",
                 "markdown": "markdown/Природные ресурсы/Основы геологии.md"
             },
             {
-                "name": "Эндогенные процессы"
+                "name": "Геоморфологию",
+                "markdown": "markdown/Природные ресурсы/Геоморфология.md"
             },
             {
-                "name": "Экзогенные процессы"
+                "name": "Почвы",
+                "markdown": "markdown/Природные ресурсы/Почвы.md"
             },
             {
-                "name": "Минеральные ресурсы",
+                "name": "Полезные ископаемые",
                 "markdown": "markdown/Природные ресурсы/Минералы и горные породы.md"
             },
             {
@@ -88,17 +93,23 @@
                 "type": "guess-by-image",
                 "images": "media/rocks-guess/rocks3.zip",
                 "tables": [
-                    "json/rocks/biochemogenic-rocks.json",
-                    "json/rocks/clastic-rocks.json",
                     "json/rocks/magmatic-rocks.json",
+                    "json/rocks/clastic-rocks.json",
+                    "json/rocks/biochemogenic-rocks.json",
                     "json/rocks/metamorphic-rocks.json"
                 ]
             },
             {
-                "name": "Физику атмосферы"
-            },
-            {
-                "name": "Физику морей и океанов"
+                "name": "Таблицу минералов и горных пород",
+                "type": "tell-tables",
+                "key": "Название",
+                "tables": [
+                    "json/rocks/minerals.json",
+                    "json/rocks/magmatic-rocks.json",
+                    "json/rocks/clastic-rocks.json",
+                    "json/rocks/biochemogenic-rocks.json",
+                    "json/rocks/metamorphic-rocks.json"
+                ]
             }
         ]
     }

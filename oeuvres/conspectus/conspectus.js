@@ -35,14 +35,17 @@ class Conspectus {
 
         btn.addEventListener("click", _ => {
             this.chaptersContainer.innerHTML = "";
-            this.questionContainer.innerHTML = "А расскажи-ка про...";
+            this.questionContainer.innerHTML = ". . .";
             this.conspectContainer.innerHTML = "";
+            window.history.replaceState(null, null, `?discipline=${discipline.name}`);
 
             this.currentDisciplineBtn && (this.currentDisciplineBtn.disabled = false);
             this.currentDisciplineBtn = btn;
             this.currentDisciplineBtn.disabled = true;
 
             for (let chapter of discipline.chapters) {
+                chapter.tmp = {};
+                chapter.tmp.discipline = discipline;
                 this.appendChapter(chapter);
             }
         })
@@ -61,13 +64,14 @@ class Conspectus {
             else {
                 this.conspectContainer.innerHTML = "";
                 this.questionContainer.textContent = "Загрузка...";
+                window.history.replaceState(null, null, `?discipline=${chapter.tmp.discipline.name}&chapter=${chapter.name}`);
                 btn.disabled = true;
                 this.setCurrentChapterButton(chapter, btn);
                 this.initChapter(chapter)
                     .then(_ => this.createChapterLottery(chapter))
                     .then(_ => {
                         btn.disabled = false;
-                        this.questionContainer.textContent = "А расскажи-ка про... " + chapter.name;
+                        this.questionContainer.textContent = chapter.name;
                         if (chapter.lottery.counter === 0) {
                             btn.dataset.counter = `(${chapter.lottery.size} шт.)`;
                         }
@@ -82,7 +86,7 @@ class Conspectus {
         this.currentChapter = newChapter;
         this.currentChapterBtn = itsButton;
         this.currentChapterBtn.classList.add("current");
-        this.currentChapterBtn.textContent = "Случайный опрос по теме";
+        this.currentChapterBtn.textContent = "Случайный вопрос по теме";
     }
     appendMarkdown(path) {
         const mdDiv = document.createElement("div");
@@ -97,7 +101,7 @@ class Conspectus {
                 });
         })
     }
-    appendTable(path) {
+    appendTable(chapter, path) {
         const tDiv = document.createElement("div");
         this.conspectContainer.appendChild(tDiv);
 
@@ -105,7 +109,12 @@ class Conspectus {
             fetch(path, {cache: this.cache})
                 .then(res => res.json())
                 .then(obj => {
-                    tDiv.replaceWith(this.parseTableJSON(obj));
+                    const el = this.parseTableJSON(obj);
+                    chapter.tmp.tables.push({
+                        el: el,
+                        json: obj
+                    });
+                    tDiv.replaceWith(el);
                     resolve();
                 });
         })
@@ -118,8 +127,9 @@ class Conspectus {
         }
 
         if (chapter.tables) {
+            chapter.tmp.tables = [];
             for (let url of chapter.tables) {
-                promises.push(this.appendTable(this.srcPath + url));
+                promises.push(this.appendTable(chapter, this.srcPath + url));
             }
         }
 
@@ -169,6 +179,19 @@ class Conspectus {
                         resolve();
                     });
                     break;
+
+                case "tell-tables":
+                    const keys = chapter.tmp.tables.map(
+                        table => table.json.list.map(
+                            sample => ({
+                                name: sample[chapter.key],
+                                tableEl: table.el
+                            })
+                        )
+                    );
+                    chapter.lottery = new Lottery(keys.flat());
+                    resolve();
+                    break;
             
                 default:
                     const headers = [...this.conspectContainer.querySelectorAll("h3")];
@@ -177,7 +200,6 @@ class Conspectus {
             }
         })
     }
-
     drawChapterLottery(chapter) {
         return new Promise((resolve, reject) => {
             switch (chapter.type) {
@@ -191,6 +213,17 @@ class Conspectus {
                         this.questionContainer.appendChild(answer);
                     }, { once: true });
                     this.questionContainer.append(img);
+                    break;
+
+                case "tell-tables":
+                    const tellTablesTicket = chapter.lottery.select();
+                    const tellTablesQuestionDiv = document.createElement("div");
+                    tellTablesQuestionDiv.textContent = tellTablesTicket.name;
+                    tellTablesQuestionDiv.addEventListener("click", _ => {
+                        tellTablesTicket.tableEl.scrollIntoView();
+                    });
+                    this.questionContainer.appendChild(tellTablesQuestionDiv);
+                    resolve();
                     break;
     
                 default:
@@ -224,7 +257,9 @@ class Conspectus {
         const tDiv = document.createElement("div");
         tDiv.innerHTML = `
             <div class="table-name">${obj.name}</div>
-            <table></table>
+            <div class="table-wrap">
+                <table></table>
+            </div>
         `;
         const table = tDiv.querySelector("table");
 
