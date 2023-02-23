@@ -10,7 +10,7 @@ class Conspectus {
         this.conspectContainer = conspectContainer;
         this.srcPath = srcPath;
 
-        this.cache = "no-store";
+        this.cache = "no-cache";
     }
     deploy() {
         return new Promise((resolve, reject) => {
@@ -54,18 +54,17 @@ class Conspectus {
             }
             else {
                 this.conspectContainer.innerHTML = "";
-                this.questionContainer.innerHTML = "";
+                this.questionContainer.textContent = "Загрузка...";
                 btn.disabled = true;
-                this.initChapter(chapter).then(_ => {
-                    this.currentChapterBtn && this.currentChapterBtn.classList.remove("current");
-                    this.currentChapterBtn = btn;
-                    this.currentChapterBtn.disabled = false;
-                    this.currentChapterBtn.classList.add("current");
-
-                    if (!chapter.lottery) {
-                        this.createChapterLottery(chapter);
-                    }
-                });
+                this.initChapter(chapter)
+                    .then(_ => this.createChapterLottery(chapter))
+                    .then(_ => {
+                        btn.disabled = false;
+                        btn.classList.add("current");
+                        this.currentChapterBtn && this.currentChapterBtn.classList.remove("current");
+                        this.currentChapterBtn = btn;
+                        this.questionContainer.textContent = "А расскажи-ка про...";
+                    });
             }
         });
     }
@@ -126,22 +125,26 @@ class Conspectus {
                 });
         });
     }
+    blobZip(zipEntries) {
+        const promises = [];
+        for (let entry of zipEntries.slice(1)) {
+            promises.push(entry.getData(new zip.BlobWriter()));
+        }
+        return Promise.all(promises);
+    }
     createChapterLottery(chapter) {
         return new Promise((resolve, reject) => {
+            if (chapter.lottery) {
+                resolve();
+            }
             switch (chapter.type) {
                 case "guess-by-image":
                     this.loadZip(this.srcPath + chapter.images)
                     .then(entries => {
                         chapter.zip = entries;
-                        const promises = [];
-                        for (let entry of entries.slice(1)) {
-                            promises.push(entry.getData(new zip.BlobWriter()));
-                        }
-                        console.log(promises)
-                        return Promise.all(promises);
+                        return this.blobZip(entries);
                     })
                     .then(blobs => {
-                        console.log(blobs)
                         const tickets = [];
                         for (let i = 0; i < blobs.length; i++) {
                             tickets.push({
