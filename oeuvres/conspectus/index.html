@@ -18,7 +18,7 @@
 	<body>
         <main>
             <div id="disciplines-wrap"><section id="disciplines"></section></div>
-            <div id="question-wrap"><section id="question"></section></div>
+            <div id="question-wrap"><section id="question">Пусть это будет...</section></div>
             <div id="chapters-wrap"><section id="chapters"></section></div>
             <div id="conspect-wrap"><section id="conspect"></section></div>
         </main>
@@ -31,9 +31,17 @@
                 srcPath: "./src/",
             });
             conspectus.deploy().then(function() {
-                // https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext
-                document.evaluate("//button[text()='Природные ресурсы']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
-                document.evaluate("//button[text()='Основы геологии']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
+                const urlsp = new URLSearchParams(window.location.search);
+                const discipline = urlsp.get("discipline");
+                if (discipline) {
+                    // https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext
+                    document.evaluate(`//button[text()="${discipline}"]`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
+                }
+                const chapter = urlsp.get("chapter");
+                if (chapter) {
+                    // https://stackoverflow.com/questions/3813294/how-to-get-element-by-innertext
+                    document.evaluate(`//button[text()="${chapter}"]`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
+                }
             });
 
             const questionObserver = new MutationObserver(function(mutations) {
