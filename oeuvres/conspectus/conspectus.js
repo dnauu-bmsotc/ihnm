@@ -36,6 +36,11 @@ class Conspectus {
         btn.addEventListener("click", _ => {
             this.chaptersContainer.innerHTML = "";
             this.questionContainer.innerHTML = "А расскажи-ка про...";
+            this.conspectContainer.innerHTML = "";
+
+            this.currentDisciplineBtn && (this.currentDisciplineBtn.disabled = false);
+            this.currentDisciplineBtn = btn;
+            this.currentDisciplineBtn.disabled = true;
 
             for (let chapter of discipline.chapters) {
                 this.appendChapter(chapter);
@@ -51,22 +56,33 @@ class Conspectus {
             if (this.currentChapterBtn === btn) {
                 this.questionContainer.innerHTML = "";
                 this.drawChapterLottery(chapter);
+                btn.dataset.counter = `(${chapter.lottery.counter}/${chapter.lottery.size})`;
             }
             else {
                 this.conspectContainer.innerHTML = "";
                 this.questionContainer.textContent = "Загрузка...";
                 btn.disabled = true;
+                this.setCurrentChapterButton(chapter, btn);
                 this.initChapter(chapter)
                     .then(_ => this.createChapterLottery(chapter))
                     .then(_ => {
                         btn.disabled = false;
-                        btn.classList.add("current");
-                        this.currentChapterBtn && this.currentChapterBtn.classList.remove("current");
-                        this.currentChapterBtn = btn;
-                        this.questionContainer.textContent = "А расскажи-ка про...";
+                        this.questionContainer.textContent = "А расскажи-ка про... " + chapter.name;
+                        if (chapter.lottery.counter === 0) {
+                            btn.dataset.counter = `(${chapter.lottery.size} шт.)`;
+                        }
                     });
             }
         });
+    }
+    setCurrentChapterButton(newChapter, itsButton) {
+        this.currentChapterBtn && this.currentChapterBtn.classList.remove("current");
+        this.currentChapter && (this.currentChapterBtn.textContent = this.currentChapter.name);
+
+        this.currentChapter = newChapter;
+        this.currentChapterBtn = itsButton;
+        this.currentChapterBtn.classList.add("current");
+        this.currentChapterBtn.textContent = "Случайный опрос по теме";
     }
     appendMarkdown(path) {
         const mdDiv = document.createElement("div");
@@ -121,13 +137,13 @@ class Conspectus {
                 })
                 .then(entries => {
                     zipReader.close();
-                    resolve(entries);
+                    resolve(entries.slice(1));
                 });
         });
     }
     blobZip(zipEntries) {
         const promises = [];
-        for (let entry of zipEntries.slice(1)) {
+        for (let entry of zipEntries) {
             promises.push(entry.getData(new zip.BlobWriter()));
         }
         return Promise.all(promises);
@@ -145,22 +161,18 @@ class Conspectus {
                         return this.blobZip(entries);
                     })
                     .then(blobs => {
-                        const tickets = [];
-                        for (let i = 0; i < blobs.length; i++) {
-                            tickets.push({
-                                filename: chapter.zip[i].filename,
-                                blob: blobs[i]
-                            });
-                        }
+                        const tickets = chapter.zip.map((e, i) => ({
+                            filename: e.filename,
+                            blob: blobs[i]
+                        }));
                         chapter.lottery = new Lottery(tickets);
                         resolve();
                     });
                     break;
             
                 default:
-                    chapter.lottery = new Lottery(
-                        [...this.conspectContainer.querySelectorAll("h3")].map(el => el.textContent)
-                    );
+                    const headers = [...this.conspectContainer.querySelectorAll("h3")];
+                    chapter.lottery = new Lottery(headers);
                     resolve();
             }
         })
@@ -175,14 +187,20 @@ class Conspectus {
                     img.src = URL.createObjectURL(ticket.blob);
                     img.addEventListener("click", _ => {
                         const answer = document.createElement("div");
-                        answer.textContent = blob.match(/.*\/(.*)/)[1];
+                        answer.textContent = ticket.filename.match(/.*\/(.*)/)[1];
                         this.questionContainer.appendChild(answer);
                     }, { once: true });
                     this.questionContainer.append(img);
                     break;
     
                 default:
-                    this.questionContainer.textContent = chapter.lottery.select();
+                    const questionDiv = document.createElement("div");
+                    const question = chapter.lottery.select();
+                    questionDiv.textContent = question.textContent;
+                    questionDiv.addEventListener("click", _ => {
+                        question.scrollIntoView();
+                    });
+                    this.questionContainer.appendChild(questionDiv);
                     resolve();
                     break;
             }
@@ -245,11 +263,3 @@ class Conspectus {
         });
     }
 }
-
-
-// // https://stackoverflow.com/questions/6677035/scroll-to-an-element-with-jquery
-// function scrollPage(el, dur=600) {
-//     $([document.documentElement, document.body]).animate({
-//         'scrollTop': $(el).offset().top
-//     }, dur);  
-// }

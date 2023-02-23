@@ -17,10 +17,10 @@
 	</head>
 	<body>
         <main>
-            <section id="disciplines"></section>
-            <section id="question">Загрузка...</section>
-            <section id="chapters"></section>
-            <section id="conspect"></section>
+            <div id="disciplines-wrap"><section id="disciplines"></section></div>
+            <div id="question-wrap"><section id="question"></section></div>
+            <div id="chapters-wrap"><section id="chapters"></section></div>
+            <div id="conspect-wrap"><section id="conspect"></section></div>
         </main>
         <script>
             const conspectus = new Conspectus({
@@ -36,14 +36,13 @@
                 document.evaluate("//button[text()='Основы геологии']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
             });
 
-
-            // const questionElObserver = new MutationObserver(function(mutations) {
-            //     $("#question-wrap").css("height", $("#question").height());
-            // });
-            // questionElObserver.observe(document.getElementById("question"), {
-            //     childList: true,
-            //     characterData: true
-            // });
+            const questionObserver = new MutationObserver(function(mutations) {
+                document.getElementById("question-wrap").style.height =
+                    document.getElementById("question").offsetHeight + "px";
+            });
+            questionObserver.observe(document.getElementById("question"), {
+                childList: true, characterData: true
+            });
         </script>
 	</body>
 </html>
