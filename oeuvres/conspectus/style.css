@@ -126,6 +126,7 @@ button:disabled {
     font-family:'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
     color: #362c29;
     overflow: hidden;
+    padding: 0 1em;
 }
 
 #conspect img, #conspect video {

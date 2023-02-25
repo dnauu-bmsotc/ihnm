@@ -292,7 +292,7 @@ class Conspectus {
         })
     }
     parseMarkdown(text, baseUrl) {
-        marked.setOptions({ baseUrl: baseUrl ? baseUrl : this.srcPath + "t/t/" });
+        marked.setOptions({ baseUrl: baseUrl ? baseUrl : this.srcPath + "markdown/" });
         const md = marked.parse(text);
         
         const div = document.createElement("div");
@@ -301,7 +301,7 @@ class Conspectus {
         
         for (let img of div.querySelectorAll("img")) {
             const imgwidth = img.src.match(/(\d+).[^\.]+$/)[1];
-            img.style.width = imgwidth + "%";
+            img.style.width = 30 + imgwidth*2/3 + "%";
 
             const format = img.src.match(/.([^\.]+)$/)[1];
             if (format === "mp4") {
@@ -309,7 +309,7 @@ class Conspectus {
                 vidEl.type="video/mp4";
                 vidEl.src = img.src;
                 vidEl.controls = true;
-                vidEl.style.width = imgwidth + "%";
+                vidEl.style.width = 30 + imgwidth*2/3 + "%";
                 img.replaceWith(vidEl);
             }
         }
