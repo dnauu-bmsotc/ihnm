@@ -128,7 +128,7 @@ button:disabled {
     overflow: hidden;
 }
 
-#conspect img {
+#conspect img, #conspect video {
     display: block;
     margin: auto;
 }
@@ -180,4 +180,34 @@ tr:nth-child(even) {
 td {
     border: 1px solid black;
     padding: 5px;
+}
+
+.toc {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.toc-h2:hover, .toc-h3:hover, .toc-h4:hover {
+    color: #e95a39;
+    cursor: pointer;
+}
+
+.toc-h2, .toc-h3, .toc-h4 {
+    display: list-item;          /* This has to be "list-item"                                               */
+    list-style-type: square;     /* See https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type     */
+    list-style-position: outside;
+}
+
+.toc-h2 {
+    font-size: 0.8em;
+    margin-left: 10%;
+}
+
+.toc-h3 {
+    font-size: 0.7em;
+    margin-left: 20%;
+}
+
+.toc-h4 {
+    font-size: 0.6em;
+    margin-left: 25%;
 }

@@ -165,40 +165,92 @@ class Conspectus {
             }
             switch (chapter.type) {
                 case "guess-by-image":
-                    this.loadZip(this.srcPath + chapter.images)
-                    .then(entries => {
-                        chapter.zip = entries;
-                        return this.blobZip(entries);
-                    })
-                    .then(blobs => {
-                        const tickets = chapter.zip.map((e, i) => ({
-                            filename: e.filename,
-                            blob: blobs[i]
-                        }));
-                        chapter.lottery = new Lottery(tickets);
-                        resolve();
-                    });
+                    this.createChapterLottery_guessByImage(chapter, resolve);
                     break;
 
                 case "tell-tables":
-                    const keys = chapter.tmp.tables.map(
-                        table => table.json.list.map(
-                            sample => ({
-                                name: sample[chapter.key],
-                                tableEl: table.el
-                            })
-                        )
-                    );
-                    chapter.lottery = new Lottery(keys.flat());
-                    resolve();
+                    this.createChapterLottery_tellTables(chapter, resolve);
                     break;
             
                 default:
-                    const headers = [...this.conspectContainer.querySelectorAll("h3")];
-                    chapter.lottery = new Lottery(headers);
-                    resolve();
+                    this.createChapterLottery_default(chapter, resolve);
+                    break;
             }
         })
+    }
+    createChapterLottery_guessByImage(chapter, resolve) {
+        this.loadZip(this.srcPath + chapter.images)
+        .then(entries => {
+            chapter.zip = entries;
+            return this.blobZip(entries);
+        })
+        .then(blobs => {
+            const tickets = chapter.zip.map((e, i) => ({
+                filename: e.filename,
+                blob: blobs[i]
+            }));
+            chapter.lottery = new Lottery(tickets);
+            resolve();
+        });
+    }
+    createChapterLottery_tellTables(chapter, resolve) {
+        const keys = chapter.tmp.tables.map(
+            table => table.json.list.map(
+                sample => ({
+                    name: sample[chapter.key],
+                    tableEl: table.el
+                })
+            )
+        );
+        chapter.lottery = new Lottery(keys.flat());
+        resolve();
+    }
+    createChapterLottery_default(chapter, resolve) {
+        const h2h3 = [...this.conspectContainer.querySelectorAll("h2, h3, h4")];
+        const lotteryTickets = [];
+        let lastH2 = null;
+
+        const toc = document.createElement("div");
+        toc.classList.add("toc");
+
+        const pushToC = (el, className) => {
+            const header = document.createElement("div");
+            header.classList.add(className);
+            header.textContent = el.textContent;
+            header.addEventListener("click", _ => {
+                this.scrollTo(el);
+            })
+            toc.appendChild(header);
+        };
+
+        for (let h of h2h3) {
+            switch (h.tagName) {
+                case "H2":
+                    lastH2 = h;
+                    pushToC(h, "toc-h2");
+                    break;
+
+                case "H3":
+                    switch (lastH2.textContent) {
+                        case "Приложение":
+                            break;
+                        default:
+                            lotteryTickets.push(h);
+                            break;
+                    }
+                    pushToC(h, "toc-h3");
+                    break;
+
+                case "H4":
+                    lastH2 = h;
+                    pushToC(h, "toc-h4");
+                    break;
+            }
+        }
+
+        this.conspectContainer.insertBefore(toc, this.conspectContainer.firstChild);
+        chapter.lottery = new Lottery(lotteryTickets);
+        resolve();
     }
     drawChapterLottery(chapter) {
         return new Promise((resolve, reject) => {
@@ -220,7 +272,7 @@ class Conspectus {
                     const tellTablesQuestionDiv = document.createElement("div");
                     tellTablesQuestionDiv.textContent = tellTablesTicket.name;
                     tellTablesQuestionDiv.addEventListener("click", _ => {
-                        tellTablesTicket.tableEl.scrollIntoView();
+                        this.scrollTo(tellTablesTicket.tableEl);
                     });
                     this.questionContainer.appendChild(tellTablesQuestionDiv);
                     resolve();
@@ -231,7 +283,7 @@ class Conspectus {
                     const question = chapter.lottery.select();
                     questionDiv.textContent = question.textContent;
                     questionDiv.addEventListener("click", _ => {
-                        question.scrollIntoView();
+                        this.scrollTo(question);
                     });
                     this.questionContainer.appendChild(questionDiv);
                     resolve();
@@ -244,10 +296,22 @@ class Conspectus {
         const md = marked.parse(text);
         
         const div = document.createElement("div");
+        div.classList.add("markdown");
         div.innerHTML = md;
         
         for (let img of div.querySelectorAll("img")) {
-            img.style.width = img.src.match(/(\d+).[^\.]+$/)[1] + "%";
+            const imgwidth = img.src.match(/(\d+).[^\.]+$/)[1];
+            img.style.width = imgwidth + "%";
+
+            const format = img.src.match(/.([^\.]+)$/)[1];
+            if (format === "mp4") {
+                const vidEl = document.createElement("video");
+                vidEl.type="video/mp4";
+                vidEl.src = img.src;
+                vidEl.controls = true;
+                vidEl.style.width = imgwidth + "%";
+                img.replaceWith(vidEl);
+            }
         }
 
         this.renderKaTeX(div);
@@ -290,11 +354,12 @@ class Conspectus {
         renderMathInElement(element, {
             delimiters: [
                 {left: '$$', right: '$$', display: true},
-                {left: '$', right: '$', display: false},
-                {left: '\\(', right: '\\)', display: false},
-                {left: '\\[', right: '\\]', display: true}
+                {left: '$', right: '$', display: false}
             ],
             strict: false,
         });
+    }
+    scrollTo(el) {
+        el.scrollIntoView();
     }
 }
