@@ -56,29 +56,43 @@ class Conspectus {
         this.chaptersContainer.appendChild(btn);
 
         btn.addEventListener("click", _ => {
-            if (this.currentChapterBtn === btn) {
-                this.questionContainer.innerHTML = "";
-                this.drawChapterLottery(chapter);
-                btn.dataset.counter = `(${chapter.lottery.counter}/${chapter.lottery.size})`;
-            }
-            else {
-                this.conspectContainer.innerHTML = "";
-                this.questionContainer.textContent = "Загрузка...";
-                window.history.replaceState(null, null, `?discipline=${chapter.tmp.discipline.name}&chapter=${chapter.name}`);
-                btn.disabled = true;
-                this.setCurrentChapterButton(chapter, btn);
-                this.initChapter(chapter)
-                    .then(_ => this.createChapterLottery(chapter))
-                    .then(_ => {
-                        btn.disabled = false;
-                        if (this.currentChapterBtn === btn) {
-                            this.questionContainer.textContent = chapter.name;
-                        }
-                        if (chapter.lottery.counter === 0) {
-                            btn.dataset.counter = `(${chapter.lottery.size} шт.)`;
-                        }
-                    });
-            }
+            new Promise((resolve, reject) => {
+                if (this.currentChapterBtn === btn) {
+                    this.questionContainer.innerHTML = "";
+                    const ticket = chapter.lottery.select();
+                    this.drawChapterLottery(chapter, ticket)
+                        .then(_ => resolve());
+                }
+                else {
+                    this.conspectContainer.innerHTML = "";
+                    this.questionContainer.textContent = "Загрузка...";
+                    window.history.replaceState(null, null, `?discipline=${chapter.tmp.discipline.name}&chapter=${chapter.name}`);
+                    btn.disabled = true;
+                    this.setCurrentChapterButton(chapter, btn);
+                    this.initChapter(chapter)
+                        .then(_ => this.createChapterLottery(chapter))
+                        .then(_ => {
+                            btn.disabled = false;
+                            if (chapter.lottery.lastDraw) {
+                                this.questionContainer.innerHTML = "";
+                                this.drawChapterLottery(chapter, chapter.lottery.lastDraw)
+                                .then(_ => resolve());
+                            }
+                            else {
+                                this.questionContainer.textContent = chapter.name;
+                                resolve();
+                            }
+                        });
+                }
+            })
+            .then(_ => {
+                if (chapter.lottery.counter === 0) {
+                    btn.dataset.counter = `(${chapter.lottery.size} шт.)`;
+                }
+                else {
+                    btn.dataset.counter = `(${chapter.lottery.counter}/${chapter.lottery.size})`;
+                }
+            });
         });
     }
     setCurrentChapterButton(newChapter, itsButton) {
@@ -107,16 +121,17 @@ class Conspectus {
         const tDiv = document.createElement("div");
         this.conspectContainer.appendChild(tDiv);
 
+        chapter.tmp.tables.push({});
+        const ct = chapter.tmp.tables[chapter.tmp.tables.length - 1];
+
         return new Promise((resolve, reject) => {
             fetch(path, {cache: this.cache})
                 .then(res => res.json())
                 .then(obj => {
                     const parsed = this.parseTableJSON(obj);
-                    chapter.tmp.tables.push({
-                        el: parsed.el,
-                        keys: parsed.keys,
-                        json: obj,
-                    });
+                    ct.el = parsed.el;
+                    ct.keys = parsed.keys;
+                    ct.json = obj;
                     tDiv.replaceWith(parsed.el);
                     resolve();
                 });
@@ -181,6 +196,9 @@ class Conspectus {
             }
         })
     }
+    createLotteryId(chapter) {
+        return "Lottery " + chapter.tmp.discipline.name + " / " + chapter.name;
+    }
     createChapterLottery_guessByImage(chapter, resolve) {
         this.loadZip(this.srcPath + chapter.images)
         .then(entries => {
@@ -192,7 +210,7 @@ class Conspectus {
                 filename: e.filename,
                 blob: blobs[i]
             }));
-            chapter.lottery = new Lottery(tickets);
+            chapter.lottery = new Lottery(this.createLotteryId(chapter), tickets);
             resolve();
         });
     }
@@ -205,7 +223,7 @@ class Conspectus {
                 })
             )
         );
-        chapter.lottery = new Lottery(keys.flat());
+        chapter.lottery = new Lottery(this.createLotteryId(chapter), keys.flat());
 
         // reversing a shallow-copy to keep order when inserting hint as first child.
         [...chapter.tmp.tables].reverse().map(table => {
@@ -263,47 +281,56 @@ class Conspectus {
         }
 
         this.conspectContainer.insertBefore(toc, this.conspectContainer.firstChild);
-        chapter.lottery = new Lottery(lotteryTickets);
+        chapter.lottery = new Lottery(this.createLotteryId(chapter), lotteryTickets);
         resolve();
     }
-    drawChapterLottery(chapter) {
+    drawChapterLottery(chapter, ticket) {
         return new Promise((resolve, reject) => {
             switch (chapter.type) {
                 case "guess-by-image":
-                    const ticket = chapter.lottery.select();
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(ticket.blob);
-                    img.addEventListener("click", _ => {
-                        const answer = document.createElement("div");
-                        answer.textContent = ticket.filename.match(/.*\/(.*)/)[1];
-                        this.questionContainer.appendChild(answer);
-                    }, { once: true });
-                    this.questionContainer.append(img);
+                    this.drawChapterLottery_guessByImage(ticket, resolve);
                     break;
 
                 case "tell-tables":
-                    const tellTablesTicket = chapter.lottery.select();
-                    const tellTablesQuestionDiv = document.createElement("div");
-                    tellTablesQuestionDiv.textContent = tellTablesTicket.name;
-                    tellTablesQuestionDiv.addEventListener("click", _ => {
-                        this.scrollTo(tellTablesTicket.tableEl);
-                    });
-                    this.questionContainer.appendChild(tellTablesQuestionDiv);
-                    resolve();
+                    this.drawChapterLottery_tellTables(ticket, resolve);
                     break;
     
                 default:
-                    const questionDiv = document.createElement("div");
-                    const question = chapter.lottery.select();
-                    questionDiv.textContent = question.textContent;
-                    questionDiv.addEventListener("click", _ => {
-                        this.scrollTo(question);
-                    });
-                    this.questionContainer.appendChild(questionDiv);
-                    resolve();
+                    this.drawChapterLottery_default(ticket, resolve);
                     break;
             }
         })
+    }
+    drawChapterLottery_guessByImage(ticket, resolve) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(ticket.blob);
+        img.addEventListener("click", _ => {
+            const answer = document.createElement("div");
+            answer.textContent = ticket.filename.match(/.*\/(.*)/)[1];
+            this.questionContainer.appendChild(answer);
+        }, { once: true });
+        this.questionContainer.append(img);
+        resolve();
+    }
+    drawChapterLottery_tellTables(ticket, resolve) {
+        const questionDiv = document.createElement("div");
+        questionDiv.textContent = ticket.name;
+        questionDiv.addEventListener("click", _ => {
+            this.scrollTo(ticket.tableEl);
+        });
+        this.questionContainer.appendChild(questionDiv);
+        resolve();
+
+    }
+    drawChapterLottery_default(ticket, resolve) {
+        const questionDiv = document.createElement("div");
+        questionDiv.textContent = ticket.textContent;
+        questionDiv.addEventListener("click", _ => {
+            this.scrollTo(ticket);
+        });
+        this.questionContainer.appendChild(questionDiv);
+        resolve();
+
     }
     parseMarkdown(text, baseUrl) {
         marked.setOptions({ baseUrl: baseUrl ? baseUrl : this.srcPath + "markdown/" });

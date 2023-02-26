@@ -16,6 +16,9 @@
 		<link rel="icon" type="image/png" href="/ihnm/previews/favicon64x64.png" sizes="64x64">
 	</head>
 	<body>
+        <div>
+            <button id="reset-btn">reset</button>
+        </div>
         <main>
             <div id="disciplines-wrap"><section id="disciplines"></section></div>
             <div id="question-wrap"><section id="question">. . .</section></div>
@@ -51,6 +54,12 @@
             });
             questionObserver.observe(document.getElementById("question"), {
                 childList: true, characterData: true
+            });
+
+            document.getElementById("reset-btn").addEventListener("click", _ => {
+                window.localStorage.clear();
+                window.sessionStorage.clear();
+                window.location.reload();
             });
         </script>
 	</body>

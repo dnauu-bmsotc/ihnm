@@ -230,3 +230,11 @@ td {
     color: #834848;
     max-width: 50em;
 }
+
+#reset-btn {
+    border-width: 0;
+    background-color: #f3f0f0;
+    padding: 1em;
+    margin: 1em 1em 0 1em;
+    color: #cdadad;
+}
