@@ -134,6 +134,8 @@ button:disabled {
     margin: auto;
 }
 
+#conspect img
+
 strong {
     color: #962c21;
 }
@@ -211,4 +213,20 @@ td {
 .toc-h4 {
     font-size: 0.6em;
     margin-left: 25%;
+}
+
+.tell-tables-hint {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.tell-tables-hint--name {
+    font-size: 0.8em;
+}
+
+.tell-tables-hint--list {
+    font-size: 0.8em;
+    margin-left: 5%;
+    margin-bottom: 1em;
+    color: #834848;
+    max-width: 50em;
 }

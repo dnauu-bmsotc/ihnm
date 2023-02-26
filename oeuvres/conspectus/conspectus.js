@@ -71,7 +71,9 @@ class Conspectus {
                     .then(_ => this.createChapterLottery(chapter))
                     .then(_ => {
                         btn.disabled = false;
-                        this.questionContainer.textContent = chapter.name;
+                        if (this.currentChapterBtn === btn) {
+                            this.questionContainer.textContent = chapter.name;
+                        }
                         if (chapter.lottery.counter === 0) {
                             btn.dataset.counter = `(${chapter.lottery.size} шт.)`;
                         }
@@ -109,12 +111,13 @@ class Conspectus {
             fetch(path, {cache: this.cache})
                 .then(res => res.json())
                 .then(obj => {
-                    const el = this.parseTableJSON(obj);
+                    const parsed = this.parseTableJSON(obj);
                     chapter.tmp.tables.push({
-                        el: el,
-                        json: obj
+                        el: parsed.el,
+                        keys: parsed.keys,
+                        json: obj,
                     });
-                    tDiv.replaceWith(el);
+                    tDiv.replaceWith(parsed.el);
                     resolve();
                 });
         })
@@ -203,6 +206,17 @@ class Conspectus {
             )
         );
         chapter.lottery = new Lottery(keys.flat());
+
+        // reversing a shallow-copy to keep order when inserting hint as first child.
+        [...chapter.tmp.tables].reverse().map(table => {
+            const hint = document.createElement("div");
+            hint.classList.add("tell-tables-hint");
+            hint.innerHTML = `
+                <div class="tell-tables-hint--name">${table.json.name}:</div>
+                <div class="tell-tables-hint--list">${table.keys.join(", ").toLowerCase()}.</div>
+            `;
+            this.conspectContainer.insertBefore(hint, this.conspectContainer.firstChild);
+        });
         resolve();
     }
     createChapterLottery_default(chapter, resolve) {
@@ -301,7 +315,7 @@ class Conspectus {
         
         for (let img of div.querySelectorAll("img")) {
             const imgwidth = img.src.match(/(\d+).[^\.]+$/)[1];
-            img.style.width = 30 + imgwidth*2/3 + "%";
+            img.style.width = imgwidth + "%";
 
             const format = img.src.match(/.([^\.]+)$/)[1];
             if (format === "mp4") {
@@ -309,7 +323,7 @@ class Conspectus {
                 vidEl.type="video/mp4";
                 vidEl.src = img.src;
                 vidEl.controls = true;
-                vidEl.style.width = 30 + imgwidth*2/3 + "%";
+                vidEl.style.width = imgwidth + "%";
                 img.replaceWith(vidEl);
             }
         }
@@ -345,7 +359,10 @@ class Conspectus {
         }
 
         this.renderKaTeX(table);
-        return tDiv;
+        return {
+            el: tDiv,
+            keys: uniqueKeys
+        };
     }
     renderKaTeX(element) {
         if (!element) {
