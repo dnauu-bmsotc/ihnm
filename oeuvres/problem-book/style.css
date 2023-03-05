@@ -1,3 +1,7 @@
+body {
+    margin: 5%;
+}
+
 main {
     display: flex;
     flex-flow: column nowrap;
@@ -19,6 +23,7 @@ svg {
     border: 1px solid black;
     width: 17em;
     height: 17em;
+    touch-action: none;
 }
 
 img {
@@ -40,6 +45,11 @@ img {
 
 #condition::before {
     content: "Условие:";
+}
+
+#condition img {
+    max-width: 50%;
+    margin: auto;
 }
 
 #sketch::before {

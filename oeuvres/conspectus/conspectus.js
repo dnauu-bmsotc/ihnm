@@ -73,13 +73,18 @@ class Conspectus {
                         .then(_ => this.createChapterLottery(chapter))
                         .then(_ => {
                             btn.disabled = false;
-                            if (chapter.lottery.lastDraw) {
-                                this.questionContainer.innerHTML = "";
-                                this.drawChapterLottery(chapter, chapter.lottery.lastDraw)
-                                .then(_ => resolve());
+                            if (this.currentChapterBtn === btn) {
+                                if (chapter.lottery.lastDraw) {
+                                    this.questionContainer.innerHTML = "";
+                                    this.drawChapterLottery(chapter, chapter.lottery.lastDraw)
+                                    .then(_ => resolve());
+                                }
+                                else {
+                                    this.questionContainer.textContent = chapter.name;
+                                    resolve();
+                                }
                             }
                             else {
-                                this.questionContainer.textContent = chapter.name;
                                 resolve();
                             }
                         });
