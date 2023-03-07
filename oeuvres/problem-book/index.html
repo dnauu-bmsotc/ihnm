@@ -5,96 +5,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Сборник задач</title>
         <link rel="stylesheet" href="style.css">
-        <script>
-            class Problem {
-                constructor() {
-                    this.ns = "http://www.w3.org/2000/svg";
-                }
-                makeCondition() {};
-                makeSketch() {};
-                makeSolution() {};
-                createSketchSVG(html, onHover, onLeave) {
-                    const svg = document.createElementNS(this.ns, "svg");
-                    svg.setAttributeNS(null, "width", "100%");
-                    svg.setAttributeNS(null, "height", "100%");
-                    svg.setAttributeNS(null, "viewBox", "-50 -50 100 100");
-                    svg.innerHTML = html;
-
-                    svg.addEventListener("mousemove", e => {
-                        const rect = svg.getBoundingClientRect();
-                        const x = (e.clientX - rect.left) / (rect.right - rect.left);
-                        const y = (e.clientY - rect.top) / (rect.bottom - rect.top);
-                        onHover(x, y);
-                    });
-                    svg.addEventListener("touchmove", e => {
-                        const rect = svg.getBoundingClientRect();
-                        const x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left);
-                        const y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top);
-                        onHover(x, y);
-                    });
-
-                    ["mouseleave", "touchend"].forEach(eveType => {
-                        svg.addEventListener(eveType, onLeave);
-                    });
-
-                    return svg;
-                }
-                createSketchSVGInfo(keys) {
-                    const hash = {};
-                    const infobox = document.createElement("div");
-                    infobox.classList.add("infobox");
-
-                    for (let k of keys) {
-                        const div = document.createElement("div");
-                        const keybox = document.createElement("span");
-                        const separator = document.createTextNode(": ");
-                        const valbox = document.createElement("span");
-
-                        hash[k] = valbox;
-
-                        keybox.textContent = k;
-                        
-                        div.appendChild(keybox);
-                        div.appendChild(separator);
-                        div.appendChild(valbox);
-
-                        infobox.appendChild(div);
-                    }
-
-                    return [infobox, hash];
-                }
-                updateSketchSVGInfo(hash, data) {
-                    for (let k of Object.keys(hash)) {
-                        hash[k].textContent = data[k];
-                    }
-                }
-                round(n, d) {
-                    return Math.round(n * 10**d) / 10**d;
-                }
-                degrees(r, d) {
-                    return this.round(r * 180 / Math.PI, d);
-                }
-                deploy() {
-                    document.getElementById("condition").innerHTML = "";
-                    document.getElementById("sketch").innerHTML = "";
-                    document.getElementById("solution").innerHTML = "";
-                    this.makeCondition(document.getElementById("condition"));
-                    this.makeSketch(document.getElementById("sketch"));
-                    this.makeSolution(document.getElementById("solution"));
-
-                    document.querySelector("main").removeAttribute("hidden");
-                }
-            }
-        </script>
+		<script src="./script.js"></script>
 		<script src="./problem1/script.js"></script>
 		<script src="./problem2/script.js"></script>
-		<script src="./problem3/script.js"></script>
 	</head>
 	<body>
         <section id="problem-buttons">
             <button onclick="new Problem1().deploy()">Прямоугольник в секторе</button>
-            <button onclick="new Problem2().deploy()">Площадь зависящая от стороны</button>
-            <button onclick="new Problem3().deploy()">Пятиугольный паркет типа 5</button>
+            <button onclick="new Problem2().deploy()">Пятиугольный паркет типа 5</button>
         </section>
 		<main hidden>
             <section id="condition"></section>

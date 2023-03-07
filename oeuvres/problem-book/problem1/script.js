@@ -17,11 +17,11 @@ class Problem1 extends Problem {
         this.infoboxHash = infoboxHash;
 
         const svg = this.createSketchSVG(`
-            <path fill="lightGray" stroke="black" stroke-width="0.3"/>
-            <rect fill="gray" stroke="black" stroke-width="0.3"></rect>
+            <path style="${this.stdsLight}"/>
+            <rect style="${this.stdsDark}"></rect>
         `,
         (x, y) => this.setSketchParameters(x*2*Math.PI, 1/(1-y)-1),
-        ______ => this.setSketchParameters(Math.PI/3, 0.8));
+        _ => this.setSketchParameters(Math.PI/3, 0.8));
         
         this.sector = svg.querySelector("path");
         this.rect = svg.querySelector("rect");

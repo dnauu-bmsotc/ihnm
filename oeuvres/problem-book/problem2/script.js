@@ -4,120 +4,100 @@ class Problem2 extends Problem {
     }
     makeCondition(el) {
         el.innerHTML = `
-            <p>В треугольнике обозначены углы A, B и C. Стороны, лежащие напротив этих углов,
-            обозначены соответственно a, b, c. Известны угол B и прилежащая к нему сторона c.
-            Также известно, что площадь треугольника связана со стороной b уравнением S=k1-k2*b^2.
-            k1 и k2 известны, но не S или b. Необходимо решить данный треугольник.</p>
+            <p>Пятиугольный паркет — в геометрии: замощение, составленное из выпуклых
+            пятиугольников. Предполагается, что существует всего 15 классов пятиугольников,
+            бесконечные паркеты из которых могут замостить плоскость [www.wikipedia.org, 2023].
+            Один из таких пятиугольных паркетов используется на странице "Калейдоскоп".</p>
+
+            <img src="./problem2/tiling.png"></img>
+
+            <p>Схема одного из классов изображена на рисунке. Для данных пятиугольников
+            выполняются следующие равенства: a = b; d = e; A = 60 градусов; D = 120 градусов.
+            Пусть даны все углы и площадь плитки. Необходимо найти скалярные размеры плитки.</p>
         `;
     };
     makeSketch(el) {
         const [infobox, infoboxHash] = this.createSketchSVGInfo([
-            "A", "B", "C", "a", "b", "c", "S (set)", "S (calc)", "mu/lambda",
+            "E", "B", "C", "Area (init)", "Area (calc)", "c", "n", "m"
         ]);
         this.infoboxHash = infoboxHash;
 
         const svg = this.createSketchSVG(`
-            <polygon style="fill:lime;stroke:purple;stroke-width:1" />
-            <polygon style="fill:none;stroke:purple;stroke-width:1" />
-            <polygon style="fill:none;stroke:purple;stroke-width:1" />
+            <polygon class="p2-odz" style="${this.stdsRed}" points="-50,50 50,-50 50,50"/>
+            <g class="p2-petal">
+                <polygon class="p2-base" style="${this.stdsDark}"/>
+                <polygon class="p2-120" style="${this.stdsLight}"/>
+                <polygon class="p2-60" style="${this.stdsLight}"/>
+            </g>
         `,
-        (x, y) => this.setSketchParameters(x*Math.PI, y*50),
-        ______ => this.setSketchParameters(Math.PI/3, 10));
+        (x, y) => this.setSketchParameters(x*Math.PI, y*Math.PI),
+        _ => this.setSketchParameters(Math.PI/3, Math.PI/2));
 
-        const polygons = svg.querySelectorAll("polygon");
-        this.triangle_base = polygons[0];
-        this.triangle_120 = polygons[1];
-        this.triangle_60 = polygons[2];
+        this.triangle_base = svg.querySelector(".p2-base");
+        this.triangle_120 = svg.querySelector(".p2-120");
+        this.triangle_60 = svg.querySelector(".p2-60");
 
         el.appendChild(svg);
         el.appendChild(infobox);
-        this.setSketchParameters(Math.PI/3, 10);
+        this.setSketchParameters(Math.PI/3, Math.PI/2);
     };
     makeSolution(el) {
-        const img = document.createElement("img");
-        img.src = "./problem2/proof.png";
-        el.appendChild(img);
+        el.innerHTML = `
+            <p>Рассмотрим пятиугольник ABCDE. Треугольник ABE является правильным
+            и его площадь может быть посчитана по стороне m. Треугольник CDE является
+            равнобедренным с боковыми углами по 30 градусов и его площадь может быть
+            посчитана по стороне n.</p>
+            <img src="./problem2/tile.png" style="width:16em">
+            <p>Треугольники ABE и CDE могут быть исключены из задачи без ограничения общности.
+            Таким образом, задача сводится к решению треугольника BCE, в котором известны все углы,
+            а площадь связана со сторонами треугольника уравнением S = k1 - k2*m**2 - k3*n**2,
+            где k1 - площадь пятиугольника.</p>
+            <img src="./problem2/proof.png">
+        `;
     };
-    setSketchParameters(B, a, S=50) {
+    setSketchParameters(B, C, S=500) {
         const k1 = S;
         const k2 = Math.sqrt(3) / 12;
+        const k3 = Math.sqrt(3) / 4;
+        const E = Math.PI - B - C;
 
-        const alpha = a**2*(Math.sin(B)**2);
-        const beta = a**2*Math.sin(B)*Math.cos(B) - 2*k1;
-        const gamma = 2*k2*(a**2)*(Math.sin(B)**2);
+        const sE = Math.sin(E);
+        const cE = Math.cos(E);
+        const sB = Math.sin(B);
+        const cB = Math.cos(B);
+        const sC = Math.sin(C);
+        const cC = Math.cos(C);
+        const lambda = 2*k2*(sB**2)/(sC**2) + 2*k3 + sE*cE + (sE**2)/sC*cC;
 
-        const xi = alpha/2;
-        const eta = -beta/2;
-        const mu = -gamma - beta/2;
+        const m = Math.sqrt(2*k1 / lambda);
+        const n = m * Math.sin(B) / Math.sin(C);
+        const c = m * Math.sin(E) / Math.sin(C);
 
-        const lambda = Math.sqrt(xi**2 + eta**2);
-
-        const A = (Math.asin(mu/lambda) - Math.acos(xi/lambda))/2;
-        const C = Math.PI - A - B;
-        const b = a*Math.sin(B)/Math.sin(A);
-        const c = a*Math.sin(C)/Math.sin(A);
-
-        const points_base = [];
-        points_base.push([0, 0]); // A
-        points_base.push([ // B
-            points_base[0][0] + c,
-            points_base[0][1]
-        ]);
-        points_base.push([ // C
-            points_base[0][0] + b*Math.cos(A),
-            points_base[0][1] - b*Math.sin(A)
-        ]);
-        this.triangle_base.setAttributeNS(null, "points", points_base.map(p => p.join(",")).join(" "));
-
-        const points_120 = [];
-        points_120.push(points_base[0]);
-        points_120.push([
-            points_120[points_120.length-1][0] + b/2/Math.cos(Math.PI/6)*Math.cos(A+Math.PI/6),
-            points_120[points_120.length-1][1] - b/2/Math.cos(Math.PI/6)*Math.sin(A+Math.PI/6)
-        ]);
-        points_120.push(points_base[2]);
-        this.triangle_120.setAttributeNS(null, "points", points_120.map(p => p.join(",")).join(" "));
+        if (E > 0) {
+            this.drawPetal(E, B, C, c, n, m);
+        }
+        else {
+            this.drawNothing();
+        }
 
         this.updateSketchSVGInfo(this.infoboxHash, {
-            "A": this.round(A, 4), "B": this.round(B, 4), "C": this.round(C, 4),
-            "a": this.round(a, 4), "b": this.round(b, 4), "c": this.round(c, 4),
-            "S (set)": S, "S (calc)": 1/2*a*b*Math.sin(C) + k2*(b**2),
-            "mu/lambda": this.round(mu/lambda, 5),
+            "E": this.degrees(E, 3), "B": this.degrees(B, 3), "C": this.degrees(C, 3),
+            "Area (init)": S, "Area (calc)": 1/2*m*n*Math.sin(E) + k2*(n**2) + k3*(m**2),
+            "c": this.round(c, 4), "n": this.round(n, 4), "m": this.round(m, 4)
         });
     }
-    
-    // setSketchParameters(B, a, S=5) {
-    //     const k1 = S;
-    //     const k2 = - Math.sqrt(3) / 12;
+    drawPetal(A, B, C, a, b, c) {
+        const t60 = this.calcTriangle(0, 20, 2*Math.PI/3, c, -Math.PI/3, c);
+        const tbase = this.calcTriangle(...t60[1], 0, c, B, a);
+        const t120 = this.calcTriangle(...t60[1], A, b, Math.PI/6, b/2/Math.cos(Math.PI/6));
 
-    //     const alpha = 2*k1 / (a*Math.sin(B)) - a*Math.cos(B);
-    //     const beta = -a*Math.sin(B);
-    //     const gamma = -2*k2;
-    //     const lambda = Math.sqrt(alpha**2 + beta**2);
-
-    //     const A = Math.asin(gamma/lambda) - Math.acos(alpha/lambda);
-    //     const C = Math.PI - A - B;
-    //     const b = a*Math.sin(B)/Math.sin(A);
-    //     const c = b*Math.cos(A) + a*Math.cos(B);
-
-    //     const points = [];
-    //     points.push([
-    //         0,
-    //         0
-    //     ]);
-    //     points.push([
-    //         points[points.length-1][0] + b,
-    //         points[points.length-1][1]
-    //     ]);
-    //     points.push([
-    //         points[points.length-1][0] + a*Math.cos(C),
-    //         points[points.length-1][1] - a*Math.sin(C)
-    //     ]);
-
-    //     console.log(S, k1 + k2*b**2, 1/2*a*b*Math.sin(C));
-    //     // console.log(Math.round(a), Math.round(b), Math.round(c));
-    //     // console.log(A, B, C);
-
-    //     // this.triangle.setAttributeNS(null, "points", points.map(p => p.join(",")).join(" "));
-    // }
+        this.triangle_base.setAttributeNS(null, "points", this.points2Path(tbase));
+        this.triangle_120.setAttributeNS(null, "points", this.points2Path(t120));
+        this.triangle_60.setAttributeNS(null, "points", this.points2Path(t60));
+    }
+    drawNothing() {
+        this.triangle_base.setAttributeNS(null, "points", "0,0 0,0 0,0");
+        this.triangle_120.setAttributeNS(null, "points", "0,0 0,0 0,0");
+        this.triangle_60.setAttributeNS(null, "points", "0,0 0,0 0,0");
+    }
 }

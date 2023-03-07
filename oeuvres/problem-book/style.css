@@ -28,6 +28,13 @@ svg {
 
 img {
     max-width: 100%;
+    margin: 2em auto;
+}
+
+p {
+    margin: 1em 0;
+    text-align: justify;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 #problem-buttons {
@@ -49,19 +56,16 @@ img {
 
 #condition img {
     max-width: 50%;
-    margin: auto;
 }
 
 #sketch::before {
     content: "Рисунок:";
 }
 
-#solution::before {
-    content: "Решение:";
+.infobox {
+    font-family: monospace;
 }
 
-p {
-    margin: 0 0 1em 0;
-    text-align: justify;
-    font-family:Arial, Helvetica, sans-serif;
+#solution::before {
+    content: "Решение:";
 }
