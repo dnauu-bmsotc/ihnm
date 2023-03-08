@@ -232,7 +232,7 @@ td {
     max-width: 50em;
 }
 
-#reset-btn {
+#options button {
     border-width: 0;
     background-color: #f3f0f0;
     padding: 1em;

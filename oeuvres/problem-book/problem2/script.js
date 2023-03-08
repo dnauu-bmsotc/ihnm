@@ -70,8 +70,8 @@ class Problem2 extends Problem {
         const lambda = 2*k2*(sB**2)/(sC**2) + 2*k3 + sE*cE + (sE**2)/sC*cC;
 
         const m = Math.sqrt(2*k1 / lambda);
-        const n = m * Math.sin(B) / Math.sin(C);
-        const c = m * Math.sin(E) / Math.sin(C);
+        const n = m * sB / sC;
+        const c = m * sE / sC;
 
         if (E > 0) {
             this.drawPetal(E, B, C, c, n, m);
@@ -82,7 +82,7 @@ class Problem2 extends Problem {
 
         this.updateSketchSVGInfo(this.infoboxHash, {
             "E": this.degrees(E, 3), "B": this.degrees(B, 3), "C": this.degrees(C, 3),
-            "Area (init)": S, "Area (calc)": 1/2*m*n*Math.sin(E) + k2*(n**2) + k3*(m**2),
+            "Area (init)": S, "Area (calc)": 1/2*m*n*sE + k2*(n**2) + k3*(m**2),
             "c": this.round(c, 4), "n": this.round(n, 4), "m": this.round(m, 4)
         });
     }
