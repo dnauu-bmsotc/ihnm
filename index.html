@@ -13,40 +13,38 @@
 				flex-wrap: wrap;
 				margin: auto;
 				align-items: center;
-				justify-content: space-evenly;
+				justify-content: center;
 			}
 			.cell {
 				position: relative;
 				width: 10em;
-				margin: 0.5em;
+				margin: 0.7em;
 				padding: 0;
 				border: 1px solid lightgray;
 				border-radius: 16px;
 				top: 0;
 				filter: drop-shadow(8px 8px 8px #efefef);
-				transition: top 2s, filter 2s;
 				overflow: hidden;
 				box-shadow: 3px 3px 6px #e7e6e6;
+				background-color: white;
 			}
 			.cell:hover {
-				top: -0.2em;
-				filter: drop-shadow(8px 8px 8px #e5e5e5);
+				filter: drop-shadow(0px 0px 8px #e1e1e1);
 			}
 			.cell-name {
 				display: inline-block;
 				text-align: center;
 				width: 100%;
 				font-family: Geneva, Arial, Helvetica, sans-serif;
-				margin: 0.5em 0;
+				padding: 0.5em 0;
+				border-bottom: 1px solid #e0d0cc;
 			}
 			.cell-image {
 				background-size: contain;
 				background-repeat: no-repeat;
 				background-position: center;
-				overflow: hidden;
-				width: 10em;
-				height: 10em;
-				margin: auto;
+				width: 100%;
+				aspect-ratio: 1 / 1;
 			}
 			#unfortune {
 				font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
