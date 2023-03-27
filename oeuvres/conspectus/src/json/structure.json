@@ -110,7 +110,8 @@
                     "json/rocks/clastic-rocks.json",
                     "json/rocks/biochemogenic-rocks.json",
                     "json/rocks/metamorphic-rocks.json"
-                ]
+                ],
+                "markdown": "markdown/Минералы и горные породы.md"
             }
         ]
     }
