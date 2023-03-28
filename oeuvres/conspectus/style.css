@@ -149,6 +149,10 @@ li {
     margin: 0.3em 0;
 }
 
+a {
+    color: black;
+}
+
 .table-name {
     text-align: center;
     font-weight: bold;
@@ -199,21 +203,19 @@ td {
     display: list-item;          /* This has to be "list-item"                                               */
     list-style-type: square;     /* See https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type     */
     list-style-position: outside;
+    font-size: 0.8em;
 }
 
 .toc-h2 {
-    font-size: 0.8em;
-    margin-left: 10%;
+    margin-left: 5%;
 }
 
 .toc-h3 {
-    font-size: 0.7em;
-    margin-left: 20%;
+    margin-left: 7%;
 }
 
 .toc-h4 {
-    font-size: 0.6em;
-    margin-left: 25%;
+    margin-left: 12%;
 }
 
 .tell-tables-hint {
