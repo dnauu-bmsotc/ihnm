@@ -124,10 +124,11 @@ button:disabled {
 
 #conspect {
     max-width: 50em;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', Verdana, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: #362c29;
     overflow: hidden;
     padding: 0 1em;
+    font-size: 1.1em;
 }
 
 #conspect img, #conspect video {
@@ -135,7 +136,22 @@ button:disabled {
     margin: auto;
 }
 
-#conspect img
+h2 {
+    font-family: 'Times New Roman', Times, serif;
+    font-variant: small-caps;
+    color: #876868;
+}
+
+h3 {
+    text-decoration: underline;
+}
+
+h4 {
+    max-width: 80%;
+    margin: auto;
+    margin-top: 2em;
+    text-align: center;
+}
 
 strong {
     color: #962c21;
@@ -191,7 +207,7 @@ td {
 }
 
 .toc {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .toc-h2:hover, .toc-h3:hover, .toc-h4:hover {
@@ -200,22 +216,26 @@ td {
 }
 
 .toc-h2, .toc-h3, .toc-h4 {
-    display: list-item;          /* This has to be "list-item"                                               */
-    list-style-type: square;     /* See https://developer.mozilla.org/en-US/docs/Web/CSS/list-style-type     */
+    display: list-item;
     list-style-position: outside;
     font-size: 0.8em;
 }
 
 .toc-h2 {
     margin-left: 5%;
+    list-style: none;
+    font-variant: small-caps;
 }
 
 .toc-h3 {
-    margin-left: 7%;
+    margin-left: 8%;
+    margin-top: 0.5em;
+    list-style: square;
 }
 
 .toc-h4 {
     margin-left: 12%;
+    list-style: circle;
 }
 
 .tell-tables-hint {
