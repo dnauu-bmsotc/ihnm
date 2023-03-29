@@ -247,8 +247,9 @@ class Conspectus {
         const lotteryTickets = [];
         let lastH2 = null;
 
-        const toc = document.createElement("div");
+        const toc = document.createElement("details");
         toc.classList.add("toc");
+        toc.innerHTML = "<summary>Содержание</summary>";
 
         const pushToC = (el, className) => {
             const header = document.createElement("div");
