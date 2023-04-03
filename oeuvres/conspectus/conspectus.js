@@ -110,6 +110,11 @@ class Conspectus {
         this.currentChapterBtn.textContent = "Случайный вопрос по теме";
     }
     appendMarkdown(path) {
+        const toc = document.createElement("details");
+        toc.classList.add("toc");
+        toc.innerHTML = "<summary>Содержание</summary>";
+        this.conspectContainer.appendChild(toc);
+
         const mdDiv = document.createElement("div");
         this.conspectContainer.appendChild(mdDiv);
 
@@ -118,9 +123,22 @@ class Conspectus {
                 .then(res => res.text())
                 .then(out => {
                     mdDiv.replaceWith(this.parseMarkdown(out));
+                    const mdHeaders = [...this.conspectContainer.querySelectorAll("h2, h3, h4")];
+                    this.completeToC(toc, mdHeaders);
                     resolve();
                 });
         })
+    }
+    completeToC(toc, mdHeaders) {
+        for (let el of mdHeaders) {
+            const header = document.createElement("div");
+            header.classList.add("toc-" + el.tagName.toLowerCase());
+            header.textContent = el.textContent;
+            header.addEventListener("click", _ => {
+                this.scrollTo(el);
+            })
+            toc.appendChild(header);
+        }
     }
     appendTable(chapter, path) {
         const tDiv = document.createElement("div");
@@ -145,6 +163,10 @@ class Conspectus {
     initChapter(chapter) {
         const promises = [];
 
+        if (chapter.teachers) {
+            this.addMentions(chapter.teachers);
+        }
+
         if (chapter.markdown) {
             promises.push(this.appendMarkdown(this.srcPath + chapter.markdown));
         }
@@ -157,6 +179,16 @@ class Conspectus {
         }
 
         return Promise.all(promises);
+    }
+    addMentions(list) {
+        const div = document.createElement("div");
+        div.innerHTML = `
+        <div id="mentions-wrap">
+            <span id="mentions-const">Основано на лекциях/семинарах от:</span>
+            <span id="mentions">${list.join(", ")}</span>
+        </div>
+        `;
+        this.conspectContainer.appendChild(div);
     }
     loadZip(path) {
         let zipReader = null;
@@ -243,50 +275,16 @@ class Conspectus {
         resolve();
     }
     createChapterLottery_default(chapter, resolve) {
-        const h2h3 = [...this.conspectContainer.querySelectorAll("h2, h3, h4")];
         const lotteryTickets = [];
-        let lastH2 = null;
-
-        const toc = document.createElement("details");
-        toc.classList.add("toc");
-        toc.innerHTML = "<summary>Содержание</summary>";
-
-        const pushToC = (el, className) => {
-            const header = document.createElement("div");
-            header.classList.add(className);
-            header.textContent = el.textContent;
-            header.addEventListener("click", _ => {
-                this.scrollTo(el);
-            })
-            toc.appendChild(header);
-        };
-
-        for (let h of h2h3) {
-            switch (h.tagName) {
-                case "H2":
-                    lastH2 = h;
-                    pushToC(h, "toc-h2");
-                    break;
-
-                case "H3":
-                    switch (lastH2.textContent) {
-                        case "Приложение":
-                            break;
-                        default:
-                            lotteryTickets.push(h);
-                            break;
-                    }
-                    pushToC(h, "toc-h3");
-                    break;
-
-                case "H4":
-                    lastH2 = h;
-                    pushToC(h, "toc-h4");
-                    break;
+        const headers = [...this.conspectContainer.querySelectorAll("h2, h3")];
+        for (let h of headers) {
+            if ((h.tagName === "H2") && (h.textContent === "Приложение")) {
+                break;
+            }
+            if (h.tagName === "H3") {
+                lotteryTickets.push(h);
             }
         }
-
-        this.conspectContainer.insertBefore(toc, this.conspectContainer.firstChild);
         chapter.lottery = new Lottery(this.createLotteryId(chapter), lotteryTickets);
         resolve();
     }

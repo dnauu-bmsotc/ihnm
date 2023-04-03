@@ -4,27 +4,33 @@
         "chapters": [
             {
                 "name": "Геодезические измерения",
-                "markdown": "markdown/Геодезические измерения.md"
+                "markdown": "markdown/Геодезические измерения.md",
+                "teachers": ["Курченко Леонид Алексеевич"]
             },
             {
                 "name": "Топографические планы и ориентирование",
-                "markdown": "markdown/Топографические планы и ориентирование.md"
+                "markdown": "markdown/Топографические планы и ориентирование.md",
+                "teachers": ["Курченко Леонид Алексеевич"]
             },
             {
                 "name": "Сферическую астрономию",
-                "markdown": "markdown/Сферическая астрономия.md"
+                "markdown": "markdown/Сферическая астрономия.md",
+                "teachers": ["Суслин Василий Иванович", "Хохлов Дмитрий Андреевич", "Сухарев-Крылов Иван Александрович"]
             },
             {
                 "name": "Картографию",
-                "markdown": "markdown/Основы картографии.md"
+                "markdown": "markdown/Основы картографии.md",
+                "teachers": ["Николаева Ольга Николаевна"]
             },
             {
                 "name": "Системы координат и высот",
-                "markdown": "markdown/Системы координат и высот.md"
+                "markdown": "markdown/Системы координат и высот.md",
+                "teachers": ["Половнёв Олег Валентинович"]
             },
             {
                 "name": "ТМОГИ",
-                "markdown": "markdown/ТМОГИ.md"
+                "markdown": "markdown/ТМОГИ.md",
+                "teachers": ["Андоленко Светлана Степановна"]
             }
         ]
     },
@@ -33,7 +39,8 @@
         "chapters": [
             {
                 "name": "АКС",
-                "markdown": "markdown/АКС.md"
+                "markdown": "markdown/АКС.md",
+                "teachers": ["Дрыга Данила Олегович", "Мочалов Александр Валерьевич"]
             }
         ]
     },
@@ -50,11 +57,13 @@
             },
             {
                 "name": "Теорию вероятностей",
-                "markdown": "markdown/Теория вероятностей.md"
+                "markdown": "markdown/Теория вероятностей.md",
+                "teachers": ["Чанга Морис Евгеньевич"]
             },
             {
                 "name": "Физику атмосферы",
-                "markdown": "markdown/Физика атмосферы.md"
+                "markdown": "markdown/Физика атмосферы.md",
+                "teachers": ["Малинников Василий Александрович"]
             },
             {
                 "name": "Физику морей и океанов",
@@ -67,19 +76,23 @@
         "chapters": [
             {
                 "name": "Основы геологии",
-                "markdown": "markdown/Основы геологии.md"
+                "markdown": "markdown/Основы геологии.md",
+                "teachers": ["Зверев Анатолий Тихонович"]
             },
             {
                 "name": "Геоморфологию",
-                "markdown": "markdown/Геоморфология.md"
+                "markdown": "markdown/Геоморфология.md",
+                "teachers": ["Зверев Анатолий Тихонович"]
             },
             {
                 "name": "Почвы",
-                "markdown": "markdown/Почвы.md"
+                "markdown": "markdown/Почвы.md",
+                "teachers": ["Коновалов Леонид Анатольевич"]
             },
             {
                 "name": "Полезные ископаемые",
-                "markdown": "markdown/Полезные ископаемые.md"
+                "markdown": "markdown/Полезные ископаемые.md",
+                "teachers": ["Зверев Анатолий Тихонович"]
             },
             {
                 "name": "Ящик с минералами",
@@ -111,7 +124,8 @@
                     "json/rocks/biochemogenic-rocks.json",
                     "json/rocks/metamorphic-rocks.json"
                 ],
-                "markdown": "markdown/Минералы и горные породы.md"
+                "markdown": "markdown/Минералы и горные породы.md",
+                "teachers": ["Зверев Анатолий Тихонович"]
             }
         ]
     }
