@@ -11,6 +11,8 @@ class Conspectus {
         this.srcPath = srcPath;
 
         this.cache = "no-cache";
+        
+        this.currentChapter = null;
     }
     deploy() {
         return new Promise((resolve, reject) => {

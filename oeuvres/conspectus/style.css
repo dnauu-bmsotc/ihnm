@@ -127,16 +127,12 @@ button:disabled {
     font-family: Georgia, Times, 'Times New Roman', serif;
 }
 
-#mentions {
-
-}
-
 #mentions-const {
     color: #896e6b;
 }
 
 #conspect {
-    max-width: 50em;
+    max-width: 46em;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color: #362c29;
     overflow: hidden;
@@ -289,4 +285,9 @@ td {
     padding: 1em;
     margin: 1em 1em 0 1em;
     color: #cdadad;
+}
+
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
 }
