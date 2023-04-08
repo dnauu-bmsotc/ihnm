@@ -1,0 +1,46 @@
+main {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+main > * {
+    margin: 1em;
+}
+
+#table {
+    display: inline-grid;
+    grid-template-columns: repeat(11, 1fr)
+}
+
+#table input {
+    background-color: antiquewhite;
+}
+
+#table input[data-value="0"] {
+    background-color: white;
+}
+
+#table > * {
+    text-align: center;
+}
+
+svg {
+    border: 1px solid black;
+    margin: 1em;
+}
+
+#rose-azimuths-dip, #rose-incidence {
+    width: 20em;
+    height: 20em;
+}
+
+#rose-azimuths-strike {
+    height: 15em;
+    width: 30em;
+}
+
+button {
+    padding: 0.5em;
+    margin: 1em;
+}

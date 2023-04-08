@@ -46,7 +46,7 @@
 				width: 100%;
 				aspect-ratio: 1 / 1;
 			}
-			#unfortune {
+			#other-pages {
 				font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 			}
 		</style>
@@ -55,8 +55,8 @@
 		<main>
 			<h2>Список страниц</h2>
 			<section id="container"></section>
-			<section id="unfortune">
-				<p>Неудачные страницы</p>
+			<section id="other-pages">
+				<p>Неудачные страницы:</p>
 				<ul>
 					<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
 					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
@@ -65,7 +65,12 @@
 					<li><a href="./archive/rocks-guess">Угадай камень</a></li>
 					<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
 				</ul>
+				<p>Сгенерированное нейросетью:</p>
+				<ul>
+					<li><a href="./archive/ai-generated/rose-diagramm-1">Роза-диаграмма 1</a></li>
+				</ul>
 			</section>
+		</section>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
 		<script>
@@ -78,6 +83,7 @@
 				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", preview: "./previews/kaleidoscope.png"},
 				{href: "./oeuvres/conspectus", name: "Конспекты", preview: "./previews/conspectus.png"},
 				{href: "./oeuvres/stories", name: "Истории", preview: "./previews/stories.png"},
+				{href: "./oeuvres/rose-diagramm", name: "Роза-диаграмма", preview: "./previews/rose-diagram.png"},
 			];
 			for (page of pages) {
 				const cell = document.createElement("a");

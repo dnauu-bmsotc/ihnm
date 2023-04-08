@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<title>Роза-диаграмма 1</title>
+        <script>
+            function drawChart() {
+
+                // Получаем данные с формы:
+                var n = parseInt(document.getElementById("n").value);
+                var data = document.getElementById("data").value.trim().split("\n");
+
+                // Обрабатываем данные:
+                var maxVal = 0;
+                var values = [];
+
+                for (var i = 0; i < n; i++) {
+                    var val = parseInt(data[i].trim());
+                    values.push(val);
+                    maxVal = Math.max(maxVal, val);
+                }
+
+                // Создаем холст:
+                var canvas = document.getElementById("chart");
+                var ctx = canvas.getContext("2d");
+                var width = canvas.width;
+                var height = canvas.height;
+
+                // Очищаем холст:
+                ctx.clearRect(0, 0, width, height);
+
+                // Рисуем оси координат:
+                ctx.beginPath();
+                ctx.moveTo(width / 2, height / 2);
+                ctx.lineTo(width / 2, 0);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(width / 2, height / 2);
+                ctx.lineTo(width, height / 2);
+                ctx.stroke();
+
+                // Рисуем секторы:
+                var angle = 2 * Math.PI / n;
+                var radius = Math.min(width, height) / 2 - 10;
+
+                for (var i = 0; i < n; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(width / 2, height / 2);
+                    ctx.arc(width / 2, height / 2, radius * values[i] / maxVal, -i * angle, -(i + 1) * angle, true);
+                    ctx.closePath();
+                    ctx.fillStyle = "hsl(" + (i * 360 / n) + ", 100%, 50%)";
+                    ctx.fill();
+                }
+
+            }
+        </script>
+	</head>
+	<body>
+        <label for="n">Введите количество секторов:</label>
+        <input type="number" id="n" name="n" min="3" max="20" value="6"/>
+
+        <label for="data">Введите данные:</label>
+        <textarea id="data" name="data" cols="30" rows="10"></textarea>
+
+        <button onclick="drawChart()">Построить</button>
+
+        <canvas id="chart" width="400" height="400"></canvas>
+	</body>
+</html>

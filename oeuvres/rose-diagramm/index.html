@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Роза-диаграмма</title>
+		<link rel="stylesheet" href="./style.css">
+        <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script>
+		<script src="./script.js"></script>
+	</head>
+	<body>
+		<main>
+            <section id="buttons-section">
+                <button onclick="onReset(event)">reset</button>
+                <button onclick="onRandom(event)">random</button>
+                <button onclick="onPreset1(event)">preset1</button>
+            </section>
+            <section id="table-section" >
+                <div id="table" oninput="onInput(event)"></div>
+            </section>
+            <button onclick="updateRoses()">Обновить розы</button>
+            <div>
+                <div>Роза-диаграмма азимутов углов падения</div>
+                <svg id="rose-azimuths-dip" viewBox="-60 -60 120 120"></svg>
+            </div>
+            <div>
+                <div>Роза-диаграмма азимутов простирания</div>
+                <svg id="rose-azimuths-strike" viewBox="-60 -60 120 120"></svg>
+            </div>
+            <div>
+                <div>Роза-диаграмма углов падения</div>
+                <svg id="rose-incidence" viewBox="-60 -60 120 120"></svg>
+            </div>
+            <div>
+                <div id="rose-complex"></div>
+            </div>
+		</main>
+	</body>
+</html>
