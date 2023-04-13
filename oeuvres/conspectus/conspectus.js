@@ -186,7 +186,11 @@ class Conspectus {
         const div = document.createElement("div");
         div.innerHTML = `
         <div id="mentions-wrap">
-            <span id="mentions-const">Основано на лекциях/семинарах от:</span>
+            <span id="mentions-const">${
+                (list.length === 1) ?
+                    "Основано на лекциях/семинарах преподавателя:"
+                    : "Основано на лекциях/семинарах преподавателей:"
+            }</span>
             <span id="mentions">${list.join(", ")}</span>
         </div>
         `;
