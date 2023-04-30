@@ -1,0 +1,97 @@
+.board {
+    width: 320px;
+    height: 320px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-gap: 2px;
+    margin: 0 auto;
+    background-color: #ccc;
+    border: 2px solid #999;
+  }
+  
+  .tile {
+    width: 78px;
+    height: 78px;
+    line-height: 78px;
+    font-size: 36px;
+    text-align: center;
+    background-color: #fff;
+    border: 2px solid #999;
+    cursor: pointer;
+  }
+  
+  .tile:hover {
+    background-color: #ddd;
+  }
+  
+  .tile.empty {
+    background-color: #999;
+    cursor: default;
+  }
+
+  body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    width: 400px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  table {
+    border-collapse: collapse;
+    margin: 20px auto;
+  }
+  
+  td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  td:hover {
+    background-color: #f2f2f2;
+  }
+  
+  td.empty {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+  }
+  
+  button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #333;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  
+  button:active {
+    box-shadow: none;
+  }
+  
