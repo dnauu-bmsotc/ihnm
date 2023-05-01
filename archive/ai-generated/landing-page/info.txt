@@ -1,0 +1,7 @@
+AI name: ChatGPT-3.5
+
+Images created with Stable Diffusion and another AI.
+
+Prompt:
+Write a landing page in html and css. The theme is ocean, colors and text should be according to the theme.
+Tabs should change content of the page, using javascript. Make parallax animations.
