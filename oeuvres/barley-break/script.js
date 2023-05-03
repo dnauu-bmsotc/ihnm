@@ -229,12 +229,12 @@ function shuffle(array) {
     return array;
 }
 
-window.addEventListener("load", _ => {
+function createField(size) {
     const fieldEl = document.getElementById("field");
     fieldEl.style.transform = `rotate(0)`;
     let fieldAngle = 0;
 
-    const field = new Field(fieldEl, 4);
+    const field = new Field(fieldEl, size);
 
     document.getElementById("rotate-btn").addEventListener("click", function(event) {
         fieldEl.style.transform = `rotate(${(fieldAngle += 1) * 90}deg)`;
@@ -244,4 +244,19 @@ window.addEventListener("load", _ => {
         field.rotation = fieldAngle;
         setTimeout(field.checkWin.bind(field), 200);
     });
+}
+
+window.addEventListener("load", _ => {
+    const selectEl = document.getElementById("select");
+    for (let size of [4]) {
+        const btn = document.createElement("button");
+        btn.textContent = size + "x" + size;
+        btn.addEventListener("click", function(event) {
+            selectEl.hidden = true;
+            createField(size);
+        })
+        selectEl.appendChild(btn);
+    }
+
+    selectEl.firstChild.click();
 });
