@@ -1,0 +1,17 @@
+body {
+    margin: 4em 0;
+    background-color: black;
+    color: white;
+}
+
+main, section {
+    display: flex;
+    flex-flow: column nowrap;
+    max-width: 40em;
+    margin: auto;
+    gap: 2em;
+}
+
+img {
+    width: 100%;
+}

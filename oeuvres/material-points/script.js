@@ -204,8 +204,17 @@ function restart(createPoints=true) {
 }
 
 window.addEventListener("load", (event) => {
-    restart();
+    preset0();
 });
+
+function preset0() {
+    document.getElementById("border-select").value = "wall";
+    document.getElementById("color-select").value = "white";
+    document.getElementById("number-select").value = "100";
+    document.getElementById("velocity-select").value = "static";
+
+    restart(true);
+}
 
 function preset1() {
     document.getElementById("border-select").value = "none";
