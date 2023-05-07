@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Материальные точки</title>
+        <link rel="stylesheet" href="style.css">
+		<script src="./script.js"></script>
+	</head>
+	<body>
+		<main>
+            <section>
+                <button onclick="restart(randomInt(10, 200), 30)">Random</button>
+                <button onclick="restart(20, 30)">20</button>
+                <button onclick="restart(50, 30)">50</button>
+                <button onclick="restart(100, 40)">100</button>
+                <button onclick="restart(200, 60)">200</button>
+                <button onclick="restart(500, 60)">500</button>
+                <button onclick="restart(1000, 71)">1000</button>
+            </section>
+            <svg viewBox="-50 -50 100 100">
+                <g id="dots"></g>
+            </svg>
+		</main>
+	</body>
+</html>
