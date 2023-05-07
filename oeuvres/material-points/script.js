@@ -6,12 +6,20 @@ class Point {
 }
 
 class MaterialDot {
-    constructor(x, y, mass, element) {
+    constructor(x, y, mass) {
         this.position = new Point(x, y);
         this.velocity = new Point(0, 0);
         this.forces = new Point(0, 0);
         this.mass = mass;
-        this.element = element;
+
+        this.element = document.createElementNS(display.ns, "circle");
+        this.element.setAttributeNS(null, "fill", "white");
+        this.element.setAttributeNS(null, "cx", this.position.x);
+        this.element.setAttributeNS(null, "cy", this.position.y);
+        this.element.setAttributeNS(null, "r", 0.2 + Math.sqrt(this.mass / display.maxMass) / 3);
+        this.element.setAttributeNS(null, "opacity", (display.maxMass/3 + this.mass) / (display.maxMass/3 + display.maxMass));
+        this.element.setAttributeNS(null, "stroke-width", "0");
+        document.getElementById("dots").appendChild(this.element);
     }
 }
 
@@ -26,6 +34,8 @@ const display = {
     active: false,
     ns: "http://www.w3.org/2000/svg",
     gravity: 10 ** (-6),
+    minMass: 1,
+    maxMass: 500,
 }
 
 function randomInt(min, max) {
@@ -49,19 +59,13 @@ function hslToHex(h, s, l) {
 }
 
 function randomMaterialDot(maxradius, initialVelocity) {
-    const element = document.createElementNS(display.ns, "circle");
-
     const radius = randomFloat(0, maxradius);
     const angle = randomFloat(0, 2 * Math.PI);
-
-    const minMass = 1;
-    const maxMass = 500;
 
     const dot = new MaterialDot(
         radius * Math.cos(angle),
         radius * Math.sin(angle),
-        minMass + Math.pow(Math.random(), 8) * (maxMass - minMass),
-        element,
+        display.minMass + Math.pow(Math.random(), 8) * (display.maxMass - display.minMass),
     );
 
     switch (initialVelocity) {
@@ -81,14 +85,6 @@ function randomMaterialDot(maxradius, initialVelocity) {
         default:
             break;
     }
-
-    element.setAttributeNS(null, "fill", "white");
-    element.setAttributeNS(null, "cx", dot.position.x);
-    element.setAttributeNS(null, "cy", dot.position.y);
-    element.setAttributeNS(null, "r", 0.2 + Math.sqrt(dot.mass / maxMass) / 3);
-    element.setAttributeNS(null, "opacity", (maxMass/2 + dot.mass) / (maxMass/2 + maxMass));
-    element.setAttributeNS(null, "stroke-width", "0");
-    document.getElementById("dots").appendChild(element);
 
     return dot;
 }
@@ -145,7 +141,7 @@ function animateFrame() {
     }
 }
 
-function restart() {
+function restart(createPoints=true) {
     document.getElementById("dots").innerHTML = "";
     display.dots = [];
 
@@ -155,7 +151,7 @@ function restart() {
             + Math.PI / 4 * randomFloat(-1, +1);
     }
 
-    const n = document.getElementById("number-select").value;
+    const n = createPoints ? document.getElementById("number-select").value : 0;
     const radius = 10 + 10 * Math.pow(n, 1/4);
 
     switch (document.getElementById("border-select").value) {
@@ -166,6 +162,15 @@ function restart() {
                 if (dot.position.y < display.rect.top) dot.velocity.y *= -1;
                 if (dot.position.y > display.rect.top + display.rect.bottom) dot.velocity.y *= -1;
             };
+            break;
+
+        case "wall":
+            display.borderFunction = dot => {
+                if (dot.position.x < display.rect.left) dot.velocity.x = 0;
+                if (dot.position.x > display.rect.left + display.rect.right) dot.velocity.x = 0;
+                if (dot.position.y < display.rect.top) dot.velocity.y = 0;
+                if (dot.position.y > display.rect.top + display.rect.bottom) dot.velocity.y = 0;
+            }
             break;
         
         default:
@@ -201,3 +206,52 @@ function restart() {
 window.addEventListener("load", (event) => {
     restart();
 });
+
+function preset1() {
+    document.getElementById("border-select").value = "none";
+    document.getElementById("color-select").value = "wheel";
+    document.getElementById("number-select").value = "preset";
+    document.getElementById("velocity-select").value = "preset";
+
+    restart(false);
+
+    const n = 12;
+    const r = 25;
+    const v = 0.01;
+    for (let i = 0; i < n; i++) {
+        const polarAngle = i * (360 / n) * Math.PI / 180;
+        const polarRadius = r;
+
+        const dot = new MaterialDot(
+            polarRadius * Math.cos(polarAngle),
+            polarRadius * Math.sin(polarAngle),
+            display.maxMass,
+        );
+
+        dot.velocity.x = v * Math.cos(polarAngle + Math.PI * 3 / 4);
+        dot.velocity.y = v * Math.sin(polarAngle + Math.PI * 3 / 4);
+
+        display.dots.push(dot);        
+    }
+}
+
+function preset2() {
+    document.getElementById("border-select").value = "none";
+    document.getElementById("color-select").value = "white";
+    document.getElementById("number-select").value = "preset";
+    document.getElementById("velocity-select").value = "preset";
+
+    restart(false);
+
+    const sun = new MaterialDot(0, 0, display.maxMass * 100);
+    sun.velocity.y = +0.005;
+    display.dots.push(sun);
+
+    const earth = new MaterialDot(40, 0, display.maxMass * 8.1);
+    earth.velocity.y = -0.05;
+    display.dots.push(earth);
+
+    const moon = new MaterialDot(45, 0, display.maxMass / 2);
+    moon.velocity.y = -0.08;
+    display.dots.push(moon);
+}

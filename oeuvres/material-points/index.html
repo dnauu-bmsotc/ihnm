@@ -9,6 +9,10 @@
 	</head>
 	<body>
 		<main>
+            <section id="presets-section">
+                <button onclick="preset1()">Preset 1</button>
+                <button onclick="preset2()">Preset 2</button>
+            </section>
             <svg viewBox="-50 -50 100 100" onclick="restart()">
                 <g id="dots"></g>
             </svg>
@@ -16,6 +20,7 @@
                 <div>
                     <label for="velocity-select">Initial velocity:</label>
                     <select id="velocity-select">
+                        <option hidden value="preset">Preset</option>
                         <option selected value="static">Static</option>
                         <option value="noise">Noise</option>
                         <option value="funnel">Funnel</option>
@@ -24,6 +29,7 @@
                 <div>
                     <label for="number-select">Number of points:</label>
                     <select id="number-select">
+                        <option hidden value="preset">Preset</option>
                         <option value="20">20</option>
                         <option selected value="50">50</option>
                         <option value="100">100</option>
@@ -35,6 +41,7 @@
                 <div>
                     <label for="color-select">Color model:</label>
                     <select id="color-select">
+                        <option hidden value="preset">Preset</option>
                         <option selected value="white">White</option>
                         <option value="wheel">Wheel</option>
                     </select>
@@ -42,7 +49,9 @@
                 <div>
                     <label for="border-select">Border mode:</label>
                     <select id="border-select">
+                        <option hidden value="preset">Preset</option>
                         <option selected value="none">None</option>
+                        <option value="wall">Wall</option>
                         <option value="bounce">Bounce</option>
                     </select>
                 </div>

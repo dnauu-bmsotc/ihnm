@@ -14,7 +14,7 @@ main, section {
     gap: 1em;
 }
 
-select {
+button, select {
     background-color: black;
     border: 1px solid gray;
     margin: 0.5em;
@@ -23,11 +23,11 @@ select {
     font-family: monospace;
 }
 
-select:hover {
+button:hover, select:hover {
     background-color: green;
 }
 
-select:active {
+button:active, select:active {
     background-color: darkgreen;
 }
 
@@ -45,4 +45,8 @@ p {
 
 em {
     color: lightgreen;
+}
+
+#presets-section {
+    flex-flow: row wrap;
 }
