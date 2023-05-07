@@ -25,7 +25,7 @@ const display = {
     dots: [],
     active: false,
     ns: "http://www.w3.org/2000/svg",
-    gravity: 2 * 10 ** (-6),
+    gravity: 10 ** (-6),
 }
 
 function randomInt(min, max) {
@@ -36,14 +36,26 @@ function randomFloat(min, max) {
     return min + (max - min) * Math.random();
 }
 
-function randomMaterialDot(maxradius) {
+// https://stackoverflow.com/questions/36721830
+function hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function randomMaterialDot(maxradius, initialVelocity) {
     const element = document.createElementNS(display.ns, "circle");
 
     const radius = randomFloat(0, maxradius);
     const angle = randomFloat(0, 2 * Math.PI);
 
     const minMass = 1;
-    const maxMass = 100;
+    const maxMass = 500;
 
     const dot = new MaterialDot(
         radius * Math.cos(angle),
@@ -52,13 +64,28 @@ function randomMaterialDot(maxradius) {
         element,
     );
 
-    dot.velocity.x = randomFloat(-0.002, +0.002);
-    dot.velocity.y = randomFloat(-0.002, +0.002);
+    switch (initialVelocity) {
+        case "noise":
+            dot.velocity.x = randomFloat(-0.012, +0.012);
+            dot.velocity.y = randomFloat(-0.012, +0.012);
+            break;
+
+        case "funnel":
+            const additionalAngle = Math.PI / 4 * randomFloat(-1, +1);
+            const velocityAngle = angle + display.funnelBaseAngle + additionalAngle;
+            const velocity = randomFloat(0, +0.03);
+            dot.velocity.x = velocity * Math.cos(velocityAngle);
+            dot.velocity.y = velocity * Math.sin(velocityAngle);
+            break;
+    
+        default:
+            break;
+    }
 
     element.setAttributeNS(null, "fill", "white");
     element.setAttributeNS(null, "cx", dot.position.x);
     element.setAttributeNS(null, "cy", dot.position.y);
-    element.setAttributeNS(null, "r", 0.1 + Math.sqrt(dot.mass / maxMass) / 2);
+    element.setAttributeNS(null, "r", 0.2 + Math.sqrt(dot.mass / maxMass) / 3);
     element.setAttributeNS(null, "opacity", (maxMass/2 + dot.mass) / (maxMass/2 + maxMass));
     element.setAttributeNS(null, "stroke-width", "0");
     document.getElementById("dots").appendChild(element);
@@ -108,6 +135,9 @@ function animateFrame() {
 
         dot.element.setAttributeNS(null, "cx", dot.position.x);
         dot.element.setAttributeNS(null, "cy", dot.position.y);
+
+        display.colorFunction(dot);
+        display.borderFunction(dot);
     }
 
     if (display.active) {
@@ -115,12 +145,49 @@ function animateFrame() {
     }
 }
 
-function restart(n, radius) {
+function restart() {
     document.getElementById("dots").innerHTML = "";
     display.dots = [];
 
+    const initialVelocity = document.getElementById("velocity-select").value;
+    if (initialVelocity === "funnel") {
+        display.funnelBaseAngle = Math.sign(randomFloat(-1, +1)) * Math.PI / 2
+            + Math.PI / 4 * randomFloat(-1, +1);
+    }
+
+    const n = document.getElementById("number-select").value;
+    const radius = 10 + 10 * Math.pow(n, 1/4);
+
+    switch (document.getElementById("border-select").value) {
+        case "bounce":
+            display.borderFunction = dot => {
+                if (dot.position.x < display.rect.left) dot.velocity.x *= -1;
+                if (dot.position.x > display.rect.left + display.rect.right) dot.velocity.x *= -1;
+                if (dot.position.y < display.rect.top) dot.velocity.y *= -1;
+                if (dot.position.y > display.rect.top + display.rect.bottom) dot.velocity.y *= -1;
+            };
+            break;
+        
+        default:
+            display.borderFunction = () => {};
+            break;
+    }
+
+    switch (document.getElementById("color-select").value) {
+        case "wheel":
+            display.colorFunction = dot => {
+                const velocityAngle = Math.atan2(dot.velocity.y, dot.velocity.x) * 180 / Math.PI;
+                dot.element.setAttributeNS(null, "fill", hslToHex(velocityAngle, 100, 50));
+            };
+            break;
+        
+        default:
+            display.colorFunction = () => {};
+            break;
+    }
+
     for (let i = 0; i < n; i++) {
-        display.dots.push(randomMaterialDot(radius));
+        display.dots.push(randomMaterialDot(radius, initialVelocity));
     }
 
     if (!display.active) {
@@ -132,5 +199,5 @@ function restart(n, radius) {
 }
 
 window.addEventListener("load", (event) => {
-    restart(20, 30);
+    restart();
 });

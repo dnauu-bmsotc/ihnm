@@ -9,18 +9,57 @@
 	</head>
 	<body>
 		<main>
-            <section>
-                <button onclick="restart(randomInt(10, 200), 30)">Random</button>
-                <button onclick="restart(20, 30)">20</button>
-                <button onclick="restart(50, 30)">50</button>
-                <button onclick="restart(100, 40)">100</button>
-                <button onclick="restart(200, 60)">200</button>
-                <button onclick="restart(500, 60)">500</button>
-                <button onclick="restart(1000, 71)">1000</button>
-            </section>
-            <svg viewBox="-50 -50 100 100">
+            <svg viewBox="-50 -50 100 100" onclick="restart()">
                 <g id="dots"></g>
             </svg>
+            <section onchange="restart()">
+                <div>
+                    <label for="velocity-select">Initial velocity:</label>
+                    <select id="velocity-select">
+                        <option selected value="static">Static</option>
+                        <option value="noise">Noise</option>
+                        <option value="funnel">Funnel</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="number-select">Number of points:</label>
+                    <select id="number-select">
+                        <option value="20">20</option>
+                        <option selected value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="color-select">Color model:</label>
+                    <select id="color-select">
+                        <option selected value="white">White</option>
+                        <option value="wheel">Wheel</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="border-select">Border mode:</label>
+                    <select id="border-select">
+                        <option selected value="none">None</option>
+                        <option value="bounce">Bounce</option>
+                    </select>
+                </div>
+            </section>
+            <p><em class="attention" onclick="restart()">Click on canvas to restart.</em> 
+                Isaac Newton's law of universal gravitation is one of the fundamental principles of modern physics. It describes the attraction between any two objects in the universe, no matter how large or small they are. The law states that every particle in the universe is attracted to every other particle with a force that is directly proportional to the product of their masses and inversely proportional to the square of the distance between them.
+                
+                The formula for Newton's law of universal gravitation is F = G * (m1 * m2) / r^2, where F is the force of attraction between two objects, m1 and m2 are the masses of the objects, r is the distance between the objects, and G is the gravitational constant. The gravitational constant is a universal constant that describes the strength of the gravitational force between any two objects in the universe.
+                
+                Newton's law of universal gravitation was a revolutionary discovery in its time. It explained the motions of the planets and moons in our solar system and showed that the same force that makes an apple fall to the ground is the same force that keeps the moon in orbit around the Earth. Newton's law of universal gravitation also provided a mathematical framework for understanding the universe on a much larger scale.
+                
+                One of the implications of Newton's law of universal gravitation is that it predicts that the force of gravity between two objects decreases as the square of the distance between them increases. This means that if you double the distance between two objects, the force of gravity between them becomes four times weaker. This inverse square law of gravity is important for understanding the behavior of objects in space, including the orbits of planets and moons.
+                
+                Another implication of Newton's law of universal gravitation is that the force of gravity is always attractive. There is no such thing as a repulsive gravitational force. This means that all objects in the universe are attracted to each other, regardless of their masses or distances. This is why everything in the universe is in motion, and why the universe itself is constantly expanding.
+                
+                In conclusion, Newton's law of universal gravitation is one of the most important principles in physics. It describes the attraction between any two objects in the universe and provides a mathematical framework for understanding the behavior of objects in space. It is a fundamental principle that has helped us understand the motions of the planets and moons in our solar system and has provided insights into the nature of the universe itself.
+            </p>
 		</main>
 	</body>
 </html>
