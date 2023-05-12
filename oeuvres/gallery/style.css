@@ -12,6 +12,6 @@ main, section {
     gap: 2em;
 }
 
-img {
+img, video {
     width: 100%;
 }
