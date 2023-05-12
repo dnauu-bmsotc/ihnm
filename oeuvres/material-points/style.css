@@ -6,7 +6,7 @@ body {
     font-size: larger;
 }
 
-main, section {
+main {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -47,6 +47,30 @@ em {
     color: lightgreen;
 }
 
+.preset-btn {
+    color: orange;
+}
+
 #presets-section {
     flex-flow: row wrap;
+}
+
+#options-section {
+    display: flex;
+    flex-flow: row wrap;
+    max-width: 60em;
+    gap: 3em;
+    row-gap: 0;
+    --color: #beb7ed;
+    color: var(--color);
+    justify-content: space-between;
+}
+
+#options-section > div {
+    display: inline-block;
+}
+
+#options-section select {
+    color: var(--color);
+    border-color: var(--color);
 }

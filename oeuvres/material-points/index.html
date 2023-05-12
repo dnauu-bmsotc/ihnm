@@ -10,18 +10,17 @@
 	<body>
 		<main>
             <section id="presets-section">
-                <button onclick="preset0()">Preset 0</button>
-                <button onclick="preset1()">Preset 1</button>
-                <button onclick="preset2()">Preset 2</button>
+                <button id="reset-btn" onclick="reset()">Reset</button>
+                <button class="preset-btn" onclick="preset1()">Preset 1</button>
+                <button class="preset-btn" onclick="preset2()">Preset 2</button>
             </section>
-            <svg viewBox="-50 -50 100 100" onclick="restart()">
+            <svg viewBox="-50 -50 100 100" onclick="restartToUserOptions()">
                 <g id="dots"></g>
             </svg>
-            <section onchange="restart()">
+            <section id="options-section" onchange="restartToUserOptions()">
                 <div>
                     <label for="velocity-select">Initial velocity:</label>
                     <select id="velocity-select">
-                        <option hidden value="preset">Preset</option>
                         <option selected value="static">Static</option>
                         <option value="noise">Noise</option>
                         <option value="funnel">Funnel</option>
@@ -30,7 +29,6 @@
                 <div>
                     <label for="number-select">Number of points:</label>
                     <select id="number-select">
-                        <option hidden value="preset">Preset</option>
                         <option value="20">20</option>
                         <option selected value="50">50</option>
                         <option value="100">100</option>
@@ -40,24 +38,37 @@
                     </select>
                 </div>
                 <div>
-                    <label for="color-select">Color model:</label>
+                    <label for="color-select">Color:</label>
                     <select id="color-select">
-                        <option hidden value="preset">Preset</option>
                         <option selected value="white">White</option>
                         <option value="wheel">Wheel</option>
                     </select>
                 </div>
                 <div>
-                    <label for="border-select">Border mode:</label>
+                    <label for="border-select">Border:</label>
                     <select id="border-select">
-                        <option hidden value="preset">Preset</option>
                         <option selected value="none">None</option>
                         <option value="wall">Wall</option>
                         <option value="bounce">Bounce</option>
                     </select>
                 </div>
+                <div>
+                    <label for="calculation-select">Calculation:</label>
+                    <select id="calculation-select">
+                        <option selected value="all">All dots</option>
+                        <option value="massive">Massive only</option>
+                        <option value="staticmassive">Static massive</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="collision-select">Collision:</label>
+                    <select id="collision-select">
+                        <option selected value="skip">Skip</option>
+                        <option value="stick">Stick</option>
+                    </select>
+                </div>
             </section>
-            <p><em class="attention" onclick="restart()">Click on canvas to restart.</em> 
+            <p><em class="attention" onclick="restartToUserOptions()">Click on canvas to restart.</em> 
                 Isaac Newton's law of universal gravitation is one of the fundamental principles of modern physics. It describes the attraction between any two objects in the universe, no matter how large or small they are. The law states that every particle in the universe is attracted to every other particle with a force that is directly proportional to the product of their masses and inversely proportional to the square of the distance between them.
                 
                 The formula for Newton's law of universal gravitation is F = G * (m1 * m2) / r^2, where F is the force of attraction between two objects, m1 and m2 are the masses of the objects, r is the distance between the objects, and G is the gravitational constant. The gravitational constant is a universal constant that describes the strength of the gravitational force between any two objects in the universe.
