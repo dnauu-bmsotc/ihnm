@@ -17,8 +17,8 @@ class Problem1 extends Problem {
         this.infoboxHash = infoboxHash;
 
         const svg = this.createSketchSVG(`
-            <path style="${this.stdsLight}"/>
-            <rect style="${this.stdsDark}"></rect>
+            <path style="${this.stdsLight()}"/>
+            <rect style="${this.stdsDark()}"></rect>
         `,
         (x, y) => this.setSketchParameters(x*2*Math.PI, 1/(1-y)-1),
         _ => this.setSketchParameters(Math.PI/3, 0.8));

@@ -1,13 +1,22 @@
 class Problem {
     constructor() {
         this.ns = "http://www.w3.org/2000/svg";
-        this.stdsLight = "fill:lightGray; stroke:black; stroke-width:0.3";
-        this.stdsDark = "fill:gray; stroke:black; stroke-width: 0.3";
-        this.stdsRed = "fill:pink; stroke:red; stroke-width: 0.3";
+        this.hashed = new Set();
+        this.currentProblemId = null;
     }
-    makeCondition() {};
-    makeSketch() {};
-    makeSolution() {};
+    stdsDark(k=1) {
+        return `fill:gray; stroke:black; stroke-width: ${0.3*k}`;
+    }
+    stdsLight(k=1) {
+        return `fill:lightGray; stroke:black; stroke-width: ${0.3*k}`;
+    }
+    stdsRed(k=1) {
+        return `fill:pink; stroke:red; stroke-width: ${0.3*k}`;
+    }
+    makeCondition() {}
+    makeSketch() {}
+    makeSolution() {}
+    delete() {}
     createSketchSVG(html, onHover, onLeave) {
         const svg = document.createElementNS(this.ns, "svg");
         svg.setAttributeNS(null, "width", "100%");
@@ -69,15 +78,34 @@ class Problem {
     degrees(r, d) {
         return this.round(r * 180 / Math.PI, d);
     }
-    deploy() {
+    deploy(id) {
+        this.currentProblem && this.currentProblem.delete();
         document.getElementById("condition").innerHTML = "";
         document.getElementById("sketch").innerHTML = "";
         document.getElementById("solution").innerHTML = "";
-        this.makeCondition(document.getElementById("condition"));
-        this.makeSketch(document.getElementById("sketch"));
-        this.makeSolution(document.getElementById("solution"));
+
+        if (this.hashed.has(id)) {
+            this.createProblem(id);
+        }
+        else {
+            this.hashed.add(id);
+            var head = document.getElementsByTagName('head')[0];
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = './problem' + id + "/script.js";
+            script.onload = function() {
+                this.createProblem(id);
+            }.bind(this);
+            head.appendChild(script);
+        }
 
         document.querySelector("main").removeAttribute("hidden");
+    }
+    createProblem(id) {
+        this.currentProblem = (Function('return new Problem' + id))();
+        this.currentProblem.makeCondition(document.getElementById("condition"));
+        this.currentProblem.makeSketch(document.getElementById("sketch"));
+        this.currentProblem.makeSolution(document.getElementById("solution"));
     }
     calcTriangle(x, y, turn1, go1, turn2, go2) {
         const points = [[x, y]];
@@ -95,3 +123,7 @@ class Problem {
         return points.map(p => p.join(",")).join(" ");
     }
 }
+
+window.addEventListener("load", (event) => {
+    window.problem = new Problem();
+});

@@ -23,11 +23,11 @@ class Problem2 extends Problem {
         this.infoboxHash = infoboxHash;
 
         const svg = this.createSketchSVG(`
-            <polygon class="p2-odz" style="${this.stdsRed}" points="-50,50 50,-50 50,50"/>
+            <polygon class="p2-odz" style="${this.stdsRed()}" points="-50,50 50,-50 50,50"/>
             <g class="p2-petal">
-                <polygon class="p2-base" style="${this.stdsDark}"/>
-                <polygon class="p2-120" style="${this.stdsLight}"/>
-                <polygon class="p2-60" style="${this.stdsLight}"/>
+                <polygon class="p2-base" style="${this.stdsDark()}"/>
+                <polygon class="p2-120" style="${this.stdsLight()}"/>
+                <polygon class="p2-60" style="${this.stdsLight()}"/>
             </g>
         `,
         (x, y) => this.setSketchParameters(x*Math.PI, y*Math.PI),
