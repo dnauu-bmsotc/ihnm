@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>ihnm</title>
+        <link rel="stylesheet" href="./ihnm.css">
 		<link rel="icon" type="image/png" href="./previews/favicon32x32.png" sizes="32x32">
 		<link rel="icon" type="image/png" href="./previews/favicon64x64.png" sizes="64x64">
 		<style>
@@ -20,16 +21,15 @@
 				width: 10em;
 				margin: 0.7em;
 				padding: 0;
-				border: 1px solid lightgray;
+				border: 1px solid var(--ihnm-color-border);
 				border-radius: 16px;
 				top: 0;
-				filter: drop-shadow(8px 8px 8px #efefef);
 				overflow: hidden;
-				box-shadow: 3px 3px 6px #e7e6e6;
-				background-color: white;
+				box-shadow: 3px 3px 6px var(--ihnm-color-shadow);
+				background-color: var(--ihnm-color-bg);
 			}
 			.cell:hover {
-				filter: drop-shadow(0px 0px 8px #e1e1e1);
+				filter: drop-shadow(0px 0px 8px var(--ihnm-color-shadow));
 			}
 			.cell-name {
 				display: inline-block;
@@ -37,7 +37,7 @@
 				width: 100%;
 				font-family: Geneva, Arial, Helvetica, sans-serif;
 				padding: 0.5em 0;
-				border-bottom: 1px solid #e0d0cc;
+				border-bottom: 1px solid var(--ihnm-color-border);
 			}
 			.cell-image {
 				background-size: contain;
@@ -46,9 +46,6 @@
 				width: 100%;
 				aspect-ratio: 1 / 1;
 			}
-			#other-pages {
-				font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-			}
 		</style>
 	</head>
 	<body>
@@ -56,7 +53,7 @@
 			<h2>Список страниц</h2>
 			<section id="container"></section>
 			<section id="other-pages">
-				<p>Неудачные страницы:</p>
+				<h3>Неудачные страницы:</h3>
 				<ul>
 					<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
 					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
@@ -65,7 +62,7 @@
 					<li><a href="./archive/rocks-guess">Угадай камень</a></li>
 					<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
 				</ul>
-				<p>Сгенерированное нейросетью:</p>
+				<h3>Сгенерированное нейросетями:</h3>
 				<ul>
 					<li><a href="./archive/ai-generated/gossamer-diagram">Паутинная диаграмма</a></li>
 					<li><a href="./archive/ai-generated/barley-break">Пятнашки</a></li>
