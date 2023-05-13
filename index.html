@@ -93,13 +93,13 @@
 			];
 			for (page of pages) {
 				const cell = document.createElement("a");
-				cell.classList.add("cell");
-				cell.href = page.href;
-				cell.innerHTML = `
+				container.appendChild(cell);
+				cell.outerHTML = `
+					<a class="cell" href="${page.href}">
 						<div class="cell-name">${page.name}</div>
 						<div class="cell-image" style="background-image: url(${page.preview})"></div>
+					</a>
 				`;
-				container.appendChild(cell);
 			}
 		</script>
 	</body>

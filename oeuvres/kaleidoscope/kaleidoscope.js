@@ -137,7 +137,7 @@ class Kaleidoscope {
         const size = 25;
         const width = size, height = size * Math.sqrt(3);
 
-        this.createLever("leverpattern", 100, "./images/img2.png");
+        this.createLever("leverpattern", 100, "./images/stable_diffusion04.jpg");
         this.createPattern("squarepattern", width, height, {
             "fill": "url(#leverpattern)", "stroke": "black", "stroke-width": "0.1",
         });

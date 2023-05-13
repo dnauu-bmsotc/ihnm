@@ -371,10 +371,10 @@ function setOnClickCallback(name) {
             y = (e.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
         }
         else if (type === "touch") {
-            x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left);
-            y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top);
+            x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
+            y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
         }
-        
+
         for (let dot of display.dots) {
             const dx = dot.position.x - x;
             const dy = dot.position.y - y;
