@@ -363,28 +363,36 @@ function setGravitationalDependenceCallback(name) {
 }
 
 function setOnClickCallback(name) {
-    function pulse(e, force) {
+    function pulse(e, type, force) {
         const rect = document.getElementById("svg").getBoundingClientRect();
-        const x = (e.clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
-        const y = (e.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
+        let x, y;
+        if (type === "mouse") {
+            x = (e.clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
+            y = (e.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
+        }
+        else if (type === "touch") {
+            x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left);
+            y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top);
+        }
+        
         for (let dot of display.dots) {
             const dx = dot.position.x - x;
             const dy = dot.position.y - y;
             const angle = Math.atan2(dy, dx);
             const distance = Math.sqrt(dx**2 + dy**2);
-            dot.velocity.x += force * Math.cos(angle) / distance / Math.pow(dot.mass, 1/6);
-            dot.velocity.y += force * Math.sin(angle) / distance / Math.pow(dot.mass, 1/6);
+            dot.velocity.x += force * Math.cos(angle) / distance / Math.pow(dot.mass, 1/6) * display.options.gravitationalConstant;
+            dot.velocity.y += force * Math.sin(angle) / distance / Math.pow(dot.mass, 1/6) * display.options.gravitationalConstant;
         }
     }
 
     switch (name) {
         case "repulse":
-            display.options.onClickCallback = e => { pulse(e, 1) };
+            display.options.onClickCallback = (e, type) => { pulse(e, type, 1) };
             break;
         
 
         case "antirepulse":
-            display.options.onClickCallback = e => { pulse(e, -1) };
+            display.options.onClickCallback = (e, type) => { pulse(e, type, -1) };
             break;
     
         default:
@@ -449,7 +457,7 @@ function reset2() {
     document.getElementById("velocity-select").value = "funnel";
     document.getElementById("calculation-select").value = "massive";
     document.getElementById("collision-select").value = "stick";
-    document.getElementById("gravitationalconstant-select").value = "0.1";
+    document.getElementById("gravitationalconstant-select").value = "0.5";
     document.getElementById("gravitationaldependence-select").value = "reinforced";
 
     restartToUserOptions();
@@ -531,11 +539,13 @@ function preset2() {
 
 function updateInfo(dt) {
     display.info.fpsEl.textContent = Math.round(10000 / dt) / 10;
+    display.info.particlesEl.textContent = display.dots.length;
 }
 
 window.addEventListener("load", (event) => {
     display.info = {
         fpsEl: document.getElementById("fps-span"),
+        particlesEl: document.getElementById("particles-span"),
     };
     
     reset1();

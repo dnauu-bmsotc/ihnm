@@ -10,20 +10,23 @@
 	<body>
 		<main>
             <section id="resets-section">
-                <button class="reset-btn" onclick="reset1()">Reset [dust]</button>
-                <button class="reset-btn" onclick="reset2()">Reset [rgb]</button>
-                <button class="reset-btn" onclick="reset3()">Reset [plankton]</button>
+                <button class="reset-btn" onclick="reset1()">Preset [dust]</button>
+                <button class="reset-btn" onclick="reset2()">Preset [rgb]</button>
+                <button class="reset-btn" onclick="reset3()">Preset [plankton]</button>
             </section>
             <section id="presets-section">
-                <button class="preset-btn" onclick="preset1()">Preset [ring]</button>
-                <button class="preset-btn" onclick="preset2()">Preset [solar]</button>
+                <button class="preset-btn" onclick="preset1()">Mod [ring]</button>
+                <button class="preset-btn" onclick="preset2()">Mod [solar]</button>
             </section>
             <section id="svg-section">
-                <svg id="svg" viewBox="-50 -50 100 100" onclick="display.options.onClickCallback(event)">
+                <svg id="svg" viewBox="-50 -50 100 100"
+                    onclick="display.options.onClickCallback(event, 'mouse')"
+                    touchstart="display.options.onClickCallback(event, 'touch')">
                     <g id="dots"></g>
                 </svg>
                 <div id="info-div">
                     <p>FPS: <span id="fps-span"></span></p>
+                    <p>Particles: <span id="particles-span"></span></p>
                 </div>
             </section>
             <section id="options-section" onchange="display.lastResetFunction()">
@@ -103,8 +106,7 @@
                     </select>
                 </div>
             </section>
-            <p><em class="attention" onclick="display.lastResetFunction()">Click on canvas to restart.</em> 
-                Isaac Newton's law of universal gravitation is one of the fundamental principles of modern physics. It describes the attraction between any two objects in the universe, no matter how large or small they are. The law states that every particle in the universe is attracted to every other particle with a force that is directly proportional to the product of their masses and inversely proportional to the square of the distance between them.
+            <p id="lorem-ipsum">Isaac Newton's law of universal gravitation is one of the fundamental principles of modern physics. It describes the attraction between any two objects in the universe, no matter how large or small they are. The law states that every particle in the universe is attracted to every other particle with a force that is directly proportional to the product of their masses and inversely proportional to the square of the distance between them.
                 
                 The formula for Newton's law of universal gravitation is F = G * (m1 * m2) / r^2, where F is the force of attraction between two objects, m1 and m2 are the masses of the objects, r is the distance between the objects, and G is the gravitational constant. The gravitational constant is a universal constant that describes the strength of the gravitational force between any two objects in the universe.
                 

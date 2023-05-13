@@ -12,12 +12,13 @@ main {
     justify-content: center;
     align-items: center;
     gap: 1em;
+    row-gap: 2em;
 }
 
 button, select {
     background-color: black;
     border: 1px solid gray;
-    margin: 0.5em;
+    margin: 0;
     padding: 0.3em 0.6em;
     color: white;
     font-family: monospace;
@@ -68,7 +69,7 @@ em {
     flex-flow: row wrap;
     max-width: 60em;
     gap: 1em;
-    row-gap: 0;
+    row-gap: 1em;
     --color: #beb7ed;
     color: var(--color);
     justify-content: space-between;
@@ -84,5 +85,13 @@ em {
 }
 
 #info-div {
+    color: gray;
+}
+
+#info-div > p {
+    margin: 0;
+}
+
+#lorem-ipsum {
     color: gray;
 }
