@@ -10,9 +10,10 @@
 	<body>
 		<main>
             <section id="presets-section">
-                <button id="reset-btn" onclick="reset()">Reset</button>
-                <button class="preset-btn" onclick="preset1()">Preset 1</button>
-                <button class="preset-btn" onclick="preset2()">Preset 2</button>
+                <button class="reset-btn" onclick="reset1()">Reset [dust]</button>
+                <button class="reset-btn" onclick="reset2()">Reset [rgb]</button>
+                <button class="preset-btn" onclick="preset1()">Preset [ring]</button>
+                <button class="preset-btn" onclick="preset2()">Preset [solar]</button>
             </section>
             <svg viewBox="-50 -50 100 100" onclick="restartToUserOptions()">
                 <g id="dots"></g>
@@ -65,6 +66,23 @@
                     <select id="collision-select">
                         <option selected value="skip">Skip</option>
                         <option value="stick">Stick</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gravitationalconstant-select">Gravitational constant:</label>
+                    <select id="gravitationalconstant-select">
+                        <option value="0.1">0.1x</option>
+                        <option value="0.5">0.5x</option>
+                        <option selected value="1">1x</option>
+                        <option value="2">2x</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gravitationaldependence-select">Gravitational dependence:</label>
+                    <select id="gravitationaldependence-select">
+                        <option value="proportional">Inversely proportional</option>
+                        <option selected value="quadratic">Quadratic</option>
+                        <option value="reinforced">Reinforced</option>
                     </select>
                 </div>
             </section>

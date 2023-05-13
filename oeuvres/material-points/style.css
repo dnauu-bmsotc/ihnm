@@ -23,12 +23,20 @@ button, select {
     font-family: monospace;
 }
 
-button:hover, select:hover {
+button:hover {
     background-color: green;
 }
 
-button:active, select:active {
+button:active {
     background-color: darkgreen;
+}
+
+select:hover {
+    background-color: midnightblue;
+}
+
+select:active {
+    background-color: darkorchid;
 }
 
 svg {

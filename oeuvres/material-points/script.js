@@ -94,7 +94,9 @@ function lawOfGravity(d1, d2) {
 
     const distance = 1 + Math.sqrt(xDistance ** 2 + yDistance ** 2);
     const angle = Math.atan2(yDistance, xDistance);
-    const force = display.gravity * d1.mass * d2.mass / (distance ** 2);
+    const NewtonsForce = display.gravity * d1.mass * d2.mass / (distance ** 2);
+    const force = NewtonsForce * Math.pow(distance, display.options.gravitationalDependence)
+        * display.options.gravitationalConstant;
 
     d1.forces.x += force * Math.cos(angle);
     d1.forces.y += force * Math.sin(angle);
@@ -141,7 +143,9 @@ function setVelocityCallback(name) {
             display.options.velocityCallback = function(dot, polar) {
                 const additionalAngle = Math.PI * randomFloat(-1/10, +1/10);
                 const velocityAngle = polar.angle + baseAngle + additionalAngle;
-                const velocity = randomFloat(0.005, +0.02) / Math.pow(dot.mass, 1/6) / (0.5 + (polar.radius / 50)**2/2);
+                const velocity = randomFloat(0.005, +0.02)
+                    / Math.pow(dot.mass, 1/6) / (0.5 + (polar.radius / 50)**2/2)
+                    * Math.sqrt(display.options.gravitationalConstant);
                 dot.velocity.x = velocity * Math.cos(velocityAngle);
                 dot.velocity.y = velocity * Math.sin(velocityAngle);
             };
@@ -149,8 +153,10 @@ function setVelocityCallback(name) {
         
         case "noise":
             display.options.velocityCallback = function(dot) {
-                dot.velocity.x = randomFloat(-0.012, +0.012);
-                dot.velocity.y = randomFloat(-0.012, +0.012);
+                dot.velocity.x = randomFloat(-0.012, +0.012)
+                    * Math.sqrt(display.options.gravitationalConstant);
+                dot.velocity.y = randomFloat(-0.012, +0.012)
+                    * Math.sqrt(display.options.gravitationalConstant);
             }
             break;
 
@@ -292,6 +298,42 @@ function setCollisionCallback(name) {
     }
 }
 
+function setGravitationalConstantCallback(name) {
+    switch (name) {
+        case "0.1":
+            display.options.gravitationalConstant = 0.1;
+            break;
+        
+        case "0.5":
+            display.options.gravitationalConstant = 0.3;
+            break;
+            
+        case "2":
+            display.options.gravitationalConstant = 3;
+            break;
+
+        default:
+            display.options.gravitationalConstant = 1;
+            break;
+    }
+}
+
+function setGravitationalDependenceCallback(name) {
+    switch (name) {
+        case "linear":
+            display.options.gravitationalDependence = -1;
+            break;
+            
+        case "reinforced":
+            display.options.gravitationalDependence = 1;
+            break;
+            
+        default:
+            display.options.gravitationalDependence = 0;
+            break;
+    }
+}
+
 function restartToUserOptions() {
     clear();
 
@@ -302,6 +344,8 @@ function restartToUserOptions() {
     setColorCallback(document.getElementById("color-select").value);
     setCalculationCallback(document.getElementById("calculation-select").value);
     setCollisionCallback(document.getElementById("collision-select").value);
+    setGravitationalConstantCallback(document.getElementById("gravitationalconstant-select").value);
+    setGravitationalDependenceCallback(document.getElementById("gravitationaldependence-select").value);
 
     for (let i = 0; i < display.options.numberOfPoints; i++) {
         display.dots.push(randomMaterialDot());
@@ -325,13 +369,28 @@ function startAnimation() {
     display.previousTimestamp = performance.now();
 }
 
-function reset() {
+function reset1() {
     document.getElementById("border-select").value = "wall";
     document.getElementById("color-select").value = "white";
     document.getElementById("number-select").value = "100";
     document.getElementById("velocity-select").value = "static";
     document.getElementById("calculation-select").value = "all";
     document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "1";
+    document.getElementById("gravitationaldependence-select").value = "quadratic";
+
+    restartToUserOptions();
+}
+
+function reset2() {
+    document.getElementById("border-select").value = "wall";
+    document.getElementById("color-select").value = "wheel";
+    document.getElementById("number-select").value = "500";
+    document.getElementById("velocity-select").value = "funnel";
+    document.getElementById("calculation-select").value = "massive";
+    document.getElementById("collision-select").value = "stick";
+    document.getElementById("gravitationalconstant-select").value = "0.1";
+    document.getElementById("gravitationaldependence-select").value = "reinforced";
 
     restartToUserOptions();
 }
@@ -343,6 +402,8 @@ function preset1() {
     setColorCallback("wheel");
     setCalculationCallback("all");
     setCollisionCallback("stick");
+    setGravitationalConstantCallback("1");
+    setGravitationalDependenceCallback("quadratic");
     
     const n = 16;
     const r = 20;
@@ -374,6 +435,8 @@ function preset2() {
     setColorCallback("white");
     setCalculationCallback("all");
     setCollisionCallback("skip");
+    setGravitationalConstantCallback("1");
+    setGravitationalDependenceCallback("quadratic");
 
     const sun = new MaterialDot(0, 0, display.maxMass * 100);
     sun.velocity.y = +0.003;
@@ -392,5 +455,5 @@ function preset2() {
 }
 
 window.addEventListener("load", (event) => {
-    reset();
+    reset1();
 });
