@@ -59,7 +59,7 @@ em {
     color: orange;
 }
 
-#presets-section {
+#resets-section, #presets-section {
     flex-flow: row wrap;
 }
 
@@ -67,7 +67,7 @@ em {
     display: flex;
     flex-flow: row wrap;
     max-width: 60em;
-    gap: 3em;
+    gap: 1em;
     row-gap: 0;
     --color: #beb7ed;
     color: var(--color);
@@ -81,4 +81,8 @@ em {
 #options-section select {
     color: var(--color);
     border-color: var(--color);
+}
+
+#info-div {
+    color: gray;
 }

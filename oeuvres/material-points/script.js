@@ -70,6 +70,15 @@ function hslToHex(h, s, l) {
     return `#${f(0)}${f(8)}${f(4)}`;
 }
 
+// https://stackoverflow.com/questions/5623838
+function rgbToHex(r, g, b) {
+    function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 function randomMaterialDot() {
     const maxRadius = 10 + 10 * Math.pow(display.options.numberOfPoints, 1/4);
     const radius = randomFloat(0, maxRadius);
@@ -117,6 +126,16 @@ function animateFrame() {
 
     display.options.calculationCallback();
 
+    updateDotsPositions(dt);
+
+    updateInfo(dt);
+
+    if (display.active) {
+        requestAnimationFrame(animateFrame);
+    }
+}
+
+function updateDotsPositions(dt) {
     for (let dot of display.dots) {
         dot.velocity.x += dot.forces.x / dot.mass * dt;
         dot.velocity.y += dot.forces.y / dot.mass * dt;
@@ -129,10 +148,6 @@ function animateFrame() {
 
         display.options.colorCallback(dot);
         display.options.borderCallback(dot);
-    }
-
-    if (display.active) {
-        requestAnimationFrame(animateFrame);
     }
 }
 
@@ -218,6 +233,19 @@ function setColorCallback(name) {
             display.options.colorCallback = dot => {
                 const velocityAngle = Math.atan2(dot.velocity.y, dot.velocity.x) * 180 / Math.PI;
                 dot.element.setAttributeNS(null, "fill", hslToHex(velocityAngle, 100, 50));
+            };
+            break;
+
+        case "blue":
+            display.options.colorCallback = dot => {
+                const angle = ((2 * Math.PI) + Math.atan2(dot.velocity.y, dot.velocity.x)) % (2 * Math.PI);
+                const offset = Math.min(angle, (2 * Math.PI) - angle);
+                const k = offset / Math.PI * 55;
+                dot.element.setAttributeNS(null, "fill", rgbToHex(
+                    75 + Math.floor(k / 3),
+                    100 + Math.floor(k / 2),
+                    150 + Math.floor(k / 1),
+                ));
             };
             break;
         
@@ -334,6 +362,37 @@ function setGravitationalDependenceCallback(name) {
     }
 }
 
+function setOnClickCallback(name) {
+    function pulse(e, force) {
+        const rect = document.getElementById("svg").getBoundingClientRect();
+        const x = (e.clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
+        const y = (e.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
+        for (let dot of display.dots) {
+            const dx = dot.position.x - x;
+            const dy = dot.position.y - y;
+            const angle = Math.atan2(dy, dx);
+            const distance = Math.sqrt(dx**2 + dy**2);
+            dot.velocity.x += force * Math.cos(angle) / distance / Math.pow(dot.mass, 1/6);
+            dot.velocity.y += force * Math.sin(angle) / distance / Math.pow(dot.mass, 1/6);
+        }
+    }
+
+    switch (name) {
+        case "repulse":
+            display.options.onClickCallback = e => { pulse(e, 1) };
+            break;
+        
+
+        case "antirepulse":
+            display.options.onClickCallback = e => { pulse(e, -1) };
+            break;
+    
+        default:
+            display.options.onClickCallback = () => { display.lastResetFunction() };
+            break;
+    }
+}
+
 function restartToUserOptions() {
     clear();
 
@@ -346,6 +405,7 @@ function restartToUserOptions() {
     setCollisionCallback(document.getElementById("collision-select").value);
     setGravitationalConstantCallback(document.getElementById("gravitationalconstant-select").value);
     setGravitationalDependenceCallback(document.getElementById("gravitationaldependence-select").value);
+    setOnClickCallback(document.getElementById("onclick-select").value);
 
     for (let i = 0; i < display.options.numberOfPoints; i++) {
         display.dots.push(randomMaterialDot());
@@ -395,6 +455,19 @@ function reset2() {
     restartToUserOptions();
 }
 
+function reset3() {
+    document.getElementById("border-select").value = "wall";
+    document.getElementById("color-select").value = "blue";
+    document.getElementById("number-select").value = "200";
+    document.getElementById("velocity-select").value = "noise";
+    document.getElementById("calculation-select").value = "massive";
+    document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "0.1";
+    document.getElementById("gravitationaldependence-select").value = "proportional";
+
+    restartToUserOptions();
+}
+
 function preset1() {
     clear();
 
@@ -404,6 +477,7 @@ function preset1() {
     setCollisionCallback("stick");
     setGravitationalConstantCallback("1");
     setGravitationalDependenceCallback("quadratic");
+    setOnClickCallback(document.getElementById("onclick-select").value);
     
     const n = 16;
     const r = 20;
@@ -437,6 +511,7 @@ function preset2() {
     setCollisionCallback("skip");
     setGravitationalConstantCallback("1");
     setGravitationalDependenceCallback("quadratic");
+    setOnClickCallback(document.getElementById("onclick-select").value);
 
     const sun = new MaterialDot(0, 0, display.maxMass * 100);
     sun.velocity.y = +0.003;
@@ -454,6 +529,14 @@ function preset2() {
     startAnimation();
 }
 
+function updateInfo(dt) {
+    display.info.fpsEl.textContent = Math.round(10000 / dt) / 10;
+}
+
 window.addEventListener("load", (event) => {
+    display.info = {
+        fpsEl: document.getElementById("fps-span"),
+    };
+    
     reset1();
 });

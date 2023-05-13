@@ -9,16 +9,24 @@
 	</head>
 	<body>
 		<main>
-            <section id="presets-section">
+            <section id="resets-section">
                 <button class="reset-btn" onclick="reset1()">Reset [dust]</button>
                 <button class="reset-btn" onclick="reset2()">Reset [rgb]</button>
+                <button class="reset-btn" onclick="reset3()">Reset [plankton]</button>
+            </section>
+            <section id="presets-section">
                 <button class="preset-btn" onclick="preset1()">Preset [ring]</button>
                 <button class="preset-btn" onclick="preset2()">Preset [solar]</button>
             </section>
-            <svg viewBox="-50 -50 100 100" onclick="restartToUserOptions()">
-                <g id="dots"></g>
-            </svg>
-            <section id="options-section" onchange="restartToUserOptions()">
+            <section id="svg-section">
+                <svg id="svg" viewBox="-50 -50 100 100" onclick="display.options.onClickCallback(event)">
+                    <g id="dots"></g>
+                </svg>
+                <div id="info-div">
+                    <p>FPS: <span id="fps-span"></span></p>
+                </div>
+            </section>
+            <section id="options-section" onchange="display.lastResetFunction()">
                 <div>
                     <label for="velocity-select">Initial velocity:</label>
                     <select id="velocity-select">
@@ -43,6 +51,7 @@
                     <select id="color-select">
                         <option selected value="white">White</option>
                         <option value="wheel">Wheel</option>
+                        <option value="blue">Blue</option>
                     </select>
                 </div>
                 <div>
@@ -85,8 +94,16 @@
                         <option value="reinforced">Reinforced</option>
                     </select>
                 </div>
+                <div>
+                    <label for="onclick-select">On click:</label>
+                    <select id="onclick-select">
+                        <option selected value="restart">Restart</option>
+                        <option value="repulse">Repulse</option>
+                        <option value="antirepulse">Anti-repulse</option>
+                    </select>
+                </div>
             </section>
-            <p><em class="attention" onclick="restartToUserOptions()">Click on canvas to restart.</em> 
+            <p><em class="attention" onclick="display.lastResetFunction()">Click on canvas to restart.</em> 
                 Isaac Newton's law of universal gravitation is one of the fundamental principles of modern physics. It describes the attraction between any two objects in the universe, no matter how large or small they are. The law states that every particle in the universe is attracted to every other particle with a force that is directly proportional to the product of their masses and inversely proportional to the square of the distance between them.
                 
                 The formula for Newton's law of universal gravitation is F = G * (m1 * m2) / r^2, where F is the force of attraction between two objects, m1 and m2 are the masses of the objects, r is the distance between the objects, and G is the gravitational constant. The gravitational constant is a universal constant that describes the strength of the gravitational force between any two objects in the universe.
