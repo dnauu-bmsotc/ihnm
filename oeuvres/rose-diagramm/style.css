@@ -1,28 +1,16 @@
-main {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-}
-
-main > * {
-    margin: 1em;
-}
-
 #table {
     display: inline-grid;
-    grid-template-columns: repeat(11, 1fr)
+    grid-template-columns: 5em repeat(9, 1fr) 2em;
+    text-align: center;
+}
+
+.contents {
+    display: contents;
 }
 
 #table input {
-    background-color: antiquewhite;
-}
-
-#table input[data-value="0"] {
-    background-color: white;
-}
-
-#table > * {
-    text-align: center;
+    max-width: 3em;
+    font-size: 100%;
 }
 
 svg {
@@ -38,9 +26,4 @@ svg {
 #rose-azimuths-strike {
     height: 15em;
     width: 30em;
-}
-
-button {
-    padding: 0.5em;
-    margin: 1em;
 }

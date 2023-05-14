@@ -2,7 +2,7 @@
     --ihnm-color-bg: white;
     --ihnm-color-text: black;
     --ihnm-color-shadow: rgb(222, 222, 222);
-    --ihnm-color-border: lightgray;
+    --ihnm-color-border: gray;
     --ihnm-color-a-hover: brown;
     --ihnm-color-a-active: darkred;
     --ihnm-color-selection-bg: brown;
@@ -14,7 +14,7 @@
         --ihnm-color-bg: black;
         --ihnm-color-text: white;
         --ihnm-color-shadow: rgb(55, 55, 55);
-        --ihnm-color-border: gray;
+        --ihnm-color-border: lightgray;
         --ihnm-color-a-hover: darksalmon;
         --ihnm-color-a-active: brown;
         --ihnm-color-selection-bg: brown;
@@ -42,7 +42,9 @@ main {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    margin: 1em;
+    margin: 0;
+    padding: 1em 1em 3em 1em;
+    gap: 1em;
 }
 
 p, ul, ol, h1, h2, h3, h4, h5, h6 {
@@ -76,4 +78,18 @@ a:hover {
 
 a:active {
     color: var(--ihnm-color-a-active);
+}
+
+input {
+    background-color: var(--ihnm-color-bg);
+    color: var(--ihnm-color-text);
+    border: 1px solid var(--ihnm-color-border);
+}
+
+button {
+    background-color: var(--ihnm-color-bg);
+    color: var(--ihnm-color-text);
+    border: 1px solid var(--ihnm-color-border);
+    padding: 0.5em 0.8em;
+    margin: 0.5em;
 }

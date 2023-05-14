@@ -1,331 +1,288 @@
-const nrows = 36;
-const ncols = 9;
-const ninputs = nrows * ncols;
-const maxval = 10;
-const minval = 0;
-const ns = "http://www.w3.org/2000/svg";
+var app = new Vue({
+    el: '#app',
 
-let data = null;
+    data: {
+        table: [],
+        ns: "http://www.w3.org/2000/svg",
+        roses: {
+            azimuthsStrike: {
+                cx: 0,
+                cy: -50,
+                r: 100,
+                svg: null,
+            },
+            azimuthsDip: {
+                cx: 0,
+                cy: 0,
+                r: 50,
+                svg: null,
+            },
+            incidence: {
+                cx: -50,
+                cy: -50,
+                r: 100,
+                svg: null,
+            },
+        },
+    },
 
-window.addEventListener("load", (event) => {
-    data = importFromStorage();
-
-    createInputs();
-
-    updateRoses();
-});
-
-function createInputs() {
-    const tableEl = document.getElementById("table");
-
-    // Headers
-
-    tableEl.appendChild(htmlToElement(`<span></span>`));
-
-    for (let j = 0; j < ncols; j++) {
-        tableEl.appendChild(htmlToElement(`
-            <span>${10*j + "-" + (10*(j+1))}</span>
-        `));
-    }
-
-    tableEl.appendChild(htmlToElement(`<span>Summ</span>`));
-
-    // Body
-
-    for (let i = 0; i < nrows; i++) {
-        tableEl.appendChild(htmlToElement(`
-            <span>${10*i + "-" + (10*(i+1))}</span>
-        `));
-
-        for (let j = 0; j < ncols; j++) {
-            tableEl.appendChild(htmlToElement(`
-                <input data-id="${i*ncols + j}" type="number" min="${minval}" max="${maxval}" size="2"
-                    value="${data[i*ncols + j]}" data-value="${data[i*ncols + j]}"></input>
-            `));
+    created: function() {
+        for (let i = 0; i < 36 * 9; i++) {
+            this.table.push({
+                value: "0",
+                col: i % 9,
+                row: Math.floor(i / 9)
+            });
         }
 
-        const rowSum = data.slice(i*ncols, (i+1)*ncols).reduce((s, a) => s + a, 0);
-        tableEl.appendChild(htmlToElement(`<span id="row-${i}" class="row-sum">${rowSum}<span>`));
-    }
+        this.roses.incidence.svg = document.getElementById("rose-incidence");
+        this.drawSun(this.roses.incidence);
 
-    // Bottom
+        this.roses.azimuthsStrike.svg = document.getElementById("rose-azimuths-strike");
+        this.drawSun(this.roses.azimuthsStrike);
 
-    tableEl.appendChild(htmlToElement(`<span>Summ</span>`));
+        this.roses.azimuthsDip.svg = document.getElementById("rose-azimuths-dip");
+        this.drawSun(this.roses.azimuthsDip);
 
-    for (let j = 0; j < ncols; j++) {
-        const value = data.filter((_, idx) => (idx % ncols === j)).reduce((s, a) => s + a, 0);
-        tableEl.appendChild(htmlToElement(`<span id="col-${j}" class="col-sum">${value}</span>`));
-    }
+        this.importFromStorage();
+    },
 
-    tableEl.appendChild(htmlToElement(`<span id="summ">${data.reduce((s, a) => s + a, 0)}</span>`));
-}
+    methods: {
+        range: function (n) {
+            return [...Array(n).keys()];
+        },
 
-function onInput(event) {
-    // update data and export
-    const el = event.target;
-    el.dataset.value = el.value;
-    data[el.dataset.id] = el.value;
-    exportToStorage(data);
+        importFromStorage: function() {
+            try {
+                const item = localStorage.getItem("rose-diagramm-data");
 
-    // update row summ
-    const rowNum = Math.trunc(el.dataset.id / ncols);
-    const rowSum = data.slice(rowNum*ncols, (rowNum+1)*ncols).reduce((s, a) => s + +a, 0);
-    document.getElementById("row-" + rowNum).textContent = rowSum;
-
-    // update column summ
-    const colNum = el.dataset.id % ncols;
-    const colSum = data.filter((_, idx) => (idx % ncols === colNum)).reduce((s, a) => s + +a, 0);
-    document.getElementById("col-" + colNum).textContent = colSum;
-
-    // update summ
-    document.getElementById("summ").textContent = data.reduce((s, a) => s + +a, 0);
-}
-
-function onReset() {
-    clearStorage();
-    location.reload();
-}
-
-function onRandom() {
-    exportToStorage(Array.from({length: ninputs},
-        () => Math.floor(minval + Math.random()**6 * maxval))
-    );
-
-    location.reload();
-}
-
-function onPreset1() {
-    exportToStorage(["1",0,0,0,0,0,"1",0,0,0,0,"1",0,0,0,0,0,0,0,"1","1",0,0,0,0,0,0,0,"1",
-        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"1",0,0,0,0,0,0,0,0,"2","0","2",0,0,0,0,
-        0,0,0,0,"1","2","2",0,0,0,0,0,0,0,0,"1",0,0,0,0,0,0,"2","1",0,0,0,0,"2",0,
-        "1",0,"1",0,"2",0,0,0,0,"2","4",0,"1",0,0,"1","1",0,0,"3","1","1",0,0,"1",
-        "1","0","1",0,0,0,"1","1",0,"2","1","1","1","1","1","2","2",0,0,"1","1","2",
-        0,"2",0,"2",0,0,"1","2",0,0,0,"1",0,0,0,0,0,"1",0,0,0,0,0,0,0,0,0,0,"1",0,
-        0,0,0,0,0,0,0,0,"1","1",0,0,0,"1",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"1",0,0,"1",
-        0,0,0,"1",0,0,0,"1",0,"1",0,0,0,0,0,0,"2",0,"1",0,0,0,0,0,"1","1",0,0,0,0,
-        0,0,0,0,"1",0,"1",0,0,"1",0,0,"1","2","1",0,0,0,"1",0,0,"1","4","3","2","1",
-        0,0,0,0,0,0,"4","1","4","2","1","1",0,"1","1","2","3","2","2","2","1",0,"2",
-        "2","1","2","1","1",0,0,"1","1","1","2",0,"2","4","2","1","2",0,"1","2","2",
-        "3","1","1","3",0,0,0,"1","1","1",0,0,0,0,"1",0,0,0,0,"2",0,"1",0]);
-
-    location.reload();
-}
-
-function importFromStorage() {
-    try {
-        const item = localStorage.getItem("rose-diagramm-data");
-
-        if (!item) {
-            return new Array(ninputs).fill(0);
-        } 
-
-        const data = JSON.parse(item).map(x => parseInt(x));
-
-        if (data.length !== ninputs) {
-            throw new Error();
-        }
-
-        return data;
-    }
-    catch (error) {
-        console.log("error loading from localStorage");
-        return new Array(ninputs).fill(0);
-    }
-}
-
-function exportToStorage(data) {
-    localStorage.setItem("rose-diagramm-data", JSON.stringify(data));
-}
-
-function clearStorage() {
-    localStorage.removeItem("rose-diagramm-data");
-}
-
-// https://stackoverflow.com/questions/494143
-function htmlToElement(html) {
-    const template = document.createElement('template');
-    html = html.trim();
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
-
-function updateRoses() {
-    drawAzimuthsDipRose();
-    drawAzimuthsStrikeRose();
-    drawIncidenceRose();
-    drawComplexRose();
-}
-
-function drawAzimuthsDipRose() {
-    const radius = 50;
-    const svg = document.getElementById("rose-azimuths-dip");
-    drawSun(svg, 0, 0, radius);
-
-    let p = "";
-    const maxmax = Math.max.apply(null, [...document.querySelectorAll(".row-sum")].map(el => +el.textContent));
-    for (let i = 0; i < nrows; i++) {
-        const dist = radius / maxmax * +document.getElementById("row-" + i).textContent;
-        const angle = (5 + i * 360 / nrows - 90) * Math.PI / 180;
-        p += dist*Math.cos(angle);
-        p += ",";
-        p += dist*Math.sin(angle);
-        p += " ";
-    }
-
-    const polygon = document.createElementNS(ns, "polygon");
-    polygon.setAttributeNS(null, "points", p);
-    polygon.setAttributeNS(null, "fill", "black");
-    svg.appendChild(polygon);
-}
-
-function drawAzimuthsStrikeRose() {
-    const radius = 100;
-    const cx = 0, cy = -50;
-    const svg = document.getElementById("rose-azimuths-strike");
-    drawSun(svg, cx, cy, radius);
-
-    let arr = [];
-    for (let i = 0; i < nrows / 2; i++) {
-        const a = +document.getElementById("row-" + (i)).textContent;
-        const b = +document.getElementById("row-" + (i + nrows / 2)).textContent;
-        arr.push(a + b);
-    }
-
-    let p = cx + "," + -cy + " ";
-    const maxmax = Math.max.apply(null, arr);
-    for (let i = 0; i < nrows / 2; i++) {
-        const dist = radius / maxmax * arr[i];
-        const angle = (175 - i * 10) * Math.PI / 180;
-        p += cx + dist*Math.cos(angle);
-        p += ",";
-        p += -cy - dist*Math.sin(angle);
-        p += " ";
-    }
-
-    const polygon = document.createElementNS(ns, "polygon");
-    polygon.setAttributeNS(null, "points", p);
-    polygon.setAttributeNS(null, "fill", "black");
-    svg.appendChild(polygon);
-}
-
-function drawIncidenceRose() {
-    const radius = 100;
-    const cx = -50, cy = -50;
-    const svg = document.getElementById("rose-incidence");
-    drawSun(svg, cx, cy, radius);
-
-    let p = cx + "," + -cy + " ";
-    const maxmax = Math.max.apply(null, [...document.querySelectorAll(".col-sum")].map(el => +el.textContent));
-    for (let i = 0; i < ncols; i++) {
-        const dist = radius / maxmax * +document.getElementById("col-" + i).textContent;
-        const angle = (5 + i * 90 / ncols) * Math.PI / 180;
-        p += cx + dist*Math.cos(angle);
-        p += ",";
-        p += -cy - dist*Math.sin(angle);
-        p += " ";
-    }
-
-    const polygon = document.createElementNS(ns, "polygon");
-    polygon.setAttributeNS(null, "points", p);
-    polygon.setAttributeNS(null, "fill", "black");
-    svg.appendChild(polygon);
-}
-
-function drawSun(svg, cx, cy, radius) {
-    const circle = document.createElementNS(ns, "circle");
-    circle.setAttributeNS(null, "cx", cx);
-    circle.setAttributeNS(null, "cy", -cy);
-    circle.setAttributeNS(null, "r", radius);
-    circle.setAttributeNS(null, "fill", "transparent");
-    circle.setAttributeNS(null, "stroke", "black");
-    circle.setAttributeNS(null, "stroke-width", 0.3);
-    svg.appendChild(circle);
-
-    for (let i = 5; i < 180; i += 10) {
-        const line = document.createElementNS(ns, "line");
-        line.setAttributeNS(null, "x1", cx + radius*Math.cos(i * Math.PI / 180));
-        line.setAttributeNS(null, "y1", -cy - radius*Math.sin(i * Math.PI / 180));
-        line.setAttributeNS(null, "x2", cx + radius*Math.cos(i * Math.PI / 180 + Math.PI));
-        line.setAttributeNS(null, "y2", -cy - radius*Math.sin(i * Math.PI / 180 + Math.PI));
-        line.setAttributeNS(null, "stroke", "black");
-        line.setAttributeNS(null, "stroke-width", 0.3);
-        svg.appendChild(line);
-    }
-}
-
-function drawComplexRose() {
-    const radius = 50;
-
-    const xarr = [], yarr = [], zarr = [];
-
-    data.map((z, index) => {
-        const angle = 5 + Math.trunc(index / ncols) * 10;
-        const dist = (index % ncols) * radius / ncols;
+                if (!item) {
+                    return new Array(36 * 9).fill(0);
+                } 
         
-        xarr.push(dist * Math.cos(angle * Math.PI / 180 - Math.PI / 2));
-        yarr.push(-dist * Math.sin(angle * Math.PI / 180 - Math.PI / 2));
-        zarr.push(z-1);
-    })
-
-    var roseData = [{
-		z: zarr,
-		x: xarr,
-		y: yarr,
-		type: 'contour',
-        contours: {
-            start: 0,
-            end: Math.max.apply(null, data),
-            size: 1
+                const data = JSON.parse(item).map(x => parseInt(x));
+        
+                if (data.length !== 36 * 9) {
+                    throw new Error();
+                }
+        
+                for (let i = 0; i < 36 * 9; i++) {
+                    this.table[i].value = data[i];
+                }
+            }
+            catch (error) {
+                console.log("error loading from localStorage");
+            }
         },
-        colorscale: 'Viridis',
-        autocontour: false,
-        line: {
-            width: 1,
-            color: "white",
+        
+        exportToStorage: function() {
+            localStorage.setItem("rose-diagramm-data", JSON.stringify(this.table.map(cell => +cell.value)));
+        },
+        
+        clearStorage: function() {
+            localStorage.removeItem("rose-diagramm-data");
+        },
+
+        drawSun: function(rose) {
+            const circle = document.createElementNS(this.ns, "circle");
+            circle.setAttributeNS(null, "cx", rose.cx);
+            circle.setAttributeNS(null, "cy", -rose.cy);
+            circle.setAttributeNS(null, "r", rose.r);
+            circle.setAttributeNS(null, "fill", "transparent");
+            circle.setAttributeNS(null, "stroke", "black");
+            circle.setAttributeNS(null, "stroke-width", 0.3);
+            rose.svg.appendChild(circle);
+        
+            for (let i = 5; i < 180; i += 10) {
+                const line = document.createElementNS(this.ns, "line");
+                line.setAttributeNS(null, "x1", rose.cx + rose.r*Math.cos(i * Math.PI / 180));
+                line.setAttributeNS(null, "y1", -rose.cy - rose.r*Math.sin(i * Math.PI / 180));
+                line.setAttributeNS(null, "x2", rose.cx + rose.r*Math.cos(i * Math.PI / 180 + Math.PI));
+                line.setAttributeNS(null, "y2", -rose.cy - rose.r*Math.sin(i * Math.PI / 180 + Math.PI));
+                line.setAttributeNS(null, "stroke", "black");
+                line.setAttributeNS(null, "stroke-width", 0.3);
+                rose.svg.appendChild(line);
+            }
+        },
+        
+        drawComplexRose: function() {
+            const radius = 50;
+        
+            const xarr = [], yarr = [], zarr = [];
+        
+            this.table.map((z, index) => {
+                const angle = 5 + Math.trunc(index / 9) * 10;
+                const dist = (index % 9) * radius / 9;
+                
+                xarr.push(dist * Math.cos(angle * Math.PI / 180 - Math.PI / 2));
+                yarr.push(-dist * Math.sin(angle * Math.PI / 180 - Math.PI / 2));
+                zarr.push(z.value-1);
+            })
+        
+            var roseData = [{
+                z: zarr,
+                x: xarr,
+                y: yarr,
+                type: 'contour',
+                contours: {
+                    start: 0,
+                    end: Math.max.apply(null, this.table.map(cell => cell.value)),
+                    size: 1
+                },
+                colorscale: 'Viridis',
+                autocontour: false,
+                line: {
+                    width: 1,
+                    color: "white",
+                }
+            }];
+        
+            const shapes= [
+                {
+                    type: 'circle',
+                    xref: 'x',
+                    yref: 'y',
+                    x0: -radius,
+                    y0: -radius,
+                    x1: radius,
+                    y1: radius,
+                    fillcolor: 'transparent',
+                    opacity: 0.5,
+                    line: {
+                        color: 'white',
+                        width: 1,
+                    }
+                },
+            ];
+        
+            for (let i = 5; i < 360; i += 10) {
+                shapes.push({
+                    type: "line",
+                    xref: 'x',
+                    yref: 'y',
+                    x0: 0,
+                    y0: 0,
+                    x1: radius * Math.cos(i * Math.PI / 180),
+                    y1: radius * Math.sin(i * Math.PI / 180),
+                    opacity: 0.5,
+                    line: {
+                        color: 'white',
+                        width: 1,
+                    }
+                });
+            }
+        
+            var layout = {
+                title: 'Комплексная роза-диаграмма',
+                width: 600,
+                height: 600,
+                shapes: shapes,
+            }
+        
+            Plotly.newPlot('rose-complex', roseData, layout);
+        },
+
+        onReset: function() {
+            for (let cell of this.table) {
+                cell.value = 0;
+            }
+            
+            this.clearStorage();
+        },
+        
+        onRandom: function() {
+            for (let cell of this.table) {
+                cell.value = Math.floor(0 + Math.random()**6 * 20);
+            }
+            
+            this.exportToStorage();
+        },
+        
+        onPreset: function() {
+            const data = ["1",0,0,0,0,0,"1",0,0,0,0,"1",0,0,0,0,0,0,0,"1","1",0,0,0,0,0,0,0,"1",
+            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"1",0,0,0,0,0,0,0,0,"2","0","2",0,0,0,0,
+            0,0,0,0,"1","2","2",0,0,0,0,0,0,0,0,"1",0,0,0,0,0,0,"2","1",0,0,0,0,"2",0,
+            "1",0,"1",0,"2",0,0,0,0,"2","4",0,"1",0,0,"1","1",0,0,"3","1","1",0,0,"1",
+            "1","0","1",0,0,0,"1","1",0,"2","1","1","1","1","1","2","2",0,0,"1","1","2",
+            0,"2",0,"2",0,0,"1","2",0,0,0,"1",0,0,0,0,0,"1",0,0,0,0,0,0,0,0,0,0,"1",0,
+            0,0,0,0,0,0,0,0,"1","1",0,0,0,"1",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"1",0,0,"1",
+            0,0,0,"1",0,0,0,"1",0,"1",0,0,0,0,0,0,"2",0,"1",0,0,0,0,0,"1","1",0,0,0,0,
+            0,0,0,0,"1",0,"1",0,0,"1",0,0,"1","2","1",0,0,0,"1",0,0,"1","4","3","2","1",
+            0,0,0,0,0,0,"4","1","4","2","1","1",0,"1","1","2","3","2","2","2","1",0,"2",
+            "2","1","2","1","1",0,0,"1","1","1","2",0,"2","4","2","1","2",0,"1","2","2",
+            "3","1","1","3",0,0,0,"1","1","1",0,0,0,0,"1",0,0,0,0,"2",0,"1",0];
+
+            for (let i = 0; i < 36 * 9; i++) {
+                this.table[i].value = data[i];
+            }
+
+            this.exportToStorage();
+        },
+    },
+
+    computed: {
+        colsSums: function() {
+            return this.range(9).map(col => this.table.filter(t => t.col === col)
+                .reduce((acc, cel) => acc += +cel.value, 0));
+        },
+
+        rowsSums: function() {
+            return this.range(36).map(row => this.table.filter(t => t.row === row)
+                .reduce((acc, cel) => acc += +cel.value, 0));
+        },
+
+        tableSum: function() {
+            return this.colsSums.reduce((ss, s) => ss += s, 0);
+        },
+
+        azimuthsDipRosePoints: function() {
+            const rose = this.roses.azimuthsDip;
+            const maxmax = Math.max.apply(null, this.rowsSums);
+            let p = "";
+
+            for (let i = 0; i < 36; i++) {
+                const dist = rose.r / maxmax * this.rowsSums[i];
+                const angle = (5 + i * 360 / 36 - 90) * Math.PI / 180;
+                p += dist*Math.cos(angle) + ",";
+                p += dist*Math.sin(angle) + " ";
+            }
+        
+            return p;
+        },
+
+        azimuthsStrikeRosePoints: function() {
+            const rose = this.roses.azimuthsStrike;
+
+            const arr = [];
+            for (let i = 0; i < 36 / 2; i++) {
+                arr.push(this.rowsSums[i] + this.rowsSums[i + 36/2])
+            }
+        
+            let p = rose.cx + "," + -rose.cy + " ";
+            const maxmax = Math.max.apply(null, arr);
+            for (let i = 0; i < 36 / 2; i++) {
+                const dist = rose.r / maxmax * arr[i];
+                const angle = (175 - i * 10) * Math.PI / 180;
+                p += rose.cx + dist*Math.cos(angle) + ",";
+                p += -rose.cy - dist*Math.sin(angle) + " ";
+            }
+
+            return p;
+        },
+
+        incidencePoints: function() {
+            const rose = this.roses.incidence;
+        
+            let p = rose.cx + "," + -rose.cy + " ";
+            const maxmax = Math.max.apply(null, this.colsSums);
+            for (let i = 0; i < 9; i++) {
+                const dist = rose.r / maxmax * this.colsSums[i];
+                const angle = (5 + i * 90 / 9) * Math.PI / 180;
+                p += rose.cx + dist*Math.cos(angle) + ",";
+                p += -rose.cy - dist*Math.sin(angle) + " ";
+            }
+        
+            return p;
         }
-	}];
-
-    const shapes= [
-        {
-            type: 'circle',
-            xref: 'x',
-            yref: 'y',
-            x0: -radius,
-            y0: -radius,
-            x1: radius,
-            y1: radius,
-            fillcolor: 'transparent',
-            opacity: 0.5,
-            line: {
-                color: 'white',
-                width: 1,
-            }
-        },
-    ];
-
-    for (let i = 5; i < 360; i += 10) {
-        shapes.push({
-            type: "line",
-            xref: 'x',
-            yref: 'y',
-            x0: 0,
-            y0: 0,
-            x1: radius * Math.cos(i * Math.PI / 180),
-            y1: radius * Math.sin(i * Math.PI / 180),
-            opacity: 0.5,
-            line: {
-                color: 'white',
-                width: 1,
-            }
-        });
-    }
-
-    var layout = {
-        title: 'Комплексная роза-диаграмма',
-        width: 600,
-        height: 600,
-        shapes: shapes,
-    }
-
-    Plotly.newPlot('rose-complex', roseData, layout);
-}
+    },
+})
