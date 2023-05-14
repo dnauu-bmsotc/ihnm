@@ -1,5 +1,6 @@
 :root {
     --ihnm-color-bg: white;
+    --ihnm-color-bg2: rgb(244, 244, 244);
     --ihnm-color-text: black;
     --ihnm-color-shadow: rgb(222, 222, 222);
     --ihnm-color-border: gray;
@@ -12,6 +13,7 @@
 @media (prefers-color-scheme: dark) {
     :root {
         --ihnm-color-bg: black;
+        --ihnm-color-bg2: rgb(22, 22, 22);
         --ihnm-color-text: white;
         --ihnm-color-shadow: rgb(55, 55, 55);
         --ihnm-color-border: lightgray;
@@ -92,4 +94,9 @@ button {
     border: 1px solid var(--ihnm-color-border);
     padding: 0.5em 0.8em;
     margin: 0.5em;
+}
+
+svg {
+    border: 1px solid black;
+    margin: 1em;
 }

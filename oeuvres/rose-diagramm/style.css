@@ -13,9 +13,12 @@
     font-size: 100%;
 }
 
-svg {
-    border: 1px solid black;
-    margin: 1em;
+#roses {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3em;
 }
 
 #rose-azimuths-dip, #rose-incidence {

@@ -89,7 +89,7 @@ var app = new Vue({
             circle.setAttributeNS(null, "cy", -rose.cy);
             circle.setAttributeNS(null, "r", rose.r);
             circle.setAttributeNS(null, "fill", "transparent");
-            circle.setAttributeNS(null, "stroke", "black");
+            circle.setAttributeNS(null, "stroke", "var(--ihnm-color-text)");
             circle.setAttributeNS(null, "stroke-width", 0.3);
             rose.svg.appendChild(circle);
         
@@ -99,7 +99,7 @@ var app = new Vue({
                 line.setAttributeNS(null, "y1", -rose.cy - rose.r*Math.sin(i * Math.PI / 180));
                 line.setAttributeNS(null, "x2", rose.cx + rose.r*Math.cos(i * Math.PI / 180 + Math.PI));
                 line.setAttributeNS(null, "y2", -rose.cy - rose.r*Math.sin(i * Math.PI / 180 + Math.PI));
-                line.setAttributeNS(null, "stroke", "black");
+                line.setAttributeNS(null, "stroke", "var(--ihnm-color-text)");
                 line.setAttributeNS(null, "stroke-width", 0.3);
                 rose.svg.appendChild(line);
             }

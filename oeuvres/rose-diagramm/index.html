@@ -39,24 +39,37 @@
                 <span>{{ tableSum }}</span>
             </section>
 
-            <h3>Роза-диаграмма азимутов углов падения</h3>
-            <svg id="rose-azimuths-dip" viewBox="-60 -60 120 120">
-                <polygon v-bind:points="azimuthsDipRosePoints" stroke="black" stroke-width="0.3"></polygon>
-            </svg>
+            <section id="roses">
+                <div>
+                    <h3>Роза-диаграмма азимутов углов падения</h3>
+                    <svg id="rose-azimuths-dip" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="azimuthsDipRosePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
 
-            <h3>Роза-диаграмма азимутов простирания</h3>
-            <svg id="rose-azimuths-strike" viewBox="-60 -60 120 120">
-                <polygon v-bind:points="azimuthsStrikeRosePoints" stroke="black" stroke-width="0.3"></polygon>
-            </svg>
-        
-            <h3>Роза-диаграмма углов падения</h3>
-            <svg id="rose-incidence" viewBox="-60 -60 120 120">
-                <polygon v-bind:points="incidencePoints" stroke="black" stroke-width="0.3"></polygon>
-            </svg>
+                <div>
+                    <h3>Роза-диаграмма азимутов простирания</h3>
+                    <svg id="rose-azimuths-strike" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="azimuthsStrikeRosePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
+            
+                <div>
+                    <h3>Роза-диаграмма углов падения</h3>
+                    <svg id="rose-incidence" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="incidencePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
 
-            <h3>Комплексная роза-диаграмма</h3>
-            <button @click="drawComplexRose()">Построить / обновить</button>
-            <div id="rose-complex"></div>
+                <div>
+                    <h3>Комплексная роза-диаграмма</h3>
+                    <button @click="drawComplexRose()">Построить / обновить</button>
+                    <div id="rose-complex"></div>
+                </div>
+            </section>
 		</main>
 	</body>
 </html>
