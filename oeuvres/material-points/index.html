@@ -5,14 +5,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Материальные точки</title>
         <link rel="stylesheet" href="style.css">
-		<script src="./script.js"></script>
+		<script src="./script.js" defer></script>
 	</head>
 	<body>
 		<main>
             <section id="resets-section">
-                <button class="reset-btn" onclick="reset1()">Preset [dust]</button>
-                <button class="reset-btn" onclick="reset2()">Preset [rgb]</button>
+                <button class="reset-btn" onclick="reset1()">Preset [midges]</button>
+                <button class="reset-btn" onclick="reset2()">Preset [atom]</button>
                 <button class="reset-btn" onclick="reset3()">Preset [plankton]</button>
+                <button class="reset-btn" onclick="reset4()">Preset [glitch]</button>
+                <button class="reset-btn" onclick="reset5()">Preset [dust web]</button>
+                <button class="reset-btn" onclick="reset6()">Preset [waves]</button>
+                <button class="reset-btn" onclick="reset7()">Preset [splash]</button>
             </section>
             <section id="presets-section">
                 <button class="preset-btn" onclick="preset1()">Mod [ring]</button>
@@ -29,13 +33,14 @@
                     <p>Particles: <span id="particles-span"></span></p>
                 </div>
             </section>
-            <section id="options-section" onchange="display.lastResetFunction()">
+            <section id="options-section" onchange="restartToUserOptions()">
                 <div>
                     <label for="velocity-select">Initial velocity:</label>
                     <select id="velocity-select">
                         <option selected value="static">Static</option>
                         <option value="noise">Noise</option>
                         <option value="funnel">Funnel</option>
+                        <option value="vortex">Vortex</option>
                     </select>
                 </div>
                 <div>
@@ -47,6 +52,14 @@
                         <option value="200">200</option>
                         <option value="500">500</option>
                         <option value="1000">1000</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="generator-select">Generator:</label>
+                    <select id="generator-select">
+                        <option selected value="random">Random</option>
+                        <option value="linear">Linear</option>
+                        <option value="equalmass">Equal mass</option>
                     </select>
                 </div>
                 <div>
@@ -70,7 +83,7 @@
                     <select id="calculation-select">
                         <option selected value="all">All dots</option>
                         <option value="massive">Massive only</option>
-                        <option value="staticmassive">Static massive</option>
+                        <option value="none">None</option>
                     </select>
                 </div>
                 <div>
@@ -83,10 +96,12 @@
                 <div>
                     <label for="gravitationalconstant-select">Gravitational constant:</label>
                     <select id="gravitationalconstant-select">
+                        <option value="0.01">0.01x</option>
                         <option value="0.1">0.1x</option>
                         <option value="0.5">0.5x</option>
                         <option selected value="1">1x</option>
                         <option value="2">2x</option>
+                        <option value="5">5x</option>
                     </select>
                 </div>
                 <div>
@@ -95,6 +110,27 @@
                         <option value="proportional">Inversely proportional</option>
                         <option selected value="quadratic">Quadratic</option>
                         <option value="reinforced">Reinforced</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="antigravity-select">Antirgravity:</label>
+                    <select id="antigravity-select">
+                        <option selected value="false">False</option>
+                        <option value="true">True</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="earth-select">Earth:</label>
+                    <select id="earth-select">
+                        <option selected value="false">False</option>
+                        <option value="true">True</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="camera-select">Camera:</label>
+                    <select id="camera-select">
+                        <option selected value="static">Static</option>
+                        <option value="masscenter">Mass center</option>
                     </select>
                 </div>
                 <div>

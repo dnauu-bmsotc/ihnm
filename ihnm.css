@@ -40,6 +40,13 @@ body {
 main {
     display: flex;
     flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    margin: 1em;
+}
+
+p, ul, ol, h1, h2, h3, h4, h5, h6 {
+    width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {

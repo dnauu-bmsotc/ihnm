@@ -79,24 +79,6 @@ function rgbToHex(r, g, b) {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-function randomMaterialDot() {
-    const maxRadius = 10 + 10 * Math.pow(display.options.numberOfPoints, 1/4);
-    const radius = randomFloat(0, maxRadius);
-    const angle = randomFloat(0, 2 * Math.PI);
-
-    const dot = new MaterialDot(
-        radius * Math.cos(angle),
-        radius * Math.sin(angle),
-        display.minMass + Math.pow(Math.random(), 8) * (display.maxMass - display.minMass),
-    );
-
-    display.options.velocityCallback(
-        dot, { angle: angle, radius: radius }
-    );
-
-    return dot;
-}
-
 function lawOfGravity(d1, d2) {
     const xDistance = d2.position.x - d1.position.x;
     const yDistance = d2.position.y - d1.position.y;
@@ -105,13 +87,39 @@ function lawOfGravity(d1, d2) {
     const angle = Math.atan2(yDistance, xDistance);
     const NewtonsForce = display.gravity * d1.mass * d2.mass / (distance ** 2);
     const force = NewtonsForce * Math.pow(distance, display.options.gravitationalDependence)
-        * display.options.gravitationalConstant;
+        * display.options.gravitationalConstant * display.options.angitgravity;
 
     d1.forces.x += force * Math.cos(angle);
     d1.forces.y += force * Math.sin(angle);
 
     d2.forces.x += force * Math.cos(angle + Math.PI);
     d2.forces.y += force * Math.sin(angle + Math.PI);
+}
+
+function holdPulse(sign) {
+    const force = sign * display.options.gravitationalConstant
+        * (Math.E ** display.options.gravitationalDependence) / 2;
+
+    const rect = document.getElementById("svg").getBoundingClientRect();
+    let x, y;
+    if (lastMoveEvent.type === "mousemove") {
+        x = (lastMoveEvent.clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
+        y = (lastMoveEvent.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
+    }
+    else if (lastMoveEvent.type === "touchmove") {
+        x = (lastMoveEvent.touches[0].clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
+        y = (lastMoveEvent.touches[0].clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
+    }
+
+    for (let dot of display.dots) {
+        const dx = dot.position.x - x;
+        const dy = dot.position.y - y;
+        const angle = Math.atan2(dy, dx);
+        const distance = Math.sqrt(dx**2 + dy**2);
+        const k = distance / Math.pow(dot.mass, 1/6) * display.options.gravitationalConstant;
+        dot.forces.x += force * Math.cos(angle) / k;
+        dot.forces.y += force * Math.sin(angle) / k;
+    }
 }
 
 function animateFrame() {
@@ -126,6 +134,21 @@ function animateFrame() {
 
     display.options.calculationCallback();
 
+    display.options.cameraCallback();
+
+    if (primaryMouseButtonDown || touch) {
+        switch (document.getElementById("onclick-select").value) {
+            case "repulse":
+                holdPulse(+1);
+                break;
+            case "antirepulse":
+                holdPulse(-1);
+                break;
+            default:
+                break;
+        }
+    }
+
     updateDotsPositions(dt);
 
     updateInfo(dt);
@@ -138,7 +161,9 @@ function animateFrame() {
 function updateDotsPositions(dt) {
     for (let dot of display.dots) {
         dot.velocity.x += dot.forces.x / dot.mass * dt;
-        dot.velocity.y += dot.forces.y / dot.mass * dt;
+        dot.velocity.y += (dot.forces.y / dot.mass) * dt;
+
+        dot.velocity.y += display.options.earthGravity * dt;
 
         dot.position.x += dot.velocity.x * dt;
         dot.position.y += dot.velocity.y * dt;
@@ -148,6 +173,72 @@ function updateDotsPositions(dt) {
 
         display.options.colorCallback(dot);
         display.options.borderCallback(dot);
+    }
+}
+
+function setGeneratorCallback(name) {
+    function randomPolar() {
+        const maxRadius = 10 + 10 * Math.pow(display.options.numberOfPoints, 1/4);
+        const radius = randomFloat(0, maxRadius);
+        const angle = randomFloat(0, 2 * Math.PI);
+        return [radius, angle];
+    }
+
+    switch (name) {
+        case "equalmass":
+            display.options.generator = function() {
+                [radius, angle] = randomPolar();
+            
+                const dot = new MaterialDot(
+                    radius * Math.cos(angle),
+                    radius * Math.sin(angle),
+                    display.maxMass * 8 / 10 + display.maxMass * randomFloat(0, 2/10)
+                );
+            
+                display.options.velocityCallback(
+                    dot, { angle: angle, radius: radius }
+                );
+            
+                return dot;
+            }
+            break;
+
+        case "linear":
+            display.options.generator = function() {
+                [radius, angle] = randomPolar();
+            
+                const dot = new MaterialDot(
+                    radius * Math.cos(angle),
+                    radius * Math.sin(angle),
+                    randomFloat(display.minMass, display.maxMass)
+                );
+            
+                display.options.velocityCallback(
+                    dot, { angle: angle, radius: radius }
+                );
+            
+                return dot;
+            }
+            break;
+    
+        case "random":
+        default:
+            display.options.generator = function() {
+                [radius, angle] = randomPolar();
+            
+                const dot = new MaterialDot(
+                    radius * Math.cos(angle),
+                    radius * Math.sin(angle),
+                    display.minMass + Math.pow(Math.random(), 8) * (display.maxMass - display.minMass),
+                );
+            
+                display.options.velocityCallback(
+                    dot, { angle: angle, radius: radius }
+                );
+            
+                return dot;
+            }
+            break;
     }
 }
 
@@ -161,6 +252,16 @@ function setVelocityCallback(name) {
                 const velocity = randomFloat(0.005, +0.02)
                     / Math.pow(dot.mass, 1/6) / (0.5 + (polar.radius / 50)**2/2)
                     * Math.sqrt(display.options.gravitationalConstant);
+                dot.velocity.x = velocity * Math.cos(velocityAngle);
+                dot.velocity.y = velocity * Math.sin(velocityAngle);
+            };
+            break;
+        
+        case "vortex":
+            const spin = Math.sign(randomFloat(-1, +1)) * Math.PI / 2;
+            display.options.velocityCallback = function(dot, polar) {
+                const velocityAngle = polar.angle + spin;
+                const velocity = .05 * Math.sqrt(display.options.gravitationalConstant);
                 dot.velocity.x = velocity * Math.cos(velocityAngle);
                 dot.velocity.y = velocity * Math.sin(velocityAngle);
             };
@@ -191,7 +292,7 @@ function setBorderCallback(name) {
                 else if (dot.position.x > display.rect.left + display.rect.right) {
                     dot.velocity.x = -Math.abs(dot.velocity.x);
                 }
-                else if (dot.position.y < display.rect.top) {
+                if (dot.position.y < display.rect.top) {
                     dot.velocity.y = Math.abs(dot.velocity.y);
                 }
                 else if (dot.position.y > display.rect.top + display.rect.bottom) {
@@ -210,7 +311,7 @@ function setBorderCallback(name) {
                     dot.position.x = display.rect.left + display.rect.right;
                     dot.velocity.x = 0;
                 }
-                else if (dot.position.y < display.rect.top) {
+                if (dot.position.y < display.rect.top) {
                     dot.position.y = display.rect.top;
                     dot.velocity.y = 0;
                 }
@@ -240,11 +341,11 @@ function setColorCallback(name) {
             display.options.colorCallback = dot => {
                 const angle = ((2 * Math.PI) + Math.atan2(dot.velocity.y, dot.velocity.x)) % (2 * Math.PI);
                 const offset = Math.min(angle, (2 * Math.PI) - angle);
-                const k = offset / Math.PI * 55;
+                const k = offset / Math.PI;
                 dot.element.setAttributeNS(null, "fill", rgbToHex(
-                    75 + Math.floor(k / 3),
-                    100 + Math.floor(k / 2),
-                    150 + Math.floor(k / 1),
+                    50 + Math.floor(50 * k),
+                    150 + Math.floor(50 * (1 - k)),
+                    250,
                 ));
             };
             break;
@@ -285,6 +386,16 @@ function setCalculationCallback(name) {
                     }
                 }
             }
+            break;
+
+        case "none":
+            display.options.calculationCallback = function() {
+                for (let i = 0; i < display.dots.length; i++) {
+                    for (let j = i + 1; j < display.dots.length; j++) {
+                        display.options.collisionCallback(display.dots[i], display.dots[j]);
+                    }
+                }
+            };
             break;
     
         default:
@@ -328,6 +439,14 @@ function setCollisionCallback(name) {
 
 function setGravitationalConstantCallback(name) {
     switch (name) {
+        case "0":
+            display.options.gravitationalConstant = 0;
+            break;
+
+        case "0.01":
+            display.options.gravitationalConstant = 0.005;
+            break;
+
         case "0.1":
             display.options.gravitationalConstant = 0.1;
             break;
@@ -338,6 +457,10 @@ function setGravitationalConstantCallback(name) {
             
         case "2":
             display.options.gravitationalConstant = 3;
+            break;
+
+        case "5":
+            display.options.gravitationalConstant = 10;
             break;
 
         default:
@@ -362,39 +485,93 @@ function setGravitationalDependenceCallback(name) {
     }
 }
 
-function setOnClickCallback(name) {
-    function pulse(e, type, force) {
-        const rect = document.getElementById("svg").getBoundingClientRect();
-        let x, y;
-        if (type === "mouse") {
-            x = (e.clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
-            y = (e.clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
-        }
-        else if (type === "touch") {
-            x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left) * 100 - 50;
-            y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top) * 100 - 50;
-        }
-
-        for (let dot of display.dots) {
-            const dx = dot.position.x - x;
-            const dy = dot.position.y - y;
-            const angle = Math.atan2(dy, dx);
-            const distance = Math.sqrt(dx**2 + dy**2);
-            dot.velocity.x += force * Math.cos(angle) / distance / Math.pow(dot.mass, 1/6) * display.options.gravitationalConstant;
-            dot.velocity.y += force * Math.sin(angle) / distance / Math.pow(dot.mass, 1/6) * display.options.gravitationalConstant;
-        }
-    }
-
+function setAntigravityCallback(name) {
     switch (name) {
-        case "repulse":
-            display.options.onClickCallback = (e, type) => { pulse(e, type, 1) };
-            break;
-        
-
-        case "antirepulse":
-            display.options.onClickCallback = (e, type) => { pulse(e, type, -1) };
+        case "true":
+            display.options.angitgravity = -1;
             break;
     
+        case "false":
+        default:
+            display.options.angitgravity = +1;
+            break;
+    }
+}
+
+function setEarthCallback(name) {
+    switch (name) {
+        case "true":
+            display.options.earthGravity = 0.0001;
+            break;
+    
+        case "false":
+        default:
+            display.options.earthGravity = 0;
+            break;
+    }
+}
+
+function setCameraCallback(name) {
+    switch (name) {
+        case "masscenter":
+            display.options.cameraCallback = function() {
+                let weightedSumX = 0;
+                let weightedSumY = 0;
+                let sumOfWeights = 0;
+                for (let dot of display.dots) {
+                    weightedSumX += dot.mass * dot.position.x;
+                    weightedSumY += dot.mass * dot.position.y;
+                    sumOfWeights += dot.mass;
+                }
+                const x = weightedSumX / sumOfWeights;
+                const y = weightedSumY / sumOfWeights;
+                display.rect.left = x - 50;
+                display.rect.top = y - 50;
+                document.getElementById("svg").setAttribute("viewBox",
+                    `${display.rect.left} ${display.rect.top} 100 100`);
+            }
+            break;
+
+        case "observe":
+            display.options.cameraCallback = function() {
+                let minx, maxx, miny, maxy;
+                minx = maxx = display.dots[0].position.x;
+                miny = maxy = display.dots[0].position.y;
+                for (let dot of display.dots) {
+                    minx = Math.min(minx, dot.position.x);
+                    maxx = Math.max(maxx, dot.position.x);
+                    miny = Math.min(miny, dot.position.y);
+                    maxy = Math.max(maxy, dot.position.y);
+                }
+                display.rect.left = minx;
+                display.rect.top = miny;
+                display.rect.right = maxx - minx;
+                display.rect.bottom = maxy - miny;
+                document.getElementById("svg").setAttribute("viewBox",
+                    `${minx} ${miny} ${maxx - minx} ${maxy-miny}`);
+            }
+            break;
+    
+        default:
+            display.rect.left = -50;
+            display.rect.top = -50;
+            display.rect.right = 100;
+            display.rect.bottom = 100;
+            display.options.cameraCallback = () => {
+                document.getElementById("svg").setAttribute("viewBox", `-50 -50 100 100`);
+            };
+            break;
+    }
+}
+
+function setOnClickCallback(name) {
+    switch (name) {
+        case "repulse":
+        case "antirepulse":
+            display.options.onClickCallback = () => { };
+            break;
+
+        case "restart":
         default:
             display.options.onClickCallback = () => { display.lastResetFunction() };
             break;
@@ -409,14 +586,18 @@ function restartToUserOptions() {
     setVelocityCallback(document.getElementById("velocity-select").value);
     setBorderCallback(document.getElementById("border-select").value);
     setColorCallback(document.getElementById("color-select").value);
+    setGeneratorCallback(document.getElementById("generator-select").value);
     setCalculationCallback(document.getElementById("calculation-select").value);
     setCollisionCallback(document.getElementById("collision-select").value);
     setGravitationalConstantCallback(document.getElementById("gravitationalconstant-select").value);
     setGravitationalDependenceCallback(document.getElementById("gravitationaldependence-select").value);
+    setAntigravityCallback(document.getElementById("antigravity-select").value);
+    setEarthCallback(document.getElementById("earth-select").value);
+    setCameraCallback(document.getElementById("camera-select").value);
     setOnClickCallback(document.getElementById("onclick-select").value);
 
     for (let i = 0; i < display.options.numberOfPoints; i++) {
-        display.dots.push(randomMaterialDot());
+        display.dots.push(display.options.generator());
     }
 
     display.lastResetFunction = restartToUserOptions;
@@ -441,24 +622,34 @@ function reset1() {
     document.getElementById("border-select").value = "wall";
     document.getElementById("color-select").value = "white";
     document.getElementById("number-select").value = "100";
+    document.getElementById("generator-select").value = "random";
     document.getElementById("velocity-select").value = "static";
     document.getElementById("calculation-select").value = "all";
     document.getElementById("collision-select").value = "skip";
     document.getElementById("gravitationalconstant-select").value = "1";
     document.getElementById("gravitationaldependence-select").value = "quadratic";
+    document.getElementById("antigravity-select").value = "false";
+    document.getElementById("earth-select").value = "false";
+    document.getElementById("camera-select").value = "static";
+    document.getElementById("onclick-select").value = "restart";
 
     restartToUserOptions();
 }
 
 function reset2() {
-    document.getElementById("border-select").value = "wall";
+    document.getElementById("border-select").value = "none";
     document.getElementById("color-select").value = "wheel";
     document.getElementById("number-select").value = "500";
+    document.getElementById("generator-select").value = "random";
     document.getElementById("velocity-select").value = "funnel";
     document.getElementById("calculation-select").value = "massive";
     document.getElementById("collision-select").value = "stick";
     document.getElementById("gravitationalconstant-select").value = "0.5";
     document.getElementById("gravitationaldependence-select").value = "reinforced";
+    document.getElementById("antigravity-select").value = "false";
+    document.getElementById("earth-select").value = "false";
+    document.getElementById("camera-select").value = "masscenter";
+    document.getElementById("onclick-select").value = "restart";
 
     restartToUserOptions();
 }
@@ -467,11 +658,88 @@ function reset3() {
     document.getElementById("border-select").value = "wall";
     document.getElementById("color-select").value = "blue";
     document.getElementById("number-select").value = "200";
+    document.getElementById("generator-select").value = "random";
     document.getElementById("velocity-select").value = "noise";
     document.getElementById("calculation-select").value = "massive";
     document.getElementById("collision-select").value = "skip";
     document.getElementById("gravitationalconstant-select").value = "0.1";
     document.getElementById("gravitationaldependence-select").value = "proportional";
+    document.getElementById("antigravity-select").value = "false";
+    document.getElementById("earth-select").value = "false";
+    document.getElementById("camera-select").value = "static";
+    document.getElementById("onclick-select").value = "repulse";
+
+    restartToUserOptions();
+}
+
+function reset4() {
+    document.getElementById("border-select").value = "bounce";
+    document.getElementById("color-select").value = "wheel";
+    document.getElementById("number-select").value = "200";
+    document.getElementById("generator-select").value = "random";
+    document.getElementById("velocity-select").value = "noise";
+    document.getElementById("calculation-select").value = "massive";
+    document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "1";
+    document.getElementById("gravitationaldependence-select").value = "quadratic";
+    document.getElementById("antigravity-select").value = "true";
+    document.getElementById("earth-select").value = "true";
+    document.getElementById("camera-select").value = "masscenter";
+    document.getElementById("onclick-select").value = "restart";
+
+    restartToUserOptions();
+}
+
+function reset5() {
+    document.getElementById("border-select").value = "wall";
+    document.getElementById("color-select").value = "white";
+    document.getElementById("number-select").value = "500";
+    document.getElementById("generator-select").value = "random";
+    document.getElementById("velocity-select").value = "vortex";
+    document.getElementById("calculation-select").value = "massive";
+    document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "0.1";
+    document.getElementById("gravitationaldependence-select").value = "quadratic";
+    document.getElementById("antigravity-select").value = "true";
+    document.getElementById("earth-select").value = "false";
+    document.getElementById("camera-select").value = "static";
+    document.getElementById("onclick-select").value = "antirepulse";
+
+    restartToUserOptions();
+}
+
+function reset6() {
+    document.getElementById("border-select").value = "bounce";
+    document.getElementById("color-select").value = "blue";
+    document.getElementById("number-select").value = "500";
+    document.getElementById("generator-select").value = "equalmass";
+    document.getElementById("velocity-select").value = "static";
+    document.getElementById("calculation-select").value = "none";
+    document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "0.1";
+    document.getElementById("gravitationaldependence-select").value = "quadratic";
+    document.getElementById("antigravity-select").value = "false";
+    document.getElementById("earth-select").value = "true";
+    document.getElementById("camera-select").value = "static";
+    document.getElementById("onclick-select").value = "repulse";
+
+    restartToUserOptions();
+}
+
+function reset7() {
+    document.getElementById("border-select").value = "wall";
+    document.getElementById("color-select").value = "wheel";
+    document.getElementById("number-select").value = "500";
+    document.getElementById("generator-select").value = "linear";
+    document.getElementById("velocity-select").value = "noise";
+    document.getElementById("calculation-select").value = "none";
+    document.getElementById("collision-select").value = "skip";
+    document.getElementById("gravitationalconstant-select").value = "1";
+    document.getElementById("gravitationaldependence-select").value = "quadratic";
+    document.getElementById("antigravity-select").value = "false";
+    document.getElementById("earth-select").value = "true";
+    document.getElementById("camera-select").value = "static";
+    document.getElementById("onclick-select").value = "antirepulse";
 
     restartToUserOptions();
 }
@@ -485,6 +753,9 @@ function preset1() {
     setCollisionCallback("stick");
     setGravitationalConstantCallback("1");
     setGravitationalDependenceCallback("quadratic");
+    setAntigravityCallback("false");
+    setEarthCallback("false");
+    setCameraCallback("static");
     setOnClickCallback(document.getElementById("onclick-select").value);
     
     const n = 16;
@@ -519,6 +790,9 @@ function preset2() {
     setCollisionCallback("skip");
     setGravitationalConstantCallback("1");
     setGravitationalDependenceCallback("quadratic");
+    setAntigravityCallback("false");
+    setEarthCallback("false");
+    setCameraCallback("masscenter");
     setOnClickCallback(document.getElementById("onclick-select").value);
 
     const sun = new MaterialDot(0, 0, display.maxMass * 100);
@@ -538,15 +812,46 @@ function preset2() {
 }
 
 function updateInfo(dt) {
-    display.info.fpsEl.textContent = Math.round(10000 / dt) / 10;
+    !updateInfo.lastdt && (updateInfo.lastdt = 1);
+    const smoothing = Math.pow(0.95, dt * 60 / 1000);
+    updateInfo.lastdt = (updateInfo.lastdt * smoothing) + (dt * (1.0-smoothing));
+
+    display.info.fpsEl.textContent = Math.round(10000 / updateInfo.lastdt) / 10;
     display.info.particlesEl.textContent = display.dots.length;
 }
 
-window.addEventListener("load", (event) => {
-    display.info = {
-        fpsEl: document.getElementById("fps-span"),
-        particlesEl: document.getElementById("particles-span"),
-    };
-    
-    reset1();
+
+display.info = {
+    fpsEl: document.getElementById("fps-span"),
+    particlesEl: document.getElementById("particles-span"),
+};
+
+reset1();
+
+let primaryMouseButtonDown = false;
+let lastMoveEvent = null;
+
+function setPrimaryButtonState(e) {
+    let flags = e.buttons !== undefined ? e.buttons : e.which;
+    primaryMouseButtonDown = (flags & 1) === 1;
+}
+
+document.addEventListener("mousedown", setPrimaryButtonState);
+document.addEventListener("mousemove", setPrimaryButtonState);
+document.addEventListener("mouseup", setPrimaryButtonState);
+
+document.addEventListener("mousemove", e => lastMoveEvent = e);
+
+let touch = false;
+
+document.getElementById('svg').addEventListener('touchstart', e => {
+    touch = true;
+});
+
+document.getElementById('svg').addEventListener('touchmove', e => {
+    lastMoveEvent = e;
+});
+
+document.getElementById('svg').addEventListener('touchend', e => {
+    touch = false;
 });

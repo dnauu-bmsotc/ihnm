@@ -55,13 +55,13 @@
         "name": "Unlighted Vessel",
         "list": [
             {
-                "path": "./media/unlightedvessel1.png"
+                "path": "./media/unlightedvessel1.jpg"
             },
             {
-                "path": "./media/unlightedvessel2.png"
+                "path": "./media/unlightedvessel2.jpg"
             },
             {
-                "path": "./media/unlightedvessel3.png"
+                "path": "./media/unlightedvessel3.jpg"
             }
         ]
     },

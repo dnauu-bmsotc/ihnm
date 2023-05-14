@@ -44,6 +44,7 @@ svg {
     width: 30em;
     height: 30em;
     border: 1px solid gray;
+    touch-action: none;
 }
 
 p {
@@ -62,6 +63,14 @@ em {
 
 #resets-section, #presets-section {
     flex-flow: row wrap;
+}
+
+#resets-section {
+    max-width: 50em;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1em;
+    justify-content: center;
 }
 
 #options-section {
