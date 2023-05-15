@@ -148,7 +148,7 @@
 
 
 			let styleSheet = document.createElement("style");
-			styleSheet.innerText = style;
+			styleSheet.innerText = style.replace(/(\r\n|\n|\r)/gm, "");
 			document.head.appendChild(styleSheet);
 		</script>
 	</body>
