@@ -3,7 +3,7 @@ class Problem {
         this.ns = "http://www.w3.org/2000/svg";
         this.stdsLight = "fill:lightGray; stroke:black; stroke-width:0.3";
         this.stdsDark = "fill:gray; stroke:black; stroke-width: 0.3";
-        this.stdsRed = "fill:pink; stroke:red; stroke-width: 0.3";
+        this.stdsRed = "fill:var(--ihnm-color-pink); stroke:red; stroke-width: 0.3";
     }
     makeCondition() {};
     makeSketch() {};

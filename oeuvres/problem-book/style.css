@@ -16,11 +16,10 @@ main > * {
     flex-flow: column nowrap;
     max-width: 40em;
     margin: 1em auto;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--ihnm-color-border);
 }
 
 svg {
-    border: 1px solid black;
     width: 17em;
     height: 17em;
     touch-action: none;

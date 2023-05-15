@@ -1,0 +1,32 @@
+#table {
+    display: inline-grid;
+    grid-template-columns: 5em repeat(9, 1fr) 2em;
+    text-align: center;
+}
+
+.contents {
+    display: contents;
+}
+
+#table input {
+    max-width: 3em;
+    font-size: 100%;
+}
+
+#roses {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3em;
+}
+
+#rose-azimuths-dip, #rose-incidence {
+    width: 20em;
+    height: 20em;
+}
+
+#rose-azimuths-strike {
+    height: 15em;
+    width: 30em;
+}

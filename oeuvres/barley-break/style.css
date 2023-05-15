@@ -18,17 +18,14 @@ button {
 }
 
 main > * {
-    margin-top: 2em;
-    margin-bottom: 4em;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 2em auto 2em auto;
 }
 
 #field {
     display: inline-grid;
     grid-template-columns: repeat(4, 1fr);
     position: relative;
-    background-color: white;
+    background-color: var(--ihnm-color-bg);
 }
 
 .barley-back, barley-tile {
@@ -55,9 +52,9 @@ barley-tile > div, #field {
 barley-tile .nameplate {
     width: 70px;
     height: 80px;
-    border: 1px solid black;
+    border: 1px solid var(--ihnm-color-border);
     position: absolute;
-    background-color: white;
+    background-color: var(--ihnm-color-bg);
     left: calc(50% - 30px);
     top: 10px;
     z-index: 1;
@@ -72,8 +69,8 @@ barley-tile .nameplate::before {
     border-radius: 100%;
     width: 4px;
     height: 4px;
-    border: 1px solid white;
-    background-color: white;
+    border: 1px solid var(--ihnm-color-bg);
+    background-color: var(--ihnm-color-bg);
     position: absolute;
     top: calc(80px * 1/5);
 }

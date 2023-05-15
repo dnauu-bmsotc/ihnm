@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Роза-диаграмма</title>
+		<link rel="stylesheet" href="../../ihnm.css">
+		<link rel="stylesheet" href="./style.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8"></script>
+        <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script>
+		<script src="./script.js" defer></script>
+	</head>
+	<body>
+		<main id="app">
+            <h2>Роза-диаграмма</h2>
+
+            <section>
+                <button @click="onReset()">reset</button>
+                <button @click="onRandom()">random</button>
+                <button @click="onPreset()">preset</button>
+            </section>
+
+            <section id="table">
+                <span></span>
+                <span v-for="i in range(9)">{{ i*10 + "-" + (i+1)*10 }}</span>
+                <span>sum</span>
+
+                <div class="contents" v-for="i in range(36)">
+                    <span>{{ i*10 + "-" + (i+1)*10 }}</span>
+
+                    <input v-for="j in range(9)" v-model="table[i*9 + j].value"
+                        type="number" min="0" max="20">
+                    
+                    <span>{{ rowsSums[i] }}</span>
+                </div>
+
+                <span>sum</span>
+                <span v-for="i in range(9)" >{{ colsSums[i] }}</span>
+                <span>{{ tableSum }}</span>
+            </section>
+
+            <section id="roses">
+                <div>
+                    <h3>Роза-диаграмма азимутов углов падения</h3>
+                    <svg id="rose-azimuths-dip" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="azimuthsDipRosePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
+
+                <div>
+                    <h3>Роза-диаграмма азимутов простирания</h3>
+                    <svg id="rose-azimuths-strike" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="azimuthsStrikeRosePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
+            
+                <div>
+                    <h3>Роза-диаграмма углов падения</h3>
+                    <svg id="rose-incidence" viewBox="-60 -60 120 120">
+                        <polygon v-bind:points="incidencePoints" stroke-width="0.3"
+                            stroke="var(--ihnm-color-text)" fill="var(--ihnm-color-text)"></polygon>
+                    </svg>
+                </div>
+
+                <div>
+                    <h3>Комплексная роза-диаграмма</h3>
+                    <button @click="drawComplexRose()">Построить / обновить</button>
+                    <div id="rose-complex"></div>
+                </div>
+            </section>
+		</main>
+	</body>
+</html>

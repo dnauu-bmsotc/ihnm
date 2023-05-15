@@ -5,8 +5,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>ihnm</title>
         <link rel="stylesheet" href="./ihnm.css">
-		<link rel="icon" type="image/png" href="./previews/favicon32x32.png" sizes="32x32">
-		<link rel="icon" type="image/png" href="./previews/favicon64x64.png" sizes="64x64">
+		<link rel="icon" type="image/png" href="./favicon32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="./favicon64x64.png" sizes="64x64">
 		<style>
 			#container {
 				max-width: 60em;
@@ -15,10 +15,11 @@
 				margin: auto;
 				align-items: center;
 				justify-content: center;
+				--cell-width: 10em;
 			}
 			.cell {
 				position: relative;
-				width: 10em;
+				width: var(--cell-width);
 				margin: 0.7em;
 				padding: 0;
 				border: 1px solid var(--ihnm-color-border);
@@ -39,14 +40,47 @@
 				padding: 0.5em 0;
 				border-bottom: 1px solid var(--ihnm-color-border);
 			}
+			.img-placeholder {
+				width: var(--cell-width);
+				height: var(--cell-width);
+			}
+			.images {
+				position: relative;
+			}
 			.cell-image {
 				background-size: contain;
 				background-repeat: no-repeat;
 				background-position: center;
-				width: 100%;
-				aspect-ratio: 1 / 1;
+				width: var(--cell-width);
+				height: var(--cell-width);
+				position: absolute;
+				left: 0;
+				top: 0;
 			}
 		</style>
+		<script>
+			function addLight(id, name, ext) {
+				return `
+					#cell-${id} .cell-image.${ext} {
+						background-image: url('${name}.${ext}')
+					}
+				`;
+			}
+
+			function addDark(id, name, ext) {
+				return `
+					@media (prefers-color-scheme: dark) {
+						#cell-${id} .cell-image.${ext} {
+							background-image: url('${name}(dark).${ext}')
+						}
+					}
+				`;
+			}
+
+			function cellImage(href, end) {
+				return ` style="background-image: url('${fname}')"></div>`;
+			}
+		</script>
 	</head>
 	<body>
 		<main>
@@ -71,31 +105,51 @@
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
 		<script>
-			const container = document.getElementById("container");
 			pages = [
-				{href: "./archive/summer2021/dist/number-systems", name: "Системы счисления", preview: "./previews/number-systems.png"},
-				{href: "./archive/summer2021/dist/wheel-of-fortune", name: "Колесо Фортуны", preview: "./previews/wheel-of-fortune.png"},
-				{href: "./oeuvres/problem-book", name: "Сборник задач", preview: "./previews/rect-in-sector2.png"},
-				{href: "./oeuvres/nre-manual", name: "Методичка по ПРЗ", preview: "./previews/nre-manual.png"},
-				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", preview: "./previews/kaleidoscope.gif"},
-				{href: "./oeuvres/conspectus", name: "Конспекты", preview: "./previews/conspectus.png"},
-				{href: "./oeuvres/stories", name: "Истории", preview: "./previews/stories.png"},
-				{href: "./oeuvres/rose-diagramm", name: "Роза-диаграмма", preview: "./previews/rose-diagram.png"},
-				{href: "./oeuvres/barley-break", name: "Пятнашки", preview: "./previews/barley-break.png"},
-				{href: "./oeuvres/material-points", name: "Материальные точки", preview: "./previews/material-points.gif"},
-				{href: "./oeuvres/gallery/drawings", name: "Рисунки", preview: "./previews/drawings.jpg"},
-				{href: "./oeuvres/gallery/photos", name: "Фотографии", preview: "./previews/photos.jpg"},
+				{href: "./archive/summer2021/dist/number-systems", name: "Системы счисления"},
+				{href: "./archive/summer2021/dist/wheel-of-fortune", name: "Колесо Фортуны"},
+				{href: "./oeuvres/problem-book", name: "Сборник задач", extra: ["dark"]},
+				{href: "./oeuvres/nre-manual", name: "Методичка по ПРЗ"},
+				{href: "./oeuvres/kaleidoscope", name: "Калейдоскоп", extra: ["gif", "dark gif"]},
+				{href: "./oeuvres/conspectus", name: "Конспекты"},
+				{href: "./oeuvres/stories", name: "Истории", extra: ["dark"]},
+				{href: "./oeuvres/rose-diagram", name: "Роза-диаграмма", extra: ["dark"]},
+				{href: "./oeuvres/barley-break", name: "Пятнашки", extra: ["dark"]},
+				{href: "./oeuvres/material-points", name: "Материальные точки", extra: ["gif"]},
+				{href: "./oeuvres/gallery/drawings", name: "Рисунки", extra: ["dark"]},
+				{href: "./oeuvres/gallery/photos", name: "Фотографии", extra: ["dark"]},
 			];
-			for (page of pages) {
+
+			let style = ``;
+
+			for (let i = 0; i < pages.length; i++) {
 				const cell = document.createElement("a");
-				container.appendChild(cell);
+				document.getElementById("container").appendChild(cell);
 				cell.outerHTML = `
-					<a class="cell" href="${page.href}">
-						<div class="cell-name">${page.name}</div>
-						<div class="cell-image" style="background-image: url(${page.preview})"></div>
+					<a class="cell" href="${pages[i].href}">
+						<div class="cell-name">${pages[i].name}</div>
+						<div class="images" id="cell-${i}">
+							<div class="img-placeholder"></div>
+							<div class="cell-image png"></div>
+							<div class="cell-image gif"></div>
+						</div>
 					</a>
 				`;
+
+				const fname = "./previews/" + pages[i].href
+					.substring(pages[i].href.lastIndexOf('/') + 1);
+
+				style += addLight(i, fname, "png");
+
+				pages[i].extra && pages[i].extra.includes("gif") && (style += addLight(i, fname, "gif"));
+				pages[i].extra && pages[i].extra.includes("dark") && (style += addDark(i, fname, "png"));
+				pages[i].extra && pages[i].extra.includes("dark gif") && (style += addDark(i, fname, "gif"));
 			}
+
+
+			let styleSheet = document.createElement("style");
+			styleSheet.innerText = style;
+			document.head.appendChild(styleSheet);
 		</script>
 	</body>
 </html>
