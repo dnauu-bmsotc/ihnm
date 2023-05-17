@@ -291,3 +291,10 @@ td {
     overflow-x: auto;
     overflow-y: hidden;
 }
+
+@media print {
+    #options, #disciplines-wrap, #question-wrap, #chapters-wrap,
+    #mentions-wrap, #buffer, .toc {
+        display: none;
+    }
+}

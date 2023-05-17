@@ -96,6 +96,16 @@ button {
     border: 1px solid var(--ihnm-color-border);
     padding: 0.5em 0.8em;
     margin: 0.5em;
+    border-radius: 0;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: var(--ihnm-color-bg2);
+}
+
+button:active {
+    background-color: var(--ihnm-color-shadow);
 }
 
 svg {
