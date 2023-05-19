@@ -1,17 +1,16 @@
-register("Пластинка, прикреплённая к курсору", function() {
+register("Прикреплённая к курсору пластинка", function(opt) {
     const p = new Problem();
 
     p.dom.condition.innerHTML = `
     <p>Описать, как движется пластинка, прикреплённая верхней частью к курсору мыши на
-    вращающееся соединение. Курсор свободно перемещает крепление по плоскости.
-    Пластинка имеет массу, на неё дейсвтует гравитация и трение.
-    Центр масс находится в центре пластины, трением покоя пренебречь.</p>
+    вращающееся соединение. Курсор свободно перемещается по плоскости.
+    Такая задача возникла при создании страницы "Пятнашки".</p>
     `;
 
     // 1x1 meters
     p.createSVGSketch(-.5, -.5, 1, 1).innerHTML = `
         <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto" style=${p.stdsDark}>
+            <marker id="arrowhead" markerWidth="10"markerHeight="7" refX="0" refY="3.5" orient="auto" style=${p.stdsDark}>
                 <polygon points="0 0, 10 3.5, 0 7" />
             </marker>
             <marker id="arrowheadRed" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto" fill="red">
@@ -24,7 +23,28 @@ register("Пластинка, прикреплённая к курсору", fun
         <line style="${p.stdsRed}" id="p3-inertia" marker-end="url(#arrowheadRed)"/>
     `;
 
-    p.dom.solution.innerHTML = `<img></img>`;
+    p.dom.solution.innerHTML = `
+        <p>Рассмотрим неинерциальную систему отсчёта, связанную с положением курсора мыши.
+        Тогда курсор рассматривается как неподвижная ось вращения. На пластинку (на центр
+        масс) будут действовать следующие силы:</p>
+        <ul>
+            <li>Инерциальная сила, направленная противоположно ускорению курсора.
+                Известно изменение координат курсора по времени, отсюда можно
+                вычислить ускорение курсора и саму инерциальную силу.</li>
+            <li>Сила тяжести.</li>
+            <li>Сила трения в креплении, образующаяся при вращении пластинки.
+                Силу трения будем рассматривать как силу трения скольжения,
+                равную произведению коэффициента силы трения на силу реакции опоры.
+                Сила реакции опоры равна сумме силы, образующейся в результате
+                центробежного ускорения, и компоненты вектора совместного действия
+                инерциальной силы и силы тяжести, которая (компонента) параллельна
+                прямой, соединяющей курсор и центр масс.</li>
+        </ul>
+        <p>Результирующий вектор сил создаёт момент сил, который в совокупности
+        с моментом инерции пластины (const) задаёт изменение угловой скорости за
+        момент времени.</p>
+        <img src="./problem3/solution.jpg"></img>
+    `;
 
     gravityArrow = p.dom.sketchSVG.querySelector("#p3-gravity");
     inertiaArrow = p.dom.sketchSVG.querySelector("#p3-inertia");
@@ -42,8 +62,7 @@ register("Пластинка, прикреплённая к курсору", fun
     geometry.offsetFromCenter = geometry.h / 2 - geometry.offset;
     
     physics = {
-        mass: 1, gravity: 9.807, mu: .1, epsilon: 0.01,
-        staticFrictionK: 1.0, additionalFriction: 0,
+        mass: 1, gravity: 9.807, mu: .2, epsilon: 10**-3,
     }
 
     physics.inertiaMoment =
@@ -56,14 +75,12 @@ register("Пластинка, прикреплённая к курсору", fun
     p.addSVGSketchHoverListener((x, y, jump) => setSketchParameters(x - 0.5, y - 0.5, jump));
     p.addSVGSketchLeaveListener(() => setSketchParametersOnJump(0, 0), true);
 
-    p.dom.sketchSVG.addEventListener("click", _ => {
-        geometry.angularVelocity = 0;
-    });
-
     function onJump(x, y) {
         cursor.x = x;
         cursor.y = y;
     }
+
+    window.hololo = physics;
 
     function setSketchParameters(x, y, jump) {
         rect.setAttributeNS(null, "x", x - geometry.b / 2);
@@ -79,9 +96,7 @@ register("Пластинка, прикреплённая к курсору", fun
     }
 
     function animateFrame(timestamp) {
-        animateFrame.performance = performance.now();
-
-        const dt = (0.01 + timestamp - previousTimestamp) / 1000; // seconds
+        const dt = (0.001 + timestamp - previousTimestamp) / 1000; // seconds
         previousTimestamp = timestamp;
 
         const dx = cursor.newX - cursor.x;
@@ -96,9 +111,8 @@ register("Пластинка, прикреплённая к курсору", fun
         cursor.x = cursor.newX;
         cursor.y = cursor.newY;
         
-        const centerOffset = geometry.h / 2 - geometry.offset;
-        const massCenterX = cursor.x + centerOffset * Math.cos(geometry.angle);
-        const massCenterY = cursor.y + centerOffset * Math.sin(geometry.angle);
+        const massCenterX = cursor.x + geometry.offsetFromCenter * Math.cos(geometry.angle);
+        const massCenterY = cursor.y + geometry.offsetFromCenter * Math.sin(geometry.angle);
 
         const FinX = -physics.mass * cursor.ax;
         const FinY = -physics.mass * cursor.ay;
@@ -125,13 +139,11 @@ register("Пластинка, прикреплённая к курсору", fun
 
         const CentrifugalForce = physics.mass * geometry.angularVelocity**2 * geometry.offsetFromCenter;
         const N = Math.abs(R1 * Math.cos(R1A - geometry.angle)) + CentrifugalForce;
-        const slidingFriction = physics.mu * N + physics.additionalFriction;
-        const staticFriction = R1 * Math.sin(R1A - geometry.angle);
-        const noVelocity = Math.abs(geometry.angularVelocity) < physics.epsilon;
-        const noStrongForces = slidingFriction > Math.abs(staticFriction) * physics.staticFrictionK;
-        const static = noVelocity && noStrongForces;
-        const Ffr = static ? staticFriction : slidingFriction;
-        const FfrA = geometry.angle - (static ? R1A : Math.sign(geometry.angularVelocity) * Math.PI/2);
+        const slidingFriction = physics.mu * N;
+        const staticFriction = Math.min(slidingFriction, Math.abs(R1 * Math.sin(R1A - geometry.angle)));
+        const isStatic = animateFrame.isZeroVelocity && (slidingFriction > staticFriction);
+        const Ffr = isStatic ? staticFriction : slidingFriction;
+        const FfrA = geometry.angle - (animateFrame.isZeroVelocity ? R1A : Math.sign(geometry.angularVelocity) * Math.PI/2);
         const FfrX = Ffr * Math.cos(FfrA);
         const FfrY = Ffr * Math.sin(FfrA);
 
@@ -142,35 +154,39 @@ register("Пластинка, прикреплённая к курсору", fun
 
         const R2X = R1X + FfrX;
         const R2Y = R1Y + FfrY;
-        const R2 = Math.sqrt(R2X ** 2 + R2Y ** 2);
+        const R2 = Math.sqrt(R2X**2 + R2Y**2);
         const R2A = Math.atan2(R2Y, R2X);
 
-        const M = R2 * centerOffset * Math.sin(R2A - geometry.angle);
+        const M = R2 * geometry.offsetFromCenter * Math.sin(R2A - geometry.angle);
 
-        geometry.angularVelocity += M / physics.inertiaMoment * dt;
-        geometry.angularVelocity *= !static;
-        geometry.angle += geometry.angularVelocity * dt;
+        const dw = M / physics.inertiaMoment * dt;
+        const da = geometry.angularVelocity * dt;
+        
+        const lessThanEpsilon = Math.abs(da) < physics.epsilon;
+        const changedSign = (geometry.angularVelocity * (geometry.angularVelocity - dw) < 0);
+        animateFrame.isZeroVelocity = lessThanEpsilon || changedSign;
+
+        geometry.angularVelocity += dw;
+        geometry.angularVelocity *= !isStatic;
+        geometry.angle += da;
         geometry.angle = geometry.angle % (2 * Math.PI);
 
-        rect.setAttribute("transform", `
-            rotate(${180 / Math.PI * (geometry.angle - Math.PI / 2)} ${cursor.x} ${cursor.y})
-        `);
+        const transformRotate = 180 / Math.PI * (geometry.angle - Math.PI / 2);
+        rect.setAttribute("transform",  `rotate(${transformRotate} ${cursor.x} ${cursor.y})`);
+
+        if (isNaN(transformRotate)) {
+            opt.btn.click();
+        }
 
         p.setSketchSVGInfo(new Map([
             ["dt", round(dt * 1000, 5) + " ms"],
-            ["frame calculation time", round(performance.now() - animateFrame.performance, 3) + " ms"],
-            ["gravity force", round(Fgrav, 1) + " m/s2"],
             ["friction force", round(Ffr, 1) + " m/s2"],
-            ["inertial force", round(Fin, 1) + " m/s2"],
-            ["static", static],
-            ["slidingFriction", slidingFriction],
-            ["staticFriction", staticFriction],
+            ["no velocity", animateFrame.isZeroVelocity],
         ]));
 
         (Problem.currentProblem === p) && requestAnimationFrame(animateFrame);
     }
 
-    active = true;
     previousTimestamp = performance.now();
 
     requestAnimationFrame(animateFrame);

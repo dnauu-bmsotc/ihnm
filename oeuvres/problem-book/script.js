@@ -11,7 +11,13 @@ function degrees(r, d=0) {
 function register(name, callback) {
     const btn = document.createElement("button");
     btn.textContent = name;
-    btn.addEventListener("click", callback);
+    
+    btn.addEventListener("click", function() {
+        callback({ btn: btn });
+        document.querySelector("main").removeAttribute("hidden");
+        document.querySelector("#welcome").style.display = "none";
+    });
+
     document.getElementById("problem-buttons").append(btn);
 }
 
