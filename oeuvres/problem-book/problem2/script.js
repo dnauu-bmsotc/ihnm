@@ -41,7 +41,7 @@ register("Пятиугольный паркет", _ => {
     const triangle_60 = p.dom.sketchSVG.querySelector(".p2-60");
 
     p.addSVGSketchHoverListener((x, y) => setSketchParameters(x*Math.PI, y*Math.PI));
-    p.addSVGSketchLeaveListener(() => setSketchParameters(Math.PI/3, Math.PI/2));
+    p.addSVGSketchLeaveListener(() => setSketchParameters(Math.PI/3, Math.PI/2), true);
 
     function setSketchParameters(B, C, S=500) {
         const k1 = S;

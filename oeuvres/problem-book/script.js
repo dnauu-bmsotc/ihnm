@@ -29,6 +29,8 @@ class Problem {
 
         this.ns = "http://www.w3.org/2000/svg";
 
+        this.mouseout = true;
+
         Problem.currentProblem = this;
     }
 
@@ -58,27 +60,32 @@ class Problem {
     }
 
     addSVGSketchHoverListener(onHover) {
-        this.dom.sketchSVG.addEventListener("mousemove", e => {
+        this.dom.sketchSVG.addEventListener("mousemove", function(e) {
             const rect = this.dom.sketchSVG.getBoundingClientRect();
             const x = (e.clientX - rect.left) / (rect.right - rect.left);
             const y = (e.clientY - rect.top) / (rect.bottom - rect.top);
-            onHover(x, y);
-        });
+            onHover(x, y, this.mouseout);
+            this.mouseout = false;
+        }.bind(this));
 
-        this.dom.sketchSVG.addEventListener("touchmove", e => {
+        this.dom.sketchSVG.addEventListener("touchmove", function(e) {
             const rect = this.dom.sketchSVG.getBoundingClientRect();
             const x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left);
             const y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top);
-            onHover((x + 1) % 1, (y + 1) % 1);
-        });
+            onHover((x + 1) % 1, (y + 1) % 1, this.mouseout);
+            this.mouseout = false;
+        }.bind(this), {passive: true});
     }
 
-    addSVGSketchLeaveListener(onLeave) {
+    addSVGSketchLeaveListener(onLeave, invoke=false) {
         ["mouseleave", "touchend"].forEach(eveType => {
-            this.dom.sketchSVG.addEventListener(eveType, onLeave);
+            this.dom.sketchSVG.addEventListener(eveType, function() {
+                onLeave();
+                this.mouseout = true;
+            }.bind(this));
         });
 
-        onLeave();
+        invoke && onLeave();
     }
 
     createSketchInfo() {

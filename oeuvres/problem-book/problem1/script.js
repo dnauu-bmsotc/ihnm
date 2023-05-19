@@ -24,7 +24,7 @@ register("Прямоугольник в секторе", _ => {
     const rect = p.dom.sketchSVG.querySelector("rect");
 
     p.addSVGSketchHoverListener((x, y) => setSketchParameters(x * 2*Math.PI, 1/(1-y) - 1));
-    p.addSVGSketchLeaveListener(() => setSketchParameters(Math.PI/3, 0.8));
+    p.addSVGSketchLeaveListener(() => setSketchParameters(Math.PI/3, 0.8), true);
 
     function setSketchParameters(angle, ratio, r=40) {
         sector.setAttributeNS(null, "d", p.createSectorPath(0, angle, r));
