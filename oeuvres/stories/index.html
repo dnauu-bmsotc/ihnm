@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Рассказы</title>
-		<link rel="stylesheet" href="../../ihnm.css">
-        <link rel="stylesheet" href="./style.css">
-	</head>
-	<body>
-		<main>
-            <section id="catalog">
-                <button>Евангелион нового поколения</button>
-                <button>Доказательство бессмертия души</button>
-                <button>Монадология Лейбница</button>
-            </section>
-            <section id="story">Более 4,6 миллиарда лет назад одна из внеземных рас, названная первородной расой, оказавшись на грани исчезновения,
-                решила распространить жизнь и в других мирах. В космос было отправлено семь лун (яиц), в каждую из которых было помещено
-                семя жизни, спаренное с копьём Лонгиния. Вместе с ними каждая луна содержала свитки Мёртвого моря -- инструкцию, включающая
-                в себя информацию о принципе работы семян жизни, копий Лонгиния, а также о событиях, которые произойдут после пробуждения семени.
-                
-                Семена жизни имеют возможность выбора между двумя разными путями развития.
-                Если они подарят своему потомству плод жизни, то каждое рождённое существо будет обладать сильным А.Т. полем и способно
-                выбирать свою физическую форму. Если будет выбран плод знания, то потомство будет смертным и определённой формы, а
-                существование его будет опираться на коллективное существование. Существо, обладающее обоими плодами, считается равным Богу.
-                Планировалось, что семена, содержащие плоды жизни, и семена, содержащие плоды знания, не должны приземлиться на одной планете.
-                Для выполнения этого условия было создано копьё Лонгиния.
-                
-                Яйцо Адама -- Белая луна -- четыре миллиарда лет назад столкнулось с Землёй, вызвав Первый удар.
-                Оно было погребено под землёй в месте, которое стало Антарктидой, а образовавшиеся обломки слились в спутник Земли.
-                
-                Однако перед тем, как Адам начал распрост</section>
-		</main>
-	</body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Рассказы</title>
+    <link rel="stylesheet" href="../../ihnm.css">
+</head>
+<body>
+    <main>
+        <section id="catalog">
+            <button data-story-id="1-evangelion">Евангелион нового поколения</button>
+            <button data-story-id="2-phaedo">Доказательство бессмертия души</button>
+            <button data-story-id="3-monadology">Монадология Лейбница</button>
+            <button data-story-id="4-projective-test">Проекционный тест</button>
+        </section>
+        
+        <pre id="story"></pre>
+    </main>
+    
+    <script>
+        document.querySelectorAll("#catalog button[data-story-id]").forEach(btn => {
+            btn.addEventListener("click", _ => {
+
+                fetch(new Request(`./stories/${btn.dataset.storyId}.txt`))
+                    .then(resp => resp.text())
+                    .then(text => document.getElementById("story").textContent = text);
+            })
+        });
+    </script>
+</body>
 </html>

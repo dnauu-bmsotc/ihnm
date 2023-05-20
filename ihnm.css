@@ -59,6 +59,12 @@ h1, h2, h3, h4, h5, h6 {
     margin: 1.5em 0 .5em 0;
 }
 
+pre {
+    white-space: pre-wrap;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 100%;
+}
+
 h2 {
     font-size: 150%;
 }
