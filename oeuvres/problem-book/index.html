@@ -6,15 +6,14 @@
 		<title>Сборник задач</title>
 		<link rel="stylesheet" href="../../ihnm.css">
         <link rel="stylesheet" href="style.css">
-		<script src="./script.js"></script>
-		<script src="./problem1/script.js"></script>
-		<script src="./problem2/script.js"></script>
+		<script src="./script.js" defer></script>
+		<script src="./problem1/script.js" defer></script>
+		<script src="./problem2/script.js" defer></script>
+		<script src="./problem3/script.js" defer></script>
 	</head>
 	<body>
-        <section id="problem-buttons">
-            <button onclick="new Problem1().deploy()">Прямоугольник в секторе</button>
-            <button onclick="new Problem2().deploy()">Пятиугольный паркет типа 5</button>
-        </section>
+        <section id="problem-buttons"></section>
+		<div id="welcome"></div>
 		<main hidden>
             <section id="condition"></section>
             <section id="sketch"></section>

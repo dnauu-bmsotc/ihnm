@@ -1,85 +1,160 @@
+"use strict"
+
+function round(n, d=0) {
+    return Math.round(n * 10**d) / 10**d;
+}
+
+function degrees(r, d=0) {
+    return round(r * 180 / Math.PI, d);
+}
+
+function register(name, callback) {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    
+    btn.addEventListener("click", function() {
+        callback({
+            error: function(error="") {
+                console.log("There was an error, problem restarted. " + error);
+                btn.click();
+            },
+        });
+        document.querySelector("main").removeAttribute("hidden");
+        document.querySelector("#welcome").style.display = "none";
+    });
+
+    document.getElementById("problem-buttons").append(btn);
+}
+
 class Problem {
     constructor() {
-        this.ns = "http://www.w3.org/2000/svg";
-        this.stdsLight = "fill:lightGray; stroke:black; stroke-width:0.3";
-        this.stdsDark = "fill:gray; stroke:black; stroke-width: 0.3";
-        this.stdsRed = "fill:var(--ihnm-color-pink); stroke:red; stroke-width: 0.3";
-    }
-    makeCondition() {};
-    makeSketch() {};
-    makeSolution() {};
-    createSketchSVG(html, onHover, onLeave) {
-        const svg = document.createElementNS(this.ns, "svg");
-        svg.setAttributeNS(null, "width", "100%");
-        svg.setAttributeNS(null, "height", "100%");
-        svg.setAttributeNS(null, "viewBox", "-50 -50 100 100");
-        svg.innerHTML = html;
+        this.dom = {
+            condition: document.getElementById("condition"),
+            sketch: document.getElementById("sketch"),
+            solution: document.getElementById("solution"),
+        }
 
-        svg.addEventListener("mousemove", e => {
-            const rect = svg.getBoundingClientRect();
+        this.dom.condition.innerHTML = "";
+        this.dom.sketch.innerHTML = "";
+        this.dom.solution.innerHTML = "";
+
+        this.ns = "http://www.w3.org/2000/svg";
+
+        this.mouseout = true;
+
+        Problem.currentProblem = this;
+    }
+
+    get stdsDark() {
+        return `fill:gray; stroke:black; stroke-width: ${this.sketchScale}`;
+    }
+
+    get stdsLight() {
+        return `fill:lightGray; stroke:black; stroke-width: ${this.sketchScale}`;
+    }
+
+    get stdsRed() {
+        return `fill:pink; stroke:red; stroke-width: ${this.sketchScale}`;
+    }
+
+    createSVGSketch(minx=-50, miny=-50, width=100, height=100) {
+        this.dom.sketchSVG = document.createElementNS(this.ns, "svg");
+        this.dom.sketchSVG.setAttributeNS(null, "width", "100%");
+        this.dom.sketchSVG.setAttributeNS(null, "height", "100%");
+        this.dom.sketchSVG.setAttributeNS(null, "viewBox", [minx, miny, width, height].join(" "));
+
+        this.dom.sketchSVGWrap = document.createElement("div");
+        this.dom.sketchSVGWrap.append(this.dom.sketchSVG);
+        this.dom.sketch.append(this.dom.sketchSVGWrap);
+
+        this.sketchScale = Math.min(width, height) * .003;
+
+        return this.dom.sketchSVG;
+    }
+
+    addSVGSketchHoverListener(onHover) {
+        this.dom.sketchSVG.addEventListener("mousemove", function(e) {
+            const rect = this.dom.sketchSVG.getBoundingClientRect();
             const x = (e.clientX - rect.left) / (rect.right - rect.left);
             const y = (e.clientY - rect.top) / (rect.bottom - rect.top);
-            onHover(x, y);
-        });
-        svg.addEventListener("touchmove", e => {
-            const rect = svg.getBoundingClientRect();
+            onHover(x, y, this.mouseout);
+            this.mouseout = false;
+        }.bind(this));
+
+        this.dom.sketchSVG.addEventListener("touchmove", function(e) {
+            const rect = this.dom.sketchSVG.getBoundingClientRect();
             const x = (e.touches[0].clientX - rect.left) / (rect.right - rect.left);
             const y = (e.touches[0].clientY - rect.top) / (rect.bottom - rect.top);
-            onHover((x + 1) % 1, (y + 1) % 1);
-        });
+            onHover((x + 1) % 1, (y + 1) % 1, this.mouseout);
+            this.mouseout = false;
+        }.bind(this), {passive: true});
+    }
 
+    addSVGSketchLeaveListener(onLeave, invoke=false) {
         ["mouseleave", "touchend"].forEach(eveType => {
-            svg.addEventListener(eveType, onLeave);
+            this.dom.sketchSVG.addEventListener(eveType, function() {
+                onLeave();
+                this.mouseout = true;
+            }.bind(this));
         });
 
-        return svg;
+        invoke && onLeave();
     }
-    createSketchSVGInfo(keys) {
-        const hash = {};
-        const infobox = document.createElement("div");
-        infobox.classList.add("infobox");
 
-        for (let k of keys) {
-            const div = document.createElement("div");
-            const keybox = document.createElement("span");
-            const separator = document.createTextNode(": ");
-            const valbox = document.createElement("span");
+    createSketchInfo() {
+        this.sketchInfoElements = new Map();
 
-            hash[k] = valbox;
+        this.dom.infobox = document.createElement("div");
+        this.dom.infobox.classList.add("infobox");
+        this.dom.sketchSVGWrap.append(this.dom.infobox);
+    }
 
-            keybox.textContent = k;
-            
-            div.appendChild(keybox);
-            div.appendChild(separator);
-            div.appendChild(valbox);
+    setSketchSVGInfo(map) {
+        !this.sketchInfoElements && this.createSketchInfo();
 
-            infobox.appendChild(div);
+        map.forEach((value, key, map) => {
+            if (this.sketchInfoElements.has(key)) {
+                this.sketchInfoElements.get(key).textContent = value;
+            }
+            else {
+                const div = document.createElement("div");
+                const keybox = document.createElement("span");
+                const separator = document.createTextNode(": ");
+                const valbox = document.createElement("span");
+
+                keybox.textContent = key;
+                valbox.textContent = value;
+                
+                div.appendChild(keybox);
+                div.appendChild(separator);
+                div.appendChild(valbox);
+    
+                this.dom.infobox.appendChild(div);
+
+                this.sketchInfoElements.set(key, valbox);
+            }
+        });
+    }
+
+    setAdditionalSketchSVGInfo(text) {
+        if (!this.dom.sketchAdditionalInfo) {
+            this.dom.sketchAdditionalInfo = document.createElement("div");
+            this.dom.sketchAdditionalInfo.classList.add("infobox-extra");
+            this.dom.sketch.append(this.dom.sketchAdditionalInfo);
         }
+        this.dom.sketchAdditionalInfo.textContent = text;
+    }
 
-        return [infobox, hash];
+    createSectorPath(startAngle, endAngle, r) {
+        return `
+            M ${r} ${0}
+            A ${r} ${r} ${0} ${Number(endAngle > Math.PI)} ${0} ${r*Math.cos(endAngle)} ${-r*Math.sin(endAngle)}
+            L ${0} ${0}
+            Z
+        `;
     }
-    updateSketchSVGInfo(hash, data) {
-        for (let k of Object.keys(hash)) {
-            hash[k].textContent = data[k];
-        }
-    }
-    round(n, d) {
-        return Math.round(n * 10**d) / 10**d;
-    }
-    degrees(r, d) {
-        return this.round(r * 180 / Math.PI, d);
-    }
-    deploy() {
-        document.getElementById("condition").innerHTML = "";
-        document.getElementById("sketch").innerHTML = "";
-        document.getElementById("solution").innerHTML = "";
-        this.makeCondition(document.getElementById("condition"));
-        this.makeSketch(document.getElementById("sketch"));
-        this.makeSolution(document.getElementById("solution"));
 
-        document.querySelector("main").removeAttribute("hidden");
-    }
-    calcTriangle(x, y, turn1, go1, turn2, go2) {
+    createTrianglePoints (x, y, turn1, go1, turn2, go2) {
         const points = [[x, y]];
         points.push([
             points[0][0] + go1 * Math.cos(turn1),
@@ -91,7 +166,8 @@ class Problem {
         ]);
         return points;
     }
-    points2Path(points) {
-        return points.map(p => p.join(",")).join(" ");
+
+    createTrianglePath () {
+        return this.createTrianglePoints(...arguments).map(p => p.join(",")).join(" ");
     }
 }

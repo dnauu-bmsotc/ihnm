@@ -5,6 +5,8 @@ body {
 main {
     display: flex;
     flex-flow: column nowrap;
+    gap: 1em;
+    margin-top: 2em;
 }
 
 main[hidden] {
@@ -14,6 +16,7 @@ main[hidden] {
 main > * {
     display: flex;
     flex-flow: column nowrap;
+    align-items: center;
     max-width: 40em;
     margin: 1em auto;
     border-top: 1px solid var(--ihnm-color-border);
@@ -33,7 +36,7 @@ img {
 p {
     margin: 1em 0;
     text-align: justify;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 button {
@@ -68,8 +71,29 @@ button {
 
 .infobox {
     font-family: monospace;
+    max-width: 20em;
+}
+
+.infobox-extra {
+    font-family: monospace;
+    margin: 2em 0 0 0;
+}
+
+.infobox-extra::before {
+    content: "additional info: "
 }
 
 #solution::before {
     content: "Решение:";
+}
+
+#welcome {
+    text-align: center;
+    font-size: 1.5em;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 2em;
+}
+
+#welcome::before {
+    content: "Выберите задачу";
 }
