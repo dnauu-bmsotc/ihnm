@@ -16,6 +16,7 @@ main[hidden] {
 main > * {
     display: flex;
     flex-flow: column nowrap;
+    align-items: center;
     max-width: 40em;
     margin: 1em auto;
     border-top: 1px solid black;
@@ -71,6 +72,16 @@ button {
 
 .infobox {
     font-family: monospace;
+    max-width: 20em;
+}
+
+.infobox-extra {
+    font-family: monospace;
+    margin: 2em 0 0 0;
+}
+
+.infobox-extra::before {
+    content: "additional info: "
 }
 
 #solution::before {

@@ -56,43 +56,44 @@ register("Прикреплённая к курсору пластинка", func
     }
 
     geometry = {
-        b: 0.18, h: 0.30, offset: 0.05, angle: 0, angularVelocity: 0,
+        b: 0.18, h: 0.30, offset: 0.05,
     }
 
     geometry.offsetFromCenter = geometry.h / 2 - geometry.offset;
     
     physics = {
-        mass: 1, gravity: 9.807, mu: .2, epsilon: 10**-3,
+        mass: 1, gravity: 9.807, mu: .2, angle: 0, angularVelocity: 0,
     }
 
     physics.inertiaMoment =
-        physics.mass * (geometry.b ** 2 + geometry.h ** 2) / 12
-        + physics.mass * geometry.offsetFromCenter ** 2 + 0.01;
+        physics.mass * (geometry.b** 2 + geometry.h** 2) / 12
+        + physics.mass * geometry.offsetFromCenter** 2;
+
+    p.setSketchSVGInfo(new Map());
+    p.setAdditionalSketchSVGInfo(`
+        mass ${physics.mass}kg;
+        friction coefficient ${physics.mu};
+        gravitational acceleration ${physics.gravity}m/s2; 
+        moment of inertia ${round(physics.inertiaMoment, 4)}kg*m2.
+    `);
 
     rect.setAttributeNS(null, "width", geometry.b);
     rect.setAttributeNS(null, "height", geometry.h);
 
     p.addSVGSketchHoverListener((x, y, jump) => setSketchParameters(x - 0.5, y - 0.5, jump));
-    p.addSVGSketchLeaveListener(() => setSketchParametersOnJump(0, 0), true);
-
-    function onJump(x, y) {
-        cursor.x = x;
-        cursor.y = y;
-    }
-
-    window.hololo = physics;
+    p.addSVGSketchLeaveListener(() => setSketchParameters(0, 0, true), true);
 
     function setSketchParameters(x, y, jump) {
         rect.setAttributeNS(null, "x", x - geometry.b / 2);
         rect.setAttributeNS(null, "y", y - geometry.offset);
+
         cursor.newX = x;
         cursor.newY = y;
-        jump && onJump(x, y);
-    }
 
-    function setSketchParametersOnJump(x, y) {
-        setSketchParameters(x, y);
-        onJump(x, y);
+        if (jump) {
+            cursor.x = x;
+            cursor.y = y;
+        }
     }
 
     function animateFrame(timestamp) {
@@ -111,8 +112,10 @@ register("Прикреплённая к курсору пластинка", func
         cursor.x = cursor.newX;
         cursor.y = cursor.newY;
         
-        const massCenterX = cursor.x + geometry.offsetFromCenter * Math.cos(geometry.angle);
-        const massCenterY = cursor.y + geometry.offsetFromCenter * Math.sin(geometry.angle);
+        const massCenterX = cursor.x + geometry.offsetFromCenter * Math.cos(physics.angle);
+        const massCenterY = cursor.y + geometry.offsetFromCenter * Math.sin(physics.angle);
+
+        // calculating inertial force
 
         const FinX = -physics.mass * cursor.ax;
         const FinY = -physics.mass * cursor.ay;
@@ -123,71 +126,83 @@ register("Прикреплённая к курсору пластинка", func
         inertiaArrow.setAttributeNS(null, "x2", massCenterX + FinX * .01);
         inertiaArrow.setAttributeNS(null, "y2", massCenterY + FinY * .01);
 
+        // calculating gravity force
+
         const FgravX = 0;
         const FgravY = physics.mass * physics.gravity;
         const Fgrav = Math.sqrt(FgravX**2 + FgravY**2);
 
         gravityArrow.setAttributeNS(null, "x1", massCenterX);
         gravityArrow.setAttributeNS(null, "y1", massCenterY);
-        gravityArrow.setAttributeNS(null, "x2", massCenterX + FgravX * .01);
-        gravityArrow.setAttributeNS(null, "y2", massCenterY + FgravY * .01);
+        gravityArrow.setAttributeNS(null, "x2", massCenterX + FgravX * .02);
+        gravityArrow.setAttributeNS(null, "y2", massCenterY + FgravY * .02);
 
+        // combined force of inertia and gravity
+        
         const R1X = FinX + FgravX;
         const R1Y = FinY + FgravY;
-        const R1 = Math.sqrt(R1X ** 2 + R1Y ** 2);
+        const R1 = Math.sqrt(R1X**2 + R1Y**2);
         const R1A = Math.atan2(R1Y, R1X);
 
-        const CentrifugalForce = physics.mass * geometry.angularVelocity**2 * geometry.offsetFromCenter;
-        const N = Math.abs(R1 * Math.cos(R1A - geometry.angle)) + CentrifugalForce;
+        // calculating friction force
+        
+        // calculating sliding and static friction forces
+        const CentrifugalForce = physics.mass * physics.angularVelocity**2 * geometry.offsetFromCenter;
+        const N = Math.abs(R1 * Math.cos(R1A - physics.angle)) + CentrifugalForce;
         const slidingFriction = physics.mu * N;
-        const staticFriction = Math.min(slidingFriction, Math.abs(R1 * Math.sin(R1A - geometry.angle)));
-        const isStatic = animateFrame.isZeroVelocity && (slidingFriction > staticFriction);
-        const Ffr = isStatic ? staticFriction : slidingFriction;
-        const FfrA = geometry.angle - (animateFrame.isZeroVelocity ? R1A : Math.sign(geometry.angularVelocity) * Math.PI/2);
+        const staticFriction = Math.abs(R1 * Math.sin(R1A - physics.angle));
+        const frictionSign = Math.sign(physics.angularVelocity ? -physics.angularVelocity : physics.angle - R1A);
+        // check if slidingFriction too strong
+        const R1M = R1 * geometry.offsetFromCenter * Math.sin(R1A - physics.angle);
+        const FrM = -slidingFriction * geometry.offsetFromCenter * frictionSign;
+        const velocityChange = (FrM + R1M) / physics.inertiaMoment * dt;
+        const noStrongMoments = Math.abs(FrM) > Math.abs(R1M);
+        const noVelocity = Math.abs(physics.angularVelocity) <= Math.abs(velocityChange);
+        const isStatic = noStrongMoments && noVelocity;
+        // finishing friction force calculation
+        const Ffr = Math.min(slidingFriction, staticFriction);
+        const FfrA = physics.angle + frictionSign * Math.PI / 2;
         const FfrX = Ffr * Math.cos(FfrA);
         const FfrY = Ffr * Math.sin(FfrA);
 
         frictionArrow.setAttributeNS(null, "x1", massCenterX);
         frictionArrow.setAttributeNS(null, "y1", massCenterY);
-        frictionArrow.setAttributeNS(null, "x2", massCenterX + FfrX * .1);
-        frictionArrow.setAttributeNS(null, "y2", massCenterY + FfrY * .1);
+        frictionArrow.setAttributeNS(null, "x2", massCenterX + FfrX * .05);
+        frictionArrow.setAttributeNS(null, "y2", massCenterY + FfrY * .05);
 
+        // combined force of inertia, gravity and friction
+        
         const R2X = R1X + FfrX;
         const R2Y = R1Y + FfrY;
         const R2 = Math.sqrt(R2X**2 + R2Y**2);
         const R2A = Math.atan2(R2Y, R2X);
 
-        const M = R2 * geometry.offsetFromCenter * Math.sin(R2A - geometry.angle);
-
-        const dw = M / physics.inertiaMoment * dt;
-        const da = geometry.angularVelocity * dt;
+        // applying forces
         
-        const lessThanEpsilon = Math.abs(da) < physics.epsilon;
-        const changedSign = (geometry.angularVelocity * (geometry.angularVelocity - dw) < 0);
-        animateFrame.isZeroVelocity = lessThanEpsilon || changedSign;
+        const M = R2 * geometry.offsetFromCenter * Math.sin(R2A - physics.angle);
+        physics.angularVelocity += M / physics.inertiaMoment * dt;
+        physics.angularVelocity *= !isStatic;
+        physics.angle += physics.angularVelocity * dt;
+        physics.angle = physics.angle % (2 * Math.PI);
 
-        geometry.angularVelocity += dw;
-        geometry.angularVelocity *= !isStatic;
-        geometry.angle += da;
-        geometry.angle = geometry.angle % (2 * Math.PI);
-
-        const transformRotate = 180 / Math.PI * (geometry.angle - Math.PI / 2);
+        // updating sketch
+        
+        const transformRotate = 180 / Math.PI * (physics.angle - Math.PI / 2);
         rect.setAttribute("transform",  `rotate(${transformRotate} ${cursor.x} ${cursor.y})`);
 
-        if (isNaN(transformRotate)) {
-            opt.btn.click();
-        }
-
+        isNaN(transformRotate) && opt.error();
+        
         p.setSketchSVGInfo(new Map([
-            ["dt", round(dt * 1000, 5) + " ms"],
-            ["friction force", round(Ffr, 1) + " m/s2"],
-            ["no velocity", animateFrame.isZeroVelocity],
+            ["dt", round(dt * 1000, 5) + "ms"],
+            ["inertia force", round(Fin, 1) + "N"],
+            ["gravity force", round(Fgrav, 1) + "N"],
+            ["friction force", round(Ffr, 1) + "N"],
+            ["angular velocity", round(physics.angularVelocity, 2) + "rad/s"],
         ]));
 
         (Problem.currentProblem === p) && requestAnimationFrame(animateFrame);
     }
 
     previousTimestamp = performance.now();
-
     requestAnimationFrame(animateFrame);
 });

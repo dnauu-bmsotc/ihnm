@@ -13,7 +13,12 @@ function register(name, callback) {
     btn.textContent = name;
     
     btn.addEventListener("click", function() {
-        callback({ btn: btn });
+        callback({
+            error: function(error="") {
+                console.log("There was an error, problem restarted. " + error);
+                btn.click();
+            },
+        });
         document.querySelector("main").removeAttribute("hidden");
         document.querySelector("#welcome").style.display = "none";
     });
@@ -58,7 +63,9 @@ class Problem {
         this.dom.sketchSVG.setAttributeNS(null, "height", "100%");
         this.dom.sketchSVG.setAttributeNS(null, "viewBox", [minx, miny, width, height].join(" "));
 
-        this.dom.sketch.append(this.dom.sketchSVG);
+        this.dom.sketchSVGWrap = document.createElement("div");
+        this.dom.sketchSVGWrap.append(this.dom.sketchSVG);
+        this.dom.sketch.append(this.dom.sketchSVGWrap);
 
         this.sketchScale = Math.min(width, height) * .003;
 
@@ -99,7 +106,7 @@ class Problem {
 
         this.dom.infobox = document.createElement("div");
         this.dom.infobox.classList.add("infobox");
-        this.dom.sketch.append(this.dom.infobox);
+        this.dom.sketchSVGWrap.append(this.dom.infobox);
     }
 
     setSketchSVGInfo(map) {
@@ -127,6 +134,15 @@ class Problem {
                 this.sketchInfoElements.set(key, valbox);
             }
         });
+    }
+
+    setAdditionalSketchSVGInfo(text) {
+        if (!this.dom.sketchAdditionalInfo) {
+            this.dom.sketchAdditionalInfo = document.createElement("div");
+            this.dom.sketchAdditionalInfo.classList.add("infobox-extra");
+            this.dom.sketch.append(this.dom.sketchAdditionalInfo);
+        }
+        this.dom.sketchAdditionalInfo.textContent = text;
     }
 
     createSectorPath(startAngle, endAngle, r) {
