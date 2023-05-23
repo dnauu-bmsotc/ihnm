@@ -37,9 +37,11 @@ class Problem {
         this.dom.condition.innerHTML = "";
         this.dom.sketch.innerHTML = "";
         this.dom.solution.innerHTML = "";
+        
 
         this.ns = "http://www.w3.org/2000/svg";
 
+        this.dom.sketch.hidden = true;
         this.mouseout = true;
 
         Problem.currentProblem = this;
@@ -54,7 +56,7 @@ class Problem {
     }
 
     get stdsRed() {
-        return `fill:pink; stroke:red; stroke-width: ${this.sketchScale}`;
+        return `fill:var(--ihnm-color-pink); stroke:red; stroke-width: ${this.sketchScale}`;
     }
 
     createSVGSketch(minx=-50, miny=-50, width=100, height=100) {
@@ -68,6 +70,7 @@ class Problem {
         this.dom.sketch.append(this.dom.sketchSVGWrap);
 
         this.sketchScale = Math.min(width, height) * .003;
+        this.dom.sketch.hidden = false;
 
         return this.dom.sketchSVG;
     }

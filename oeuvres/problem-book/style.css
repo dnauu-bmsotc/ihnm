@@ -61,12 +61,12 @@ button {
     content: "Условие:";
 }
 
-#condition img {
-    max-width: 50%;
-}
-
 #sketch::before {
     content: "Рисунок:";
+}
+
+#sketch[hidden] {
+    display: none;
 }
 
 .infobox {

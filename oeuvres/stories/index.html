@@ -13,7 +13,10 @@
             <button data-story-id="2-phaedo">Доказательство бессмертия души</button>
             <button data-story-id="3-monadology">Монадология Лейбница</button>
             <button data-story-id="4-projective-test">Проекционный тест</button>
+            <button data-story-id="5-names">Имена и названия</button>
         </section>
+
+        <div id="loading" hidden>Загрузка</div>
         
         <pre id="story"></pre>
     </main>
@@ -21,10 +24,17 @@
     <script>
         document.querySelectorAll("#catalog button[data-story-id]").forEach(btn => {
             btn.addEventListener("click", _ => {
-
-                fetch(new Request(`./stories/${btn.dataset.storyId}.txt`))
-                    .then(resp => resp.text())
-                    .then(text => document.getElementById("story").textContent = text);
+                
+                fetch(new Request(`./stories/${btn.dataset.storyId}.txt`), {cache: "no-store"})
+                    .then(resp => {
+                        document.getElementById("loading").hidden = false;
+                        document.getElementById("story").textContent = "";
+                        return resp.text();
+                    })
+                    .then(text => {
+                        document.getElementById("loading").hidden = true;
+                        document.getElementById("story").textContent = text;
+                    });
             })
         });
     </script>
