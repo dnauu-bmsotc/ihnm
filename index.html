@@ -118,6 +118,7 @@
 				{href: "./oeuvres/material-points", name: "Материальные точки", extra: ["gif"]},
 				{href: "./oeuvres/gallery/drawings", name: "Рисунки", extra: ["dark"]},
 				{href: "./oeuvres/gallery/photos", name: "Фотографии", extra: ["dark"]},
+				{href: "./oeuvres/conspectus2/dest", name: "Конспекты 2", preview: "conspectus2"},
 			];
 
 			let style = ``;
@@ -136,8 +137,9 @@
 					</a>
 				`;
 
-				const fname = "./previews/" + pages[i].href
-					.substring(pages[i].href.lastIndexOf('/') + 1);
+				const fname = "./previews/" + (pages[i].preview
+					? pages[i].preview
+					: pages[i].href.substring(pages[i].href.lastIndexOf('/') + 1));
 
 				style += addLight(i, fname, "png");
 

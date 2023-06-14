@@ -1,0 +1,7 @@
+mixin nav(dir, base)
+  nav#navigation
+    each block in dirs
+      div.blockname= block.name
+      div.block
+        each d in block.disciplines
+          a(href=base+d.href).disciplinename= d.name
