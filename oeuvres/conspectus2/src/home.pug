@@ -3,11 +3,12 @@ include mixins.pug
 doctype html
 html(lang='ru')
   head
-    title= Конспекты
+    title Конспекты
     meta(charset="utf-8")
-    link(rel='stylesheet', href='../style.css')
+    link(rel='stylesheet', href='./style.css')
 
   body
     main
-        h2 конспекты
-        +nav(dirs, "")
+        details(open)
+          summary конспекты
+          +nav(dirs, "")

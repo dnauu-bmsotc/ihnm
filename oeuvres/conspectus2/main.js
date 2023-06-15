@@ -28,6 +28,7 @@ for (let block of dirs) {
 }
 
 compileSass();
+
 compileCoffee();
 
 createHomepage();
@@ -77,6 +78,7 @@ function tryMarkdown(blockName, disciplineName) {
         const dom = new jsdom.JSDOM(mdhtml);
         const toc = [];
 
+        // collect headers for table of contents
         Array.from(dom.window.document.querySelectorAll("h2, h3, h4")).forEach((h, i) => {
             h.id = "toc-id-" + i;
             toc.push({
@@ -85,6 +87,12 @@ function tryMarkdown(blockName, disciplineName) {
                 id: h.id,
             });
         });
+
+        // set css variables for images
+        for (let img of dom.window.document.querySelectorAll("img")) {
+            const width = img.src.match(/(\d+).[^\.]+$/)[1];
+            img.style.setProperty("--width", width + "%");
+        }
         
         const pagehtml = pugIndex({
             title: disciplineName,

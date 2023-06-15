@@ -23,7 +23,7 @@
   };
 
   scrollTo = function(el) {
-    return el.scrollIntoView();
+    return el && el.scrollIntoView();
   };
 
   document.getElementById("toc").onclick = function(e) {

@@ -1,1 +1,69 @@
 @import "normalize"
+
+:root
+    --background-color: white
+    --color: black
+    --a-color: black
+    --a-hover-color: white
+
+@media (prefers-color-scheme: dark)
+    :root
+        --background-color: #1b1b1b
+        --color: white
+        --a-color: white
+        --a-hover-color: white
+    
+body
+    padding: 4px
+    font-family: Arial, Helvetica, sans-serif
+    font-size: 90%
+    background-color: var(--background-color)
+    color: var(--color)
+    a
+        text-decoration: none
+        cursor: pointer
+        color: var(--a-color)
+        &:hover
+            text-decoration: underline
+            color: var(--a-hover-color)
+
+
+#conspect
+    max-width: 50em
+    margin: 2em auto 40vh auto
+    img, video
+        max-width: 100%
+        display: block
+        margin: auto
+    img
+        width: var(--width)
+
+
+details
+    margin-bottom: 1em
+    #navigation
+        .blockname
+            margin-top: 0.4em
+        .block
+            display: flex
+            flex-flow: row wrap
+            gap: 0.5em
+            margin-left: 2em
+    #toc
+        display: flex
+        flex-flow: column nowrap
+        justify-content: flex-start
+        align-items: flex-start
+        .H2
+            margin-left: 0
+            &::before
+                content: ""
+        .H3
+            margin-left: 2em
+            &::before
+                content: "- "
+        .H4
+            margin-left: 4em
+            &::before
+                content: ""
+        

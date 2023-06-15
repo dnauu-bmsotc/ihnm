@@ -9,6 +9,6 @@ katexOptions =
 window.onload = () -> renderMathInElement(document.body, katexOptions)
 
 
-scrollTo = (el) -> el.scrollIntoView()
+scrollTo = (el) -> el && el.scrollIntoView()
 
 document.getElementById("toc").onclick = (e) -> scrollTo document.getElementById e.target.dataset.id
