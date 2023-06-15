@@ -2,16 +2,22 @@
 
 :root
     --background-color: white
+    --background-color2: #ececec
     --color: black
     --a-color: black
-    --a-hover-color: white
+    --a-hover-color: black
+    --strong-color: #3f3fff
+    --em-color: #3f3fff
 
 @media (prefers-color-scheme: dark)
     :root
         --background-color: #1b1b1b
+        --background-color2: #262626
         --color: white
         --a-color: white
         --a-hover-color: white
+        --strong-color: #9d9dff
+        --em-color: #9d9dff
     
 body
     padding: 4px
@@ -26,6 +32,10 @@ body
         &:hover
             text-decoration: underline
             color: var(--a-hover-color)
+    strong
+        color: var(--strong-color)
+    em
+        color: var(--em-color)
 
 
 #conspect
@@ -67,3 +77,35 @@ details
             &::before
                 content: ""
         
+
+.table
+    .table-name
+        text-align: center
+        font-weight: bold
+        font-size: 1.2em
+        font-variant: small-caps
+        margin: 1.5em 0 0 0
+
+    .table-wrap
+        overflow-x: auto
+        overflow-y: visible
+        max-width: 100%
+
+    table 
+        table-layout: fixed
+        border-collapse: collapse
+        font-size: 0.8em
+        text-align: center
+        margin: 1em
+
+    tr:first-child 
+        font-weight: bold
+        font-size: 1.1em
+
+    tr:nth-child(even)
+        background-color: var(--background-color2)
+
+    td 
+        border: 1px solid black
+        padding: 5px
+

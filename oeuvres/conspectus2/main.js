@@ -22,8 +22,20 @@ const dirs = createDestDirectories();
 
 for (let block of dirs) {
     for (let d of block.disciplines) {
-        tryMarkdown(block.name, d.name);
-        tryMedia(block.name, d.name);
+
+        data = {
+            srcDir: srcDir,
+            destDir: destDir,
+            conspectsDir: conspectsDir,
+            blockName: block.name,
+            disciplineName: d.name,
+        };
+        
+        copyMedia(data);
+        
+        tryMarkdown(data);
+
+        tryScript(data);
     }
 }
 
@@ -67,9 +79,19 @@ function createDestDirectories() {
 }
 
 
-function tryMarkdown(blockName, disciplineName) {
-    const mdpath = path.join(conspectsDir, blockName, disciplineName, "markdown.md");
-    const pagepath = path.join(destDir, blockName, disciplineName, "index.html");
+function tryScript(d) {
+    const scriptPath = "./" + path.join(conspectsDir, d.blockName, d.disciplineName, "script.js");
+    if (fs.existsSync(scriptPath)) {
+        require(scriptPath)(d);
+        return true;
+    }
+    return false;
+}
+
+
+function tryMarkdown(d) {
+    const mdpath = path.join(conspectsDir, d.blockName, d.disciplineName, "markdown.md");
+    const pagepath = path.join(destDir, d.blockName, d.disciplineName, "index.html");
 
     if (fs.existsSync(mdpath)) {
 
@@ -77,7 +99,7 @@ function tryMarkdown(blockName, disciplineName) {
         const mdhtml = marked.parse(mdtext, { mangle: false, headerIds: false });
         const dom = new jsdom.JSDOM(mdhtml);
         const toc = [];
-
+        
         // collect headers for table of contents
         Array.from(dom.window.document.querySelectorAll("h2, h3, h4")).forEach((h, i) => {
             h.id = "toc-id-" + i;
@@ -94,21 +116,24 @@ function tryMarkdown(blockName, disciplineName) {
             img.style.setProperty("--width", width + "%");
         }
         
-        const pagehtml = pugIndex({
-            title: disciplineName,
+        const pageHTML = pugIndex({
+            title: d.disciplineName,
             conspect: dom.serialize(),
             dirs: dirs,
             toc: toc,
         });
 
-        fs.appendFile(pagepath, pagehtml, err => {});
+        fs.writeFile(pagepath, pageHTML, err => {});
+        
+        d.pageHTML = pageHTML;
+        d.pagePath = pagepath;
     }
 }
 
 
-function tryMedia(blockName, disciplineName) {
-    const mediaPath = path.join(conspectsDir, blockName, disciplineName, "media");
-    const mediaDest = path.join(destDir, blockName, disciplineName, "media");
+function copyMedia(d) {
+    const mediaPath = path.join(conspectsDir, d.blockName, d.disciplineName, "media");
+    const mediaDest = path.join(destDir, d.blockName, d.disciplineName, "media");
 
     if (fs.existsSync(mediaPath)) {
         fsExtra.copySync(mediaPath, mediaDest);
