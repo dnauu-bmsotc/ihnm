@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Работа с изображениями</title>
+        <link rel="stylesheet" href="../../ihnm.css">
+        <link rel="stylesheet" href="./style.css">
+		<script src="./script.js"></script>
+        <script src="./scripts/collage-photo.js"></script>
+    </head>
+    <body>
+        <nav id="navigation"></nav>
+        <main>
+            <section class="tab" id="collage-photo">
+                <h2>Коллаж из фоток</h2>
+                <input type="file" class="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
+                <div class="image-drop"></div>
+                <span>Количество</span>
+                <select class="rowcol-select">
+                    <option value="cols">столбцов</option>
+                    <option value="rows">строк</option>
+                </select>
+                <input type="number" class="rowcol-input" value=1 min="1">
+                <!-- <div class="image-table-wrap">
+                    <table class="image-table"></table>
+                </div> -->
+                <canvas class="result"></canvas>
+            </section>
+            
+            <!-- <section class="tab" id="collage-gif">
+                <h2>Коллаж из гифок</h2>
+            </section> -->
+
+            <!-- <section class="tab" id="invert-photo">
+                <h2>Инвертировать фото</h2>
+            </section> -->
+
+            <!-- <section class="tab" id="noise-photo">
+                <h2>Наложить шум на фото</h2>
+            </section> -->
+        </main>
+    </body>
+</html>

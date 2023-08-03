@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Генератор рек</title>
+        <link rel="stylesheet" href="../../ihnm.css">
+        <link rel="stylesheet" href="./style.css">
+		<script src="./script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+	</head>
+	<body>
+		<main>
+            <section id="generations"></section>
+            <section id="text">
+                <h2>Как это делалось</h2>
+                <p>
+                    Сначала были сгенерированы изображения рек с помощью Google Earth Engine и набора данных
+                    «<a href="https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_3_GlobalSurfaceWater">JRC Global Surface Water Mapping Layers, v1.3</a>».
+                    Данные из набора были отфильтрованы относительно границ России, которые были получены из набора данных
+                    «<a href="https://geonode.state.gov/layers/catalog:geonode:LSIB">LSIB 2017: Large Scale International Boundary Polygons, Simplified</a>».
+                    В результате получилось около 78 тысяч изображений, каждое из которых имеет
+                    размер 256x256 пикселей в градациях серого. Пиксели изображений показывают присутствие воды («the
+                    frequency with which water was present»).
+                </p>
+                <p>
+                    Большинство изображений оказались почти полностью чёрными. Также, некоторые изображения,
+                    соответствующие крайним северным частям страны, оказались с артефактами в виде горизонтальных полос,
+                    похожих на помехи. После фильтрации по минимальной средней яркости и удаления изображений
+                    с артефактами, осталось около 10 тысяч изображений.
+                </p>
+                <p>
+                    Около тысячи изображений были вручную визуально классифицированы в 13 классов. Затем,
+                    с использованием модели VGG16 и метода "fine tuning" были отклассифицированы оставшиеся изображения.
+                    Полученный датасет был использован для тренировки генеративно-состязательной модели, создающей
+                    изображения размером 28x28 пикселей. Создание и обучение модели производились на платформе
+                    <a href="https://www.kaggle.com/">Kaggle</a>.
+                </p>
+                <p>
+                    Этот проект начался на первой неделе августа 2022 года. И на первой неделе августа 2023 года
+                    проект завершился. Его результат я бы сказал скорее удовлетворительны. Мне не удалось создать сеть,
+                    генерирующую изображения размером 64x64 или, тем более, 256x256. Однако, считаю классным, что у меня
+                    вообще получилось сделать хоть что-то. В результате одной из попыток у меня получилась модель,
+                    генерирующая скорее брызги и пятна, чем реки и озёра. Но после её создания я на многие месяцы
+                    бросил идею о генераторе, посчитав, что недостаточно данных, вычислительных мощностей, знаний или
+                    мозгов. Та модель доступна по ссылке <a href="../../archive/rivers">ihnm/archive/rivers</a>.
+                </p>
+                <p>
+                    Набор данных доступен по ссылке: <a href="https://disk.yandex.ru/d/ZgQY256sCSSYPQ">https://disk.yandex.ru/d/ZgQY256sCSSYPQ</a>.
+                </p>
+                <p>
+                    Исходный код разделён на три части и доступен по ссылкам:
+                </p>
+                <ol>
+                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-classifier-vgg16-based.ipynb">Классификатор</a></li>
+                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-cgan.ipynb">Нервосеть</a></li>
+                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-research.ipynb">Анимация</a></li>
+                </ol>
+            </section>
+		</main>
+	</body>
+</html>

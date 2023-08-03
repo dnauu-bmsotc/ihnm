@@ -1,0 +1,41 @@
+main {
+    padding: 0;
+}
+
+#text {
+    background-color: var(--ihnm-color-bg-transparent);
+    max-width: 40em;
+    padding: 1em;
+    margin: 2em auto;
+}
+
+h2, p {
+    margin: 1em 0;
+}
+
+#generations {
+    position: fixed;
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    gap: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#generations canvas {
+    width: 10% !important;
+    aspect-ratio: 1;
+    border: 1px solid gray;
+    box-sizing: border-box;
+}
+
+@media (max-width: 50em) {
+    #generations canvas {
+        width: 20% !important;
+    }
+  }
