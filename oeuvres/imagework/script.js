@@ -35,12 +35,16 @@ function activateTab(tab) {
     
         getEl("image-drop").addEventListener("drop", async e => {
             images = await loadImages([...e.dataTransfer.files]);
+            getEl("rowcol-input").max = images.length;
+            getEl("rowcol-input").value = Math.ceil(Math.sqrt(images.length));
             processInputs();
             e.preventDefault();
         });
     
         getEl("image-input").addEventListener("change", async e => {
             images = await loadImages([...e.target.files]);
+            getEl("rowcol-input").max = images.length;
+            getEl("rowcol-input").value = Math.ceil(Math.sqrt(images.length));
             processInputs();
         });
 
@@ -50,15 +54,6 @@ function activateTab(tab) {
 
         let images = [];
         
-        function getRowsCols() {
-            const v = parseInt(getEl("rowcol-input").value);
-            const w = Math.ceil(images.length / v);
-            switch (getEl("rowcol-select").value) {
-                case "rows": return [v, w];
-                case "cols": return [w, v];
-            }
-        }
-
         async function loadImages(files) {
             return await Promise.all(files.map(async file => {
                 const blob = URL.createObjectURL(file);
@@ -74,58 +69,23 @@ function activateTab(tab) {
 
         function getImageLine(axis, n, rows, cols) {
             switch (axis) {
-                case "horizontal": return images.slice(n*cols, (n+1)*cols);
+                case "horizontal":return images.slice(n*cols, (n+1)*cols);
                 case "vertical": return images.filter((v, i, arr) => ((cols-n) + i) % cols === 0);
             }
         }
 
-        function processInputs() {
-            const [rows, cols] = getRowsCols();
+        function calculateImages(secondAxis, rows, cols) {
+            [firstDim, secondDim, firstSize, secondSize, firstNaturalSize,
+                secondNaturalSize, firstCoor, secondCoor] = secondAxis === "vertical"
+            ? [cols, rows, "width", "height", "naturalWidth", "naturalHeight", "x", "y"]
+            : [rows, cols, "height", "width", "naturalHeight", "naturalWidth", "y", "x"];
 
-            // const table = getEl("image-table");
-            // table.innerHTML = "";
-            //
-            // for (let i = 0; i < rows; i++) {
-            //     const row = document.createElement("tr");
-            //     table.append(row);
-            //     for (let j = 0; j < cols; j++) {
-            //         const idx = i*cols + j;
-            //         if (idx < images.length) {
-            //             const td = document.createElement("td");
-            //             row.append(td);
-            //             const img = document.createElement("img");
-            //             td.append(images[idx].el);
-            //         }
-            //     }
-            // }
+            images[0].x = images[0].y = 0;
+            images[0].width = images[0].height = 0;
 
-            const firstAxis = getEl("rowcol-select").value === "cols" ? "horizontal" : "vertical";
-            const secondAxis = getEl("rowcol-select").value === "cols" ? "vertical" : "horizontal";
-            const firstDim = firstAxis === "horizontal" ? cols : rows;
-            const secondDim = firstAxis === "vertical" ? cols : rows;
-            const firstSize = firstAxis === "horizontal" ? "width" : "height";
-            const secondSize = firstAxis === "vertical" ? "width" : "height";
-            const firstNaturalSize = firstAxis === "horizontal" ? "naturalWidth" : "naturalHeight";
-            const secondNaturalSize = firstAxis === "vertical" ? "naturalWidth" : "naturalHeight";
-            const firstCoor = firstAxis === "horizontal" ? "x" : "y";
-            const secondCoor = firstAxis === "vertical" ? "x" : "y";
-
-            const line = getImageLine(secondAxis, 0, rows, cols);
-            line[0].x = 0;
-            line[0].y = 0;
-            line[0].width = line[0].el.naturalWidth;
-            line[0].height = line[0].el.naturalHeight;
-            for (let i = 1; i < secondDim; i++) {
-                const ratio = line[0][firstSize] / line[i].el[firstNaturalSize];
-                line[i][firstSize] = line[0][firstSize];
-                line[i][secondSize] = line[i].el[secondNaturalSize] * ratio;
-                line[i][firstCoor] = line[0][firstCoor];
-                line[i][secondCoor] = line[i-1][secondCoor] + line[i-1][secondSize];
-            }
-
-            for (let i = 1; i < firstDim; i++) {
+            for (let i = 0; i < firstDim; i++) {
                 const line = getImageLine(secondAxis, i, rows, cols);
-                const prevLine = getImageLine(secondAxis, i-1, rows, cols);
+                const prevLine = getImageLine(secondAxis, Math.max(0, i-1), rows, cols);
                 line[0][firstCoor] = prevLine[0][firstCoor] + prevLine[0][firstSize];
                 line[0][secondCoor] = 0;
 
@@ -154,14 +114,31 @@ function activateTab(tab) {
                     }
                 }
             }
+        }
 
-            const canvas = getEl("result");
-            canvas[firstSize] = getImageLine(firstAxis, 0, rows, cols).reduce((acc, val) => acc + val[firstSize], 0);
-            canvas[secondSize] = getImageLine(secondAxis, 0, rows, cols).reduce((acc, val) => acc + val[secondSize], 0);
+        function drawImagesToURL(rows, cols) {
+            const canvas = document.createElement("canvas");
+            
+            canvas.width = getImageLine("horizontal", 0, rows, cols).reduce((acc, val) => acc + val.width, 0);
+            canvas.height = getImageLine("vertical", 0, rows, cols).reduce((acc, val) => acc + val.height, 0);
+
             const ctx = canvas.getContext("2d");
-            for (let i of images) {
-                ctx.drawImage(i.el, i.x, i.y, i.width, i.height);
-            }
+            for (let i of images) ctx.drawImage(i.el, i.x, i.y, i.width, i.height);
+            
+            return canvas.toDataURL('image/png');
+        }
+
+        function processInputs() {
+            const v = parseInt(getEl("rowcol-input").value);
+            const w = Math.ceil(images.length / v);
+
+            [rows, cols, secondAxis] = getEl("rowcol-select").value === "cols"
+                ? [w, v, "vertical"]
+                : [v, w, "horizontal"];
+            
+            calculateImages(secondAxis, rows, cols);
+
+            getEl("result").src = drawImagesToURL(rows, cols);
         }
     });
 })();
