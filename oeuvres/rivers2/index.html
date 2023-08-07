@@ -6,56 +6,98 @@
 		<title>Генератор рек</title>
         <link rel="stylesheet" href="../../ihnm.css">
         <link rel="stylesheet" href="./style.css">
+        <script src="./lib/tfjs.js"></script>
+        <!-- GIF -->
+        <script src="./lib/LZWEncoder.js"></script>
+        <script src="./lib/NeuQuant.js"></script>
+        <script src="./lib/GIFEncoder.js"></script>
+        <script src="./lib/b64.js"></script>
+
 		<script src="./script.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 	</head>
 	<body>
 		<main>
             <section id="generations"></section>
-            <section id="text">
-                <h2>Как это делалось</h2>
-                <p>
-                    Сначала были сгенерированы изображения рек с помощью Google Earth Engine и набора данных
-                    «<a href="https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_3_GlobalSurfaceWater">JRC Global Surface Water Mapping Layers, v1.3</a>».
-                    Данные из набора были отфильтрованы относительно границ России, которые были получены из набора данных
-                    «<a href="https://geonode.state.gov/layers/catalog:geonode:LSIB">LSIB 2017: Large Scale International Boundary Polygons, Simplified</a>».
-                    В результате получилось около 78 тысяч изображений, каждое из которых имеет
-                    размер 256x256 пикселей в градациях серого. Пиксели изображений показывают присутствие воды («the
-                    frequency with which water was present»).
-                </p>
-                <p>
-                    Большинство изображений оказались почти полностью чёрными. Также, некоторые изображения,
-                    соответствующие крайним северным частям страны, оказались с артефактами в виде горизонтальных полос,
-                    похожих на помехи. После фильтрации по минимальной средней яркости и удаления изображений
-                    с артефактами, осталось около 10 тысяч изображений.
-                </p>
-                <p>
-                    Около тысячи изображений были вручную визуально классифицированы в 13 классов. Затем,
-                    с использованием модели VGG16 и метода "fine tuning" были отклассифицированы оставшиеся изображения.
-                    Полученный датасет был использован для тренировки генеративно-состязательной модели, создающей
-                    изображения размером 28x28 пикселей. Создание и обучение модели производились на платформе
-                    <a href="https://www.kaggle.com/">Kaggle</a>.
-                </p>
-                <p>
-                    Этот проект начался на первой неделе августа 2022 года. И на первой неделе августа 2023 года
-                    проект завершился. Его результат я бы сказал скорее удовлетворительны. Мне не удалось создать сеть,
-                    генерирующую изображения размером 64x64 или, тем более, 256x256. Однако, считаю классным, что у меня
-                    вообще получилось сделать хоть что-то. В результате одной из попыток у меня получилась модель,
-                    генерирующая скорее брызги и пятна, чем реки и озёра. Но после её создания я на многие месяцы
-                    бросил идею о генераторе, посчитав, что недостаточно данных, вычислительных мощностей, знаний или
-                    мозгов. Та модель доступна по ссылке <a href="../../archive/rivers">ihnm/archive/rivers</a>.
-                </p>
-                <p>
-                    Набор данных доступен по ссылке: <a href="https://disk.yandex.ru/d/ZgQY256sCSSYPQ">https://disk.yandex.ru/d/ZgQY256sCSSYPQ</a>.
-                </p>
-                <p>
-                    Исходный код разделён на три части и доступен по ссылкам:
-                </p>
-                <ol>
-                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-classifier-vgg16-based.ipynb">Классификатор</a></li>
-                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-cgan.ipynb">Нервосеть</a></li>
-                    <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-research.ipynb">Анимация</a></li>
-                </ol>
+            <section id="content">
+                <article>
+                    <h2>Создать GIF</h2>
+                    <div id="gif-creator-wrap">
+                        <div id="gif-creator-loading"></div>
+                        <div id="gif-creator">
+                            <div id="settings" hidden>
+                                Нервосеть генерирует изображение, используя точку из скрытого пространства,
+                                состоящую из класса изображения и гауссового шума. Кадры анимации создаются
+                                линейной интерполяцией между точками из скрытого пространства. После
+                                интерполяции будет <span id="created-span"></span>
+                                <input id="nInterpolations-input" type="number" value="39" min="2" max="999">
+                                <span id="frames1-span"></span>, включая начальную и конечную точки. Начальная
+                                точка соответствует классу
+                                <select id="class1-input" class="ral-class-select"></select>
+                                и шуму с зерном
+                                <input id="seed1-input" type="number" value="0" min="0" max="9999">
+                                <span id="random_seed1-span">(случайное зерно)</span>.
+                                Конечная точка соответствует классу
+                                <select id="class2-input" class="ral-class-select"></select>
+                                и шуму с зерном
+                                <input id="seed2-input" type="number" value="0" min="0" max="9999">
+                                <span id="random_seed2-span">(случайное зерно)</span>.
+                                <span id="same-points-warning" hidden>Начальная и конечная точки совпадают.</span>
+                                Анимация будет иметь частоту
+                                <input id="fps-input" type="number" value="8" min="1" max="60">
+                                <span id="frames2-span"></span> в секунду; суммарная длительность анимации составит
+                                <span id="dur-span"></span> секунд.
+                            </div>
+                            <image id="gif-img" title="Здесь будет GIF"></image>
+                            <button id="create-gif-btn">Создать</button>
+                            <div style="width:2em;height:2em;" onclick="document.getElementById('settings').hidden=false"></div>
+                        </div>
+                    </div>
+                </article>
+                <article id="text">
+                    <h2>Как это делалось</h2>
+                    <p>
+                        Сначала были сгенерированы изображения рек с помощью Google Earth Engine и набора данных
+                        «<a href="https://developers.google.com/earth-engine/datasets/catalog/JRC_GSW1_3_GlobalSurfaceWater">JRC Global Surface Water Mapping Layers, v1.3</a>».
+                        Данные из набора были отфильтрованы относительно границ России, которые были получены из набора данных
+                        «<a href="https://geonode.state.gov/layers/catalog:geonode:LSIB">LSIB 2017: Large Scale International Boundary Polygons, Simplified</a>».
+                        В результате получилось около 78 тысяч изображений, каждое из которых имеет
+                        размер 256x256 пикселей в градациях серого. Пиксели изображений показывают присутствие воды («the
+                        frequency with which water was present»).
+                    </p>
+                    <p>
+                        Большинство изображений оказались почти полностью чёрными. Также, некоторые изображения,
+                        соответствующие крайним северным частям страны, оказались с артефактами в виде горизонтальных полос,
+                        похожих на помехи. После фильтрации по минимальной средней яркости и удаления изображений
+                        с артефактами, осталось около 10 тысяч изображений.
+                    </p>
+                    <p>
+                        Около тысячи изображений были вручную визуально классифицированы в 13 классов. Затем,
+                        с использованием модели VGG16 и метода "fine tuning" были отклассифицированы оставшиеся изображения.
+                        Полученный датасет был использован для тренировки генеративно-состязательной модели, создающей
+                        изображения размером 28x28 пикселей. Создание и обучение модели производились на платформе
+                        <a href="https://www.kaggle.com/">Kaggle</a>.
+                    </p>
+                    <p>
+                        Первая строчка кода этого проекта была написана 7 августа. И ровно через год, 7 августа 2023 года
+                        я дописываю генератор анимаций. Результат проекта я бы сказал скорее удовлетворительный. Мне не удалось
+                        создать сеть, генерирующую изображения размером 64x64 или, тем более, 256x256. Однако, считаю классным,
+                        что у меня вообще получилось сделать хоть что-то. В результате одной из попыток у меня получилась модель,
+                        генерирующая скорее брызги и пятна, чем реки и озёра. Посмотреть генерации этой сети можно по
+                        ссылке <a href="../../archive/rivers">ihnm/archive/rivers</a>. Результат меня немного расстроил,
+                        и после создания этой модели я почти на год бросил идею о генераторе, посчитав, что мне недостаточно
+                        данных, вычислительных мощностей, знаний или мозгов.
+                    </p>
+                    <p>
+                        Набор данных доступен по ссылке: <a href="https://disk.yandex.ru/d/ZgQY256sCSSYPQ">https://disk.yandex.ru/d/ZgQY256sCSSYPQ</a>.
+                    </p>
+                    <p>
+                        Исходный код разделён на две части и доступен по ссылкам:
+                    </p>
+                    <ol>
+                        <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-classifier-vgg16-based.ipynb">Классификатор</a></li>
+                        <li><a href="https://github.com/dnauu-bmsotc/ihnm/tree/main/oeuvres/rivers2/notebooks/rivers-and-lakes-cgan.ipynb">Нервосеть</a></li>
+                    </ol>
+                </article>
             </section>
 		</main>
 	</body>

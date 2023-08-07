@@ -1,7 +1,8 @@
 :root {
     --ihnm-color-bg: white;
     --ihnm-color-bg2: rgb(244, 244, 244);
-    --ihnm-color-bg-transparent: rgb(255, 255, 255, .8);
+    --ihnm-color-bg-transparent: rgb(255, 255, 255, .9);
+    --ihnm-color-bg2-transparent: rgb(244, 244, 244, .9);
     --ihnm-color-text: black;
     --ihnm-color-pink: pink;
     --ihnm-color-shadow: rgb(222, 222, 222);
@@ -16,7 +17,8 @@
     :root {
         --ihnm-color-bg: black;
         --ihnm-color-bg2: rgb(22, 22, 22);
-        --ihnm-color-bg-transparent: rgb(0, 0, 0, .8);
+        --ihnm-color-bg-transparent: rgb(0, 0, 0, .9);
+        --ihnm-color-bg2-transparent: rgb(22, 22, 22, .9);
         --ihnm-color-text: white;
         --ihnm-color-pink: #672733;
         --ihnm-color-shadow: rgb(55, 55, 55);
@@ -115,6 +117,13 @@ button:hover {
 
 button:active {
     background-color: var(--ihnm-color-shadow);
+}
+
+button[disabled] {
+    color: var(--ihnm-color-border);
+    background-color: var(--ihnm-color-bg2);
+    border-color: var(--ihnm-color-bg2);
+    cursor: default;
 }
 
 svg {

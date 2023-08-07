@@ -2,11 +2,16 @@ main {
     padding: 0;
 }
 
-#text {
-    background-color: var(--ihnm-color-bg-transparent);
+#content {
     max-width: 40em;
-    padding: 1em;
     margin: 2em auto;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#content article {
+    background-color: var(--ihnm-color-bg-transparent);
+    padding: 1.5em;
 }
 
 h2, p {
@@ -34,8 +39,57 @@ h2, p {
     box-sizing: border-box;
 }
 
+#settings input[type=number] {
+    width: 3.5em;
+    text-align: center;
+}
+
+#gif-creator {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+    visibility: hidden;
+}
+
+#gif-creator-wrap {
+    position: relative;
+}
+
+#gif-creator-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--ihnm-color-bg2-transparent);
+    box-sizing: border-box;
+}
+
+#gif-creator-loading::before {
+    content: "Загрузка..";
+    
+}
+
+#gif-img {
+    display: block;
+    max-width: 30em;
+    width: 50%;
+    min-width: 10em;
+    aspect-ratio: 1;
+    border: 1px solid var(--ihnm-color-border);
+    margin: auto;
+    position: relative;
+    z-index: 2;
+    background-color: var(--ihnm-color-bg);
+}
+
 @media (max-width: 50em) {
     #generations canvas {
         width: 20% !important;
     }
-  }
+}

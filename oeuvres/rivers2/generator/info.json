@@ -1,0 +1,25 @@
+{
+    "latent_dim": 64,
+    "n_classes": 13,
+    "image_size": 28,
+    "n_channels": 1,
+    "mean": 0,
+    "std_dev": 1,
+    "output_min": -0.5,
+    "output_max": 0.5,
+    "class_list": [
+        "distortion_jets",
+        "meat",
+        "overwhelm",
+        "shore",
+        "spring",
+        "spring_many-lakes",
+        "thick-lightning",
+        "thick-river",
+        "thin-lightning",
+        "thin-river",
+        "thin-river_little-lakes",
+        "thin-river_many-lakes",
+        "thorns"
+    ]
+}
