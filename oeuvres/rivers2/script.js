@@ -160,13 +160,21 @@ function getWordCaseByInt(n, imenit, single, many) {
 }
 
 function updateSettings() {
+    function randomSeed(id) {
+        const min = parseInt(document.getElementById(id).min);
+        const max = parseInt(document.getElementById(id).max);
+        // The maximum is exclusive and the minimum is inclusive
+        return Math.floor(Math.random() * (max - min) + min);
+    }
     function getSetting(id) {
         return parseInt(document.getElementById(id).value);
     }
     settings.seed1 = getSetting("seed1-input");
     settings.seed2 = getSetting("seed2-input");
-    settings.noise1 = createNoise(1, settings.seed1);
-    settings.noise2 = createNoise(1, settings.seed2);
+    settings.randomSeed1 = randomSeed("seed1-input");
+    settings.randomSeed2 = randomSeed("seed2-input");
+    settings.noise1 = createNoise(1, settings.seed1 === 0 ? settings.randomSeed1 : settings.seed1);
+    settings.noise2 = createNoise(1, settings.seed2 === 0 ? settings.randomSeed2 : settings.seed2);
     settings.intCl1 = getSetting("class1-input");
     settings.intCl2 = getSetting("class2-input");
     settings.nInterpolations = getSetting("nInterpolations-input");
