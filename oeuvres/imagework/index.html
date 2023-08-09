@@ -16,17 +16,19 @@
                 <h2>Коллаж из фоток</h2>
                 <input type="file" class="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
                 <div class="image-drop"></div>
-                <span>Количество</span>
-                <select class="rowcol-select">
-                    <option value="cols">столбцов</option>
-                    <option value="rows">строк</option>
-                </select>
-                <input type="number" class="rowcol-input" min="1">
-                <span>Заполнение по</span>
-                <select class="dir-select">
-                    <option value="vertical">вертикали</option>
-                    <option value="horizontal">горизонтали</option>
-                </select>
+                <div class="settings">
+                    <span>Количество</span>
+                    <select class="rowcol-select">
+                        <option value="cols">столбцов</option>
+                        <option value="rows">строк</option>
+                    </select>
+                    <input type="number" class="rowcol-input" min="1">
+                    <span>Заполнение по</span>
+                    <select class="dir-select">
+                        <option value="vertical">вертикали</option>
+                        <option value="horizontal">горизонтали</option>
+                    </select>
+                </div>
                 <img class="result"></img>
             </section>
             

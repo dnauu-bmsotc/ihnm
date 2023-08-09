@@ -28,37 +28,185 @@
 
 
 (function(useTestImages=true, nTestImages=10) {
+
+    const layout = {
+        // 
+        id: null,
+        // array of {file, image, x, y, width, height}
+        // where x y w h - parameters for drawing on canvas
+        images: null,
+        // way of ordering images, "horizontal" or "vertical"
+        fillDirection: null,
+        // firstAxis is perpendicular to orientation of straight lines
+        // "horizontal" if images align into straight cols, "vertical" for rows
+        firstAxis: null,
+        // inverse of firstAxis, corresponds to straight lines orientation
+        get secondAxis() {return this._horver("vertical", "horizontal")},
+        // numbers of rows and cols into which images are placed
+        rows: null,
+        cols: null,
+        // alias
+        _horver(hor, ver) {return this.firstAxis === "horizontal" ? hor : ver},
+        // 
+        get firstDim() {return this._horver(this.cols, this.rows)},
+        get secondDim() {return this._horver(this.rows, this.cols)},
+        //
+        get firstSize() {return this._horver("width", "height")},
+        get secondSize() {return this._horver("height", "width")},
+        //
+        get firstNaturalSize() {return this._horver("naturalWidth", "naturalHeight")},
+        get secondNaturalSize() {return this._horver("naturalHeight", "naturalWidth")},
+        //
+        get firstCoor() {return this._horver("x", "y")},
+        get secondCoor() {return this._horver("y", "x")},
+    },
+    l = layout;
     
-    const images = [];
-
-    document.addEventListener("DOMContentLoaded", async function() {
-
-        getEl = c => document.querySelector("#collage-photo ." + c);
-
-        getEl("image-drop").addEventListener("dragover", e => e.preventDefault());
-    
-        getEl("image-drop").addEventListener("drop", async e => {
+    // adding listeners
+    document.addEventListener("DOMContentLoaded", function() {
+        getEl("image-drop").addEventListener("drop", e => {
+            startProcessing([...e.dataTransfer.files]);
             e.preventDefault();
-            images.splice(0, images.length, ...await loadImages([...e.dataTransfer.files]));
-            getEl("rowcol-input").max = images.length;
-            getEl("rowcol-input").value = Math.ceil(Math.sqrt(images.length));
-            processInputs();
         });
-    
-        getEl("image-input").addEventListener("change", async e => {
-            images.splice(0, images.length, ...await loadImages([...e.target.files]));
-            getEl("rowcol-input").max = images.length;
-            getEl("rowcol-input").value = Math.ceil(Math.sqrt(images.length));
-            processInputs();
+        getEl("image-drop").addEventListener("dragover", e => {
+            e.preventDefault()
         });
+        getEl("image-input").addEventListener("change", e => {
+            startProcessing([...e.target.files]);
+        });
+        getEl("settings").addEventListener("change", _ => {
+            startProcessing();
+        })
 
-        getEl("rowcol-input").addEventListener("change", processInputs);
-        getEl("rowcol-select").addEventListener("change", processInputs);
-        getEl("dir-select").addEventListener("change", processInputs);
-        
-        if (useTestImages) loadTestImages();
+        if (useTestImages) {
+            loadTestImages().then(r => startProcessing(r));
+        }
     });
+
+    function getEl(classname) {
+        return document.querySelector("#collage-photo ." + classname);
+    }
+
+    function limitRowcolInputValues(numberOfImages) {
+        getEl("rowcol-input").max = numberOfImages;
+        getEl("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
+    }
+
+    async function startProcessing(files) {
+        const timestamp = Date.now();
+        layout.id = timestamp;
+
+        if (files) {
+            layout.images = await loadImages(files);
+            limitRowcolInputValues(layout.images.length);
+        }
+
+        const v = parseInt(getEl("rowcol-input").value);
+        const w = Math.ceil(l.images.length / v);
+
+        layout.fillDirection = getEl("dir-select").value;
+        layout.firstAxis = getEl("rowcol-select").value === "cols" ? "horizontal" : "vertical";
+        layout.rows = layout._horver(w, v);
+        layout.cols = layout._horver(v, w);
+
+        calculateImages();
+
+        getEl("result").src = drawImagesToURL();
+    }
     
+    async function loadImages(files) {
+        return await Promise.all(files.map(async file => {
+            const blob = URL.createObjectURL(file);
+            const image = new Image();
+            image.src = blob;
+            await image.decode();
+            return {
+                file: file,
+                el: image,
+            }
+        }));
+    }
+
+    async function loadTestImages() {
+        const testImages = [];
+        for (let i = 0; i < 10; i++) {
+            const resp = await fetch(`./testimages/test${i}.png`);
+            testImages.push(await resp.blob());
+        }
+        return testImages.slice(0, nTestImages);
+    }
+
+    function getImageLine(axis, n) {
+        const matrix = l.fillDirection === "vertical"
+            ? new Matrix(l.cols, l.rows, l.images)
+            : new Matrix(l.rows, l.cols, l.images);
+
+        // prevent last row/col being empty
+        const cond1 = l.fillDirection == l.secondAxis;
+        const cond2 = l.rows * l.cols - l.secondDim >= l.images.length;
+        if (cond1 && cond2) {
+            for (i = 0; i < l.firstDim - l.images.length % l.firstDim; i++) {
+                matrix.a.splice(l.images.length - i, 0, null);
+            }
+        }
+
+        if (l.fillDirection === "vertical") {
+            matrix.transpose();
+        }
+        return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
+    }
+
+    function calculateImages() {
+        l.images[0].x = l.images[0].y = 0;
+        l.images[0].width = l.images[0].height = 0;
+
+        for (let i = 0; i < l.firstDim; i++) {
+            const line = getImageLine(l.secondAxis, i);
+            const prevLine = getImageLine(l.secondAxis, Math.max(0, i-1));
+            line[0][l.firstCoor] = prevLine[0][l.firstCoor] + prevLine[0][l.firstSize];
+            line[0][l.secondCoor] = 0;
+
+            // resize according to first element in current row/column.
+            line[0][l.firstSize] = line[0].el[l.firstNaturalSize];
+            line[0][l.secondSize] = line[0].el[l.secondNaturalSize];
+            for (let j = 1; j < l.secondDim; j++) {
+                if (line[j]) {
+                    const ratio = line[0][l.firstSize] / line[j].el[l.firstNaturalSize];
+                    line[j][l.firstSize] = line[0][l.firstSize];
+                    line[j][l.secondSize] = line[j].el[l.secondNaturalSize] * ratio;
+                    line[j][l.firstCoor] = line[0][l.firstCoor];
+                    line[j][l.secondCoor] = line[j-1][l.secondCoor] + line[j-1][l.secondSize];
+                }
+            }
+            
+            // resize according to previous row/column.
+            const naturalSumm = line.reduce((acc, val) => acc + val[l.secondSize], 0);
+            const neededSumm = prevLine.reduce((acc, val) => acc + val[l.secondSize], 0);
+            const ratio = neededSumm / naturalSumm;
+            for (let j = 0; j < l.secondDim; j++) {
+                if (line[j]) {
+                    line[j][l.firstSize] = Math.ceil(line[j][l.firstSize] * ratio);
+                    line[j][l.secondSize] = Math.ceil(line[j][l.secondSize] * ratio);
+                    line[j][l.secondCoor] = Math.ceil(line[j][l.secondCoor] * ratio);
+                }
+            }
+        }
+    }
+    
+    function drawImagesToURL() {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        canvas.width = getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+        canvas.height = getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+
+        for (let i of l.images) {
+            ctx.drawImage(i.el, i.x, i.y, i.width, i.height);
+        }
+        
+        return canvas.toDataURL('image/png');
+    }
+
     class Matrix {
         constructor(rows, cols, arr) {
             [this.r, this.c, this.a] = [rows, cols, arr.slice()];
@@ -85,14 +233,14 @@
             for (let j = 0; j < this.c; j++) {
                 r.push(this.get(i, j));
             }
-            return fill ? r : r.filter(x => x!==null);
+            return fill ? r : r.filter(x => x !== null);
         }
         getCol(j, fill=false) {
             const r = [];
             for (let i = 0; i < this.r; i++) {
                 r.push(this.get(i, j));
             }
-            return fill ? r : r.filter(x => x!==null);
+            return fill ? r : r.filter(x => x !== null);
         }
         log() {
             const rows = [];
@@ -102,124 +250,5 @@
             console.log(rows.join(';\n') + '.')
         }
     };
-    
-    async function loadTestImages() {
-        const testImages = [];
-        for (let i = 0; i < 10; i++) {
-            const resp = await fetch(`./testimages/test${i}.png`);
-            testImages.push(await resp.blob());
-        }
-        images.splice(0, images.length, ...await loadImages(testImages.slice(0, nTestImages)));
-        
-        getEl("rowcol-input").max = images.length;
-        getEl("rowcol-input").value = Math.ceil(Math.sqrt(images.length));
-        
-        processInputs();
-    }
-
-    async function loadImages(files) {
-        return await Promise.all(files.map(async file => {
-            const blob = URL.createObjectURL(file);
-            const image = new Image();
-            image.src = blob;
-            await image.decode();
-            return {
-                file: file,
-                el: image,
-            }
-        }));
-    }
-
-    function getImageLine(fillDirection, secondAxis, axis, n, rows, cols) {
-        const matrix = fillDirection === "vertical"
-            ? new Matrix(cols, rows, images)
-            : new Matrix(rows, cols, images);
-
-        // prevent last row/col being empty
-        const firstDim = secondAxis === "horizontal" ? cols : rows;
-        const secondDim = secondAxis === "vertical" ? cols : rows;
-        if ((fillDirection == secondAxis) && (rows * cols - firstDim >= images.length)) {
-            matrix.a = matrix.a.filter(x => x);
-            for (i = 0; i < secondDim - images.length % secondDim; i++) {
-                matrix.a.splice(images.length - i, 0, null);
-            }
-        }
-
-        if (fillDirection === "vertical") {
-            matrix.transpose();
-        }
-        return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
-    }
-
-    function calculateImages(fillDirection, firstAxis, secondAxis, rows, cols) {
-        [firstDim, secondDim, firstSize, secondSize, firstNaturalSize,
-            secondNaturalSize, firstCoor, secondCoor] = firstAxis === "vertical"
-            ? [rows, cols, "height", "width", "naturalHeight", "naturalWidth", "y", "x"]
-            : [cols, rows, "width", "height", "naturalWidth", "naturalHeight", "x", "y"];
-
-        images[0].x = images[0].y = 0;
-        images[0].width = images[0].height = 0;
-
-        for (let i = 0; i < firstDim; i++) {
-            const line = getImageLine(fillDirection, secondAxis, secondAxis, i, rows, cols);
-            const prevLine = getImageLine(fillDirection, secondAxis, secondAxis, Math.max(0, i-1), rows, cols);
-            line[0][firstCoor] = prevLine[0][firstCoor] + prevLine[0][firstSize];
-            line[0][secondCoor] = 0;
-
-            // resize according to first element in current row/column.
-            line[0][firstSize] = line[0].el[firstNaturalSize];
-            line[0][secondSize] = line[0].el[secondNaturalSize];
-            for (let j = 1; j < secondDim; j++) {
-                if (line[j]) {
-                    const ratio = line[0][firstSize] / line[j].el[firstNaturalSize];
-                    line[j][firstSize] = line[0][firstSize];
-                    line[j][secondSize] = line[j].el[secondNaturalSize] * ratio;
-                    line[j][firstCoor] = line[0][firstCoor];
-                    line[j][secondCoor] = line[j-1][secondCoor] + line[j-1][secondSize];
-                }
-            }
-            
-            // resize according to previous row/column.
-            const naturalSumm = line.reduce((acc, val) => acc + val[secondSize], 0);
-            const neededSumm = prevLine.reduce((acc, val) => acc + val[secondSize], 0);
-            const ratio = neededSumm / naturalSumm;
-            for (let j = 0; j < secondDim; j++) {
-                if (line[j]) {
-                    line[j][firstSize] = Math.ceil(line[j][firstSize] * ratio);
-                    line[j][secondSize] = Math.ceil(line[j][secondSize] * ratio);
-                    line[j][secondCoor] = Math.ceil(line[j][secondCoor] * ratio);
-                }
-            }
-        }
-    }
-
-    function drawImagesToURL(fillDirection, secondAxis, rows, cols) {
-        const canvas = document.createElement("canvas");
-        
-        const horLine = getImageLine(fillDirection, secondAxis, "horizontal", 0, rows, cols);
-        const verLine = getImageLine(fillDirection, secondAxis, "vertical", 0, rows, cols);
-        canvas.width = horLine.reduce((acc, val) => acc + val.width, 0);
-        canvas.height = verLine.reduce((acc, val) => acc + val.height, 0);
-
-        const ctx = canvas.getContext("2d");
-        for (let i of images) ctx.drawImage(i.el, i.x, i.y, i.width, i.height);
-        
-        return canvas.toDataURL('image/png');
-    }
-
-    function processInputs() {
-        const v = parseInt(getEl("rowcol-input").value);
-        const w = Math.ceil(images.length / v);
-
-        [rows, cols, firstAxis, secondAxis] = getEl("rowcol-select").value === "cols"
-            ? [w, v, "horizontal", "vertical"]
-            : [v, w, "vertical", "horizontal"];
-
-        const fillDirection = getEl("dir-select").value;
-        
-        calculateImages(fillDirection, firstAxis, secondAxis, rows, cols);
-
-        getEl("result").src = drawImagesToURL(fillDirection, secondAxis, rows, cols);
-    }
 })();
 
