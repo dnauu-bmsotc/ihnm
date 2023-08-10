@@ -27,13 +27,14 @@
 })();
 
 
-(function(useTestImages=true, nTestImages=10) {
+(function(useTestImages=true, nTestImages=5, testImagesExt="gif") {
 
     const layout = {
         // 
         id: null,
-        // array of {file, image, x, y, width, height}
+        // array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
         // where x y w h - parameters for drawing on canvas
+        // frames is list of blobs of GIF frames
         images: null,
         // way of ordering images, "horizontal" or "vertical"
         fillDirection: null,
@@ -87,17 +88,14 @@
         return document.querySelector("#collage-photo ." + classname);
     }
 
-    function limitRowcolInputValues(numberOfImages) {
-        getEl("rowcol-input").max = numberOfImages;
-        getEl("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
-    }
-
     async function startProcessing(files) {
         const timestamp = Date.now();
         layout.id = timestamp;
 
+        getEl("result").src = "";
+
         if (files) {
-            layout.images = await loadImages(files);
+            await loadImages(files);
             limitRowcolInputValues(layout.images.length);
         }
 
@@ -111,31 +109,183 @@
 
         calculateImages();
 
-        getEl("result").src = drawImagesToURL();
+        drawToImg(getEl("result"));
     }
     
+    function limitRowcolInputValues(numberOfImages) {
+        getEl("rowcol-input").max = numberOfImages;
+        getEl("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
+    }
+
     async function loadImages(files) {
-        return await Promise.all(files.map(async file => {
-            const blob = URL.createObjectURL(file);
-            const image = new Image();
-            image.src = blob;
-            await image.decode();
-            return {
-                file: file,
-                el: image,
+        layout.images = [];
+
+        for (let file of files) {
+            if (file.type === "image/gif") {
+                const gif = await gifFileToFrames(file);
+                layout.images.push({
+                    file: file,
+                    frames: gif.frames,
+                    reader: gif.reader,
+                    naturalWidth: gif.reader.width,
+                    naturalHeight: gif.reader.height,
+                });
             }
-        }));
+            else {
+                const blob = URL.createObjectURL(file);
+                const image = new Image();
+                image.src = blob;
+                await image.decode();
+                layout.images.push({
+                    file: file,
+                    el: image,
+                    naturalWidth: image.naturalWidth,
+                    naturalHeight: image.naturalHeight,
+                });
+            }
+        }
     }
 
     async function loadTestImages() {
         const testImages = [];
-        for (let i = 0; i < 10; i++) {
-            const resp = await fetch(`./testimages/test${i}.png`);
+        for (let i = 0; i < nTestImages; i++) {
+            const url = `./testimages/test${i}.${testImagesExt}`;
+            const resp = await fetch(url);
             testImages.push(await resp.blob());
         }
-        return testImages.slice(0, nTestImages);
+        return testImages;
     }
 
+    async function gifFileToFrames(file) {
+        const arrayBuffer = await new Response(file).arrayBuffer();
+        const intArray = new Uint8Array(arrayBuffer);
+        const reader = new GifReader(intArray);
+
+        const frames = new Array(reader.numFrames()).fill(0).map((_, k) => {
+            const image = new ImageData(reader.width, reader.height);
+            reader.decodeAndBlitFrameRGBA(k, image.data);
+            return image;
+        });
+
+        return {
+            reader: reader,
+            frames: frames,
+        };
+    }
+
+    function drawToImg(el) {
+        const hasGifs = resetGifImagesReadParameters();
+        if (hasGifs) {
+            const gif = new GIF({workerScript: "./lib/gif.worker.js"});
+            addFramesToGif(gif);
+            gif.on('finished', function(blob) {
+                el.src = URL.createObjectURL(blob);
+            });
+            gif.render();
+        }
+        else {
+            el.src = drawImagesToCanvas().toDataURL('image/png');
+        }
+    }
+
+    function resetGifImagesReadParameters() {
+        let hasGifs = false;
+        for (let image of layout.images) {
+            if (image.frames) {
+                hasGifs = true;
+                image.currentFrameIdx = 0;
+                image.nextFrameTime = image.reader.frameInfo(0).delay;
+            }
+        }
+        return hasGifs;
+    }
+
+    function addFramesToGif(gif) {
+        let time = 0;
+        while(true) {
+            let minDelay = null;
+            for (let image of layout.images.filter(img => img.frames)) {
+                if (image.currentFrameIdx + 1 < image.reader.numFrames()) {
+                    if (time >= image.nextFrameTime) {
+                        image.currentFrameIdx += 1;
+                        const info = image.reader.frameInfo(image.currentFrameIdx);
+                        image.nextFrameTime += info.delay;
+                    }
+                    const info = image.reader.frameInfo(image.currentFrameIdx);
+                    if (minDelay === null || info.delay < minDelay) {
+                        minDelay = info.delay;
+                    }
+                }
+            }
+            if (minDelay === null) {
+                break;
+            }
+            gif.addFrame(drawImagesToCanvas(), {delay: minDelay});
+            time += minDelay;
+        }
+    }
+
+    function drawImagesToCanvas() {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        
+        canvas.width = getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+        canvas.height = getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+
+        for (let img of l.images) {
+            if (img.el) {
+                ctx.drawImage(img.el, img.x, img.y, img.width, img.height);
+            }
+            if (img.frames) {
+                const data = img.frames[img.currentFrameIdx];
+                const renderer = document.createElement('canvas');
+                renderer.width = img.naturalWidth;
+                renderer.height = img.naturalHeight;
+                renderer.getContext('2d').putImageData(data, 0, 0);
+                ctx.drawImage(renderer, img.x, img.y, img.width, img.height);
+            }
+        }
+
+        return canvas;
+    }
+
+    function calculateImages() {
+        l.images[0].x = l.images[0].y = 0;
+        l.images[0].width = l.images[0].height = 0;
+
+        for (let i = 0; i < l.firstDim; i++) {
+            const line = getImageLine(l.secondAxis, i);
+            const prevLine = getImageLine(l.secondAxis, Math.max(0, i-1));
+            line[0][l.firstCoor] = prevLine[0][l.firstCoor] + prevLine[0][l.firstSize];
+            line[0][l.secondCoor] = 0;
+
+            // resize according to first element in current row/column.
+            line[0][l.firstSize] = line[0][l.firstNaturalSize];
+            line[0][l.secondSize] = line[0][l.secondNaturalSize];
+            for (let j = 1; j < l.secondDim; j++) {
+                if (line[j]) {
+                    const ratio = line[0][l.firstSize] / line[j][l.firstNaturalSize];
+                    line[j][l.firstSize] = line[0][l.firstSize];
+                    line[j][l.secondSize] = line[j][l.secondNaturalSize] * ratio;
+                    line[j][l.firstCoor] = line[0][l.firstCoor];
+                    line[j][l.secondCoor] = line[j-1][l.secondCoor] + line[j-1][l.secondSize];
+                }
+            }
+
+            // resize according to previous row/column.
+            const naturalSumm = line.reduce((acc, val) => acc + val[l.secondSize], 0);
+            const neededSumm = prevLine.reduce((acc, val) => acc + val[l.secondSize], 0);
+            const ratio = neededSumm / naturalSumm;
+            for (let j = 0; j < l.secondDim; j++) {
+                if (line[j]) {
+                    line[j][l.firstSize] = Math.ceil(line[j][l.firstSize] * ratio);
+                    line[j][l.secondSize] = Math.ceil(line[j][l.secondSize] * ratio);
+                    line[j][l.secondCoor] = Math.ceil(line[j][l.secondCoor] * ratio);
+                }
+            }
+        }
+    }
+    
     function getImageLine(axis, n) {
         const matrix = l.fillDirection === "vertical"
             ? new Matrix(l.cols, l.rows, l.images)
@@ -154,57 +304,6 @@
             matrix.transpose();
         }
         return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
-    }
-
-    function calculateImages() {
-        l.images[0].x = l.images[0].y = 0;
-        l.images[0].width = l.images[0].height = 0;
-
-        for (let i = 0; i < l.firstDim; i++) {
-            const line = getImageLine(l.secondAxis, i);
-            const prevLine = getImageLine(l.secondAxis, Math.max(0, i-1));
-            line[0][l.firstCoor] = prevLine[0][l.firstCoor] + prevLine[0][l.firstSize];
-            line[0][l.secondCoor] = 0;
-
-            // resize according to first element in current row/column.
-            line[0][l.firstSize] = line[0].el[l.firstNaturalSize];
-            line[0][l.secondSize] = line[0].el[l.secondNaturalSize];
-            for (let j = 1; j < l.secondDim; j++) {
-                if (line[j]) {
-                    const ratio = line[0][l.firstSize] / line[j].el[l.firstNaturalSize];
-                    line[j][l.firstSize] = line[0][l.firstSize];
-                    line[j][l.secondSize] = line[j].el[l.secondNaturalSize] * ratio;
-                    line[j][l.firstCoor] = line[0][l.firstCoor];
-                    line[j][l.secondCoor] = line[j-1][l.secondCoor] + line[j-1][l.secondSize];
-                }
-            }
-            
-            // resize according to previous row/column.
-            const naturalSumm = line.reduce((acc, val) => acc + val[l.secondSize], 0);
-            const neededSumm = prevLine.reduce((acc, val) => acc + val[l.secondSize], 0);
-            const ratio = neededSumm / naturalSumm;
-            for (let j = 0; j < l.secondDim; j++) {
-                if (line[j]) {
-                    line[j][l.firstSize] = Math.ceil(line[j][l.firstSize] * ratio);
-                    line[j][l.secondSize] = Math.ceil(line[j][l.secondSize] * ratio);
-                    line[j][l.secondCoor] = Math.ceil(line[j][l.secondCoor] * ratio);
-                }
-            }
-        }
-    }
-    
-    function drawImagesToURL() {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        
-        canvas.width = getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
-        canvas.height = getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
-
-        for (let i of l.images) {
-            ctx.drawImage(i.el, i.x, i.y, i.width, i.height);
-        }
-        
-        return canvas.toDataURL('image/png');
     }
 
     class Matrix {
