@@ -160,21 +160,11 @@ function getWordCaseByInt(n, imenit, single, many) {
 }
 
 function updateSettings() {
-    function randomSeed(id) {
-        const min = parseInt(document.getElementById(id).min);
-        const max = parseInt(document.getElementById(id).max);
-        // The maximum is exclusive and the minimum is inclusive
-        return Math.floor(Math.random() * (max - min) + min);
-    }
     function getSetting(id) {
         return parseInt(document.getElementById(id).value);
     }
     settings.seed1 = getSetting("seed1-input");
     settings.seed2 = getSetting("seed2-input");
-    settings.randomSeed1 = randomSeed("seed1-input");
-    settings.randomSeed2 = randomSeed("seed2-input");
-    settings.noise1 = createNoise(1, settings.seed1 === 0 ? settings.randomSeed1 : settings.seed1);
-    settings.noise2 = createNoise(1, settings.seed2 === 0 ? settings.randomSeed2 : settings.seed2);
     settings.intCl1 = getSetting("class1-input");
     settings.intCl2 = getSetting("class2-input");
     settings.nInterpolations = getSetting("nInterpolations-input");
@@ -199,6 +189,13 @@ function updateSettings() {
 
 }
 
+function randomSeed(id) {
+    const min = parseInt(document.getElementById(id).min);
+    const max = parseInt(document.getElementById(id).max);
+    // The maximum is exclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min) + min);
+}
+
 function enableGIFGeneration() {
     hydrateClassSelect();
     hideLoadingScreen();
@@ -214,8 +211,11 @@ function enableGIFGeneration() {
         const label1 = createLabel(settings.intCl1 === -1 ? null : [settings.intCl1], 1);
         const label2 = createLabel(settings.intCl2 === -1 ? null : [settings.intCl2], 1);
 
+        const noise1 = createNoise(1, settings.seed1 === 0 ? randomSeed("seed1-input") : 0);
+        const noise2 = createNoise(1, settings.seed2 === 0 ? randomSeed("seed2-input") : 0);
+
         const frames = interpolate(
-            label1, label2, settings.noise1, settings.noise2, settings.nInterpolations);
+            label1, label2, noise1, noise2, settings.nInterpolations);
 
         const data_url = await framesToGIF(frames, settings.fps, 128);
         
