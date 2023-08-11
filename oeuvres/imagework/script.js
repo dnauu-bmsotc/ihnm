@@ -27,7 +27,7 @@
 })();
 
 
-(function(useTestImages=true, nTestImages=5, testImagesExt="gif") {
+(function(useTestImages=true, nTestImages=3, testImagesExt="gif") {
 
     const layout = {
         // 
@@ -88,28 +88,54 @@
         return document.querySelector("#collage-photo ." + classname);
     }
 
+    class InputsChangedError extends Error {}
+
+    function createIdCheck(id) {
+        return function() {
+            if (id !== layout.id) {
+                console.log();
+                throw new InputsChangedError();
+            }
+        }
+    }
+
     async function startProcessing(files) {
         const timestamp = Date.now();
+        const checkId = createIdCheck(timestamp);
         layout.id = timestamp;
 
-        getEl("result").src = "";
+        try {
+            checkId();
+            getEl("result").src = "";
 
-        if (files) {
-            await loadImages(files);
-            limitRowcolInputValues(layout.images.length);
+            if (files) {
+                await loadImages(files);
+                checkId();
+                limitRowcolInputValues(layout.images.length);
+            }
+
+            const v = parseInt(getEl("rowcol-input").value);
+            const w = Math.ceil(l.images.length / v);
+
+            layout.fillDirection = getEl("dir-select").value;
+            layout.firstAxis = getEl("rowcol-select").value === "cols" ? "horizontal" : "vertical";
+            layout.rows = layout._horver(w, v);
+            layout.cols = layout._horver(v, w);
+
+            calculateImages();
+
+            const url = await imagesToUrl();
+            checkId();
+            getEl("result").src = url;
         }
-
-        const v = parseInt(getEl("rowcol-input").value);
-        const w = Math.ceil(l.images.length / v);
-
-        layout.fillDirection = getEl("dir-select").value;
-        layout.firstAxis = getEl("rowcol-select").value === "cols" ? "horizontal" : "vertical";
-        layout.rows = layout._horver(w, v);
-        layout.cols = layout._horver(v, w);
-
-        calculateImages();
-
-        drawToImg(getEl("result"));
+        catch (error) {
+            if (error instanceof InputsChangedError) {
+                console.log("inputs changed before they were processed");
+            }
+            else {
+                throw error;
+            }
+        }
     }
     
     function limitRowcolInputValues(numberOfImages) {
@@ -173,18 +199,21 @@
         };
     }
 
-    function drawToImg(el) {
+    async function imagesToUrl() {
         const hasGifs = resetGifImagesReadParameters();
         if (hasGifs) {
             const gif = new GIF({workerScript: "./lib/gif.worker.js"});
             addFramesToGif(gif);
-            gif.on('finished', function(blob) {
-                el.src = URL.createObjectURL(blob);
+            const url = await new Promise((resolve, reject) => {
+                gif.on('finished', function(blob) {
+                    resolve(URL.createObjectURL(blob));
+                });
+                gif.render();
             });
-            gif.render();
+            return url;
         }
         else {
-            el.src = drawImagesToCanvas().toDataURL('image/png');
+            return drawImagesToCanvas().toDataURL('image/png');
         }
     }
 
