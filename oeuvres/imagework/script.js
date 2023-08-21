@@ -5,6 +5,7 @@
         activateTab(document.getElementById("collage-photo"));
     });
     
+    // collect h2 headers from tabs and add it to navigation element
     function hydrateNavigation() {
         const nav = document.getElementById("navigation");
         const tabs = document.querySelectorAll("main section.tab");
@@ -17,6 +18,7 @@
         });
     }
     
+    // hide previous tab and show a new one
     function activateTab(tab) {
         if (activateTab.activeTab) {
             activateTab.activeTab.classList.remove("active");
