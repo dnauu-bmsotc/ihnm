@@ -4,30 +4,37 @@
         "list": [
             {
                 "path": "./media/original0.jpg",
-                "date": "~2021"
+                "date": "~2021",
+                "description": "А4, тушь"
             },
             {
                 "path": "./media/original1.jpg",
-                "date": "2021/2022"
+                "date": "2021 октябрь",
+                "description": "А5, гуашь"
             },
             {
                 "path": "./media/original2.jpg",
-                "date": "2021/2022"
+                "date": "2021 октябрь",
+                "description": "А5, гуашь"
             },
             {
                 "path": "./media/original3.jpg",
-                "date": "2021/2022"
+                "date": "2021/2022",
+                "description": "А5, гуашь"
             },
             {
                 "path": "./media/original4.jpg",
+                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах. Задумывалось, что в небе будут нарисованы планеты, но по подсказке одногруппника они были заменены на подобие глаз.",
                 "date": "2022 осень/зима"
             },
             {
                 "path": "./media/original5.jpg",
+                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах.",
                 "date": "2022 осень/зима"
             },
             {
                 "path": "./media/original6.jpg",
+                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах.",
                 "date": "2022 осень/зима"
             },
             {
@@ -35,7 +42,13 @@
                 "path": "./media/sixrats.jpg",
                 "date": "2023-08-17 - 2023-08-19",
                 "secondName": "Социальная язва желудка, обнажающая пульсирующие параноидально-болезненные волнения души о её носителе.",
+                "description": "А4, акварель, цветные карандаши, карандаши Мульти-Пульти.",
                 "sensitiveContent": true
+            },
+            {
+                "path": "./media/original7.jpg",
+                "description": "А5, тушь. На основе каракулей со школьного дневника.",
+                "date": "2023-08-30; идея < 2018"
             }
         ]
     },
@@ -45,35 +58,38 @@
             {
                 "name": "Побег",
                 "path": "./media/starset1.jpg",
-                "description": "Под впечатлением от клипов MANIFEST и THE BREACH.",
+                "description": "A4, гуашь. Под впечатлением от клипов MANIFEST и THE BREACH.",
                 "date": "2022 апрель"
             },
             {
                 "name": "Следуй за мной",
                 "path": "./media/starset2.jpg",
-                "description": "Перерисовка рисунка \"Побег\"",
+                "description": "A5, акварель. Приклеено к центру листа A4. Перерисовка рисунка \"Побег\".",
                 "date": "2022 апрель"
             },
             {
                 "path": "./media/starsetstratosphere.jpg",
-                "description": "Значок песни STRATOSPHERE",
+                "description": "А4, цветные карандаши. Значок песни STRATOSPHERE",
                 "date": "2021/2022"
             },
             {
                 "path": "./media/starsetwtse.jpg",
-                "description": "Значок песни WHERE THE SKIES END",
+                "description": "А4, цветные карандаши. Значок песни WHERE THE SKIES END",
                 "date": "2022"
             },
             {
                 "path": "./media/starset5.jpg",
+                "description": "А5, акварель. Приклеено к листу А4. Под впечатлением от обложки альбома \"Horizons\"",
                 "date": "2022"
             },
             {
                 "path": "./media/starset6.jpg",
+                "description": "А5, акварель. Под впечатлением от обложки альбома \"Horizons\"",
                 "date": "2022"
             },
             {
                 "path": "./media/starset7.jpg",
+                "description": "А5, акварель. Под впечатлением от обложки альбома \"Horizons\"",
                 "date": "2022"
             }
         ]
@@ -84,16 +100,19 @@
             {
                 "name": "Незаконченный фон 1",
                 "path": "./media/unlightedvessel1.jpg",
+                "description": "Krita.",
                 "date": "< 2020"
             },
             {
                 "name": "Незаконченный фон 2",
                 "path": "./media/unlightedvessel2.jpg",
+                "description": "Krita. Под впечатлением от клипа \"Telepathic (Acoustic)\".",
                 "date": "< 2020"
             },
             {
                 "name": "Незаконченный фон 3",
                 "path": "./media/unlightedvessel3.jpg",
+                "description": "Krita.",
                 "date": "< 2020"
             }
         ]
@@ -104,11 +123,13 @@
             {
                 "path": "./media/daragon.jpg",
                 "name": "Daragon",
+                "description": "Blender.",
                 "date": "< 2020"
             },
             {
                 "path": "./media/daragon.mp4",
                 "name": "Daragon mp4",
+                "description": "Blender.",
                 "date": "< 2020"
             }
         ]
