@@ -1,6 +1,32 @@
-<!DOCTYPE html><html lang="ru"><head><title>Теория вероятностей</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../style.css"><script defer type="text/javascript" src="../../script.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css" integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script></head><body><main><details><summary>другие конспекты</summary><nav id="navigation"><div class="blockname">Геодезия</div><div class="block"><a class="disciplinename" href="../../Геодезия/Астрономия">Астрономия</a><a class="disciplinename" href="../../Геодезия/Основы геодезии">Основы геодезии</a><a class="disciplinename" href="../../Геодезия/Основы картографии">Основы картографии</a><a class="disciplinename" href="../../Геодезия/Системы координат">Системы координат</a><a class="disciplinename" href="../../Геодезия/ТМОГИ">ТМОГИ</a><a class="disciplinename" href="../../Геодезия/Топопланы">Топопланы</a></div><div class="blockname">Дистанционное зондирование</div><div class="block"><a class="disciplinename" href="../../Дистанционное зондирование/АКС">АКС</a></div><div class="blockname">Земная кора</div><div class="block"><a class="disciplinename" href="../../Земная кора/Геоморфология">Геоморфология</a><a class="disciplinename" href="../../Земная кора/Камни">Камни</a><a class="disciplinename" href="../../Земная кора/Месторождения">Месторождения</a><a class="disciplinename" href="../../Земная кора/Основы геологии">Основы геологии</a><a class="disciplinename" href="../../Земная кора/Почвы">Почвы</a></div><div class="blockname">Математика и физика</div><div class="block"><a class="disciplinename" href="../../Математика и физика/Математический анализ">Математический анализ</a><a class="disciplinename" href="../../Математика и физика/Теория вероятностей">Теория вероятностей</a><a class="disciplinename" href="../../Математика и физика/Физика атмосферы">Физика атмосферы</a><a class="disciplinename" href="../../Математика и физика/Физика морей и океанов">Физика морей и океанов</a></div></nav></details><details open><summary>содержание</summary><nav id="toc"><a class="H2" data-id="toc-id-0">Теория вероятностей</a><a class="H3" data-id="toc-id-1">Элементарный исход, событие, относительная частота события, классическая и геометрическая вероятности.</a><a class="H3" data-id="toc-id-2">Аксиоматика алгебры событий, аксиомы вероятности. Вероятностное пространство.</a><a class="H3" data-id="toc-id-3">Условная вероятность, умножение событий. Независимые, несовместные события.</a><a class="H3" data-id="toc-id-4">Полная группа событий, формула полной вероятности. Формула Байеса.</a><a class="H3" data-id="toc-id-5">Схема Бернулли, теорема Бернулли. Теорема Пуассона.</a><a class="H3" data-id="toc-id-6">Локальная и интегральная теоремы Муавра-Лапласа. Отклонение относительной частоты.</a><a class="H3" data-id="toc-id-7">Случайная величина. Функция распределения и её свойства. Дискретные и непрерывные случайные величины.</a><a class="H3" data-id="toc-id-8">Некоторые виды распределений: биномиальное, геометрическое, Пуассона, равномерное, показательное, нормальное.</a><a class="H4" data-id="toc-id-9">Биномиальное распределение</a><a class="H4" data-id="toc-id-10">Геометрическое распределение</a><a class="H4" data-id="toc-id-11">Распределение Пуассона</a><a class="H4" data-id="toc-id-12">Равномерное распределение</a><a class="H4" data-id="toc-id-13">Показательное распределение</a><a class="H4" data-id="toc-id-14">Нормальное распределение</a><a class="H3" data-id="toc-id-15">Функция совместного распределения. Независимость случайных величин.</a><a class="H3" data-id="toc-id-16">Математическое ожидание и его свойства. Математическое ожидание квадрата.</a><a class="H3" data-id="toc-id-17">Дисперсия и её свойства. Ковариация и её свойства. Коэффициент корреляции.</a><a class="H3" data-id="toc-id-18">Моменты распределения. Уравнение регрессии. Корреляционная матрица.</a><a class="H3" data-id="toc-id-19">Неравенство Чебышёва. Закон больших чисел.</a><a class="H3" data-id="toc-id-20">Выборка, оценка параметра. Несмещённые и состоятельные выборки. Выборочное среднее. Выборочная дисперсия. Исправленная дисперсия.</a><a class="H2" data-id="toc-id-21">Приложение</a><a class="H3" data-id="toc-id-22">Таблица функции Гаусса</a><a class="H3" data-id="toc-id-23">Таблица функции Лапласа</a></nav></details><article id="conspect"><html><head></head><body><h2 id="toc-id-0">Теория вероятностей</h2>
+<!DOCTYPE html><html lang="ru"><head><title>Теория вероятностей</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../style.css"><script defer type="text/javascript" src="../../script.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css" integrity="sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI" crossorigin="anonymous"><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js" integrity="sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script></head><body><main><details><summary>другие конспекты</summary><nav id="navigation"><div class="blockname">Геодезия</div><div class="block"><a class="disciplinename" href="../../Геодезия/Высшая геодезия">Высшая геодезия</a><a class="disciplinename" href="../../Геодезия/Космическая геодезия">Космическая геодезия</a><a class="disciplinename" href="../../Геодезия/Основы геодезии">Основы геодезии</a><a class="disciplinename" href="../../Геодезия/Основы картографии">Основы картографии</a><a class="disciplinename" href="../../Геодезия/ТМОГИ">ТМОГИ</a><a class="disciplinename" href="../../Геодезия/Топопланы">Топопланы</a></div><div class="blockname">Дистанционное зондирование</div><div class="block"><a class="disciplinename" href="../../Дистанционное зондирование/АКС">АКС</a><a class="disciplinename" href="../../Дистанционное зондирование/Дешифрование">Дешифрование</a></div><div class="blockname">Земная кора</div><div class="block"><a class="disciplinename" href="../../Земная кора/Геоморфология">Геоморфология</a><a class="disciplinename" href="../../Земная кора/Камни">Камни</a><a class="disciplinename" href="../../Земная кора/Месторождения">Месторождения</a><a class="disciplinename" href="../../Земная кора/Основы геологии">Основы геологии</a><a class="disciplinename" href="../../Земная кора/Почвы">Почвы</a></div><div class="blockname">Математика и физика</div><div class="block"><a class="disciplinename" href="../../Математика и физика/Математический анализ">Математический анализ</a><a class="disciplinename" href="../../Математика и физика/Теория вероятностей">Теория вероятностей</a><a class="disciplinename" href="../../Математика и физика/Физика атмосферы">Физика атмосферы</a><a class="disciplinename" href="../../Математика и физика/Физика морей и океанов">Физика морей и океанов</a></div></nav></details><details open><summary>содержание</summary><nav id="toc"><a class="H2" data-id="toc-id-0">Теория вероятностей</a><a class="H3" data-id="toc-id-1">Аннотация</a><a class="H3" data-id="toc-id-2">Элементарный исход, событие, относительная частота события, классическая и геометрическая вероятности.</a><a class="H3" data-id="toc-id-3">Аксиоматика алгебры событий, аксиомы вероятности. Вероятностное пространство.</a><a class="H3" data-id="toc-id-4">Условная вероятность, умножение событий. Независимые, несовместные события.</a><a class="H3" data-id="toc-id-5">Полная группа событий, формула полной вероятности. Формула Байеса.</a><a class="H3" data-id="toc-id-6">Схема Бернулли, теорема Бернулли. Теорема Пуассона.</a><a class="H3" data-id="toc-id-7">Локальная и интегральная теоремы Муавра-Лапласа. Отклонение относительной частоты.</a><a class="H3" data-id="toc-id-8">Случайная величина. Функция распределения и её свойства. Дискретные и непрерывные случайные величины.</a><a class="H3" data-id="toc-id-9">Некоторые виды распределений: биномиальное, геометрическое, Пуассона, равномерное, показательное, нормальное.</a><a class="H4" data-id="toc-id-10">Биномиальное распределение</a><a class="H4" data-id="toc-id-11">Геометрическое распределение</a><a class="H4" data-id="toc-id-12">Распределение Пуассона</a><a class="H4" data-id="toc-id-13">Равномерное распределение</a><a class="H4" data-id="toc-id-14">Показательное распределение</a><a class="H4" data-id="toc-id-15">Нормальное распределение</a><a class="H3" data-id="toc-id-16">Функция совместного распределения. Независимость случайных величин.</a><a class="H3" data-id="toc-id-17">Математическое ожидание и его свойства. Математическое ожидание квадрата.</a><a class="H3" data-id="toc-id-18">Дисперсия и её свойства. Ковариация и её свойства. Коэффициент корреляции.</a><a class="H3" data-id="toc-id-19">Моменты распределения. Уравнение регрессии. Корреляционная матрица.</a><a class="H3" data-id="toc-id-20">Неравенство Чебышёва. Закон больших чисел.</a><a class="H3" data-id="toc-id-21">Выборка, оценка параметра. Несмещённые и состоятельные выборки. Выборочное среднее. Выборочная дисперсия. Исправленная дисперсия.</a><a class="H2" data-id="toc-id-22">Приложение</a><a class="H3" data-id="toc-id-23">Таблица функции Гаусса</a><a class="H3" data-id="toc-id-24">Таблица функции Лапласа</a></nav></details><article id="conspect"><html><head></head><body><h2 id="toc-id-0">Теория вероятностей</h2>
 <p>Основано на лекциях Чанги Мориса Евгеньевича.</p>
-<h3 id="toc-id-1">Элементарный исход, событие, относительная частота события, классическая и геометрическая вероятности.</h3>
+<h3 id="toc-id-1">Аннотация</h3>
+<p><strong>Множество элементарных исходов</strong> - множество, содержащее все возможные результаты эксперимента, из которых в результате происходит только один. <strong>Событие</strong> - множество, состоящее из элементарных исходов.</p>
+<p>Пусть <strong>условная вероятность</strong> $P_A(B)$ - вероятность события $B$ при условии, что произошло событие $A$. Тогда вероятность произведения событий:
+$$P(A_1\cdot A_2\cdot\ldots\cdot A_n)=P(A_1)\cdot P_{A_1}(A_2)\cdot P_{A_1A_2}(A_3)\cdot\ldots\cdot P_{A_1A_2\ldots A_{n-1}}(A_n)$$</p>
+<p><strong>Формула Байеса</strong> позволяет рассчитать вероятность события, если причину и следствие поменять местами
+$$P_A(B)=\frac{P(AB)}{P(A)}=P_B(A)\cdot\frac{P(B)}{P(A)}$$
+<strong>Схема Бернулли</strong> - последовательность независимых испытаний, в каждом из которых возможны два исхода - успех и неудача. Вероятность $m$ успехов в $n$ испытаниях равна:
+$$P_n(m)=С_n^mp^mq^{n-m}$$
+При большом количестве испытаний используют теорему Пуассона или теоремы Муавра-Лапласа. При большом количестве испытаний и не слишком малой вероятности ($npq&gt;10$) можно использовать <strong>интегральную теорему Муавра-Лапласа</strong>:
+$$P_n(m_1\leq m\leq m_2)\rightarrow\Phi(x_2)-\Phi(x_1)$$
+$$\Phi(x)=\frac{1}{\sqrt{2\pi}}\int_0^xe^{-\frac{t^2}{2}}dt;\quad x_1=\frac{m_1-np}{\sqrt{npq}};\quad x_2=\frac{m_2-np}{\sqrt{npq}}$$
+<strong>Функцией распределения</strong> случайной величины $\xi$ называется функция
+$$F(x)=P(\xi&lt;x)$$
+<strong>Математическое ожидание</strong>:
+$$M\xi=\sum_kx_k\cdot p_k,\quad\xi\text{ - дискретная}$$
+$$M\xi=\int_{-\infty}^{\infty}x\cdot p(x);dx,\quad\xi\text{ - непрерывная}$$
+<strong>Дисперсия</strong>:
+$$D\xi=M(\xi-M\xi)^2$$</p>
+<p><strong>Ковариация</strong> является мерой совместной изменчивости двух случайных величин. Для случайных величин $\xi$ и $\eta$ формула ковариации:
+$$cov(\xi,\eta)=M((\xi-M\xi)(\eta-M\eta))=M\xi\eta-M\xi M\eta$$
+Нормализованная версия ковариации, <strong>коэффициент корреляции</strong> случайных величин $\xi$ и $\eta$, показывает силу линейной зависимости.
+$$r_{\xi,\eta}=\frac{cov(\xi,\eta)}{\sqrt{D\xi}\cdot\sqrt{D\eta}}$$</p>
+<p><strong>Неравенство Чебышёва</strong>. $\forall\varepsilon&gt;0$:
+$$P(|\xi-M\xi|&gt;\varepsilon)\leq\frac{D\xi}{\varepsilon^2}$$</p>
+<p><strong>Закон больших чисел</strong>. Пусть $\xi_1,\xi_2,\ldots,\xi_n$ - независимые одинаково распределённые случайные величины. Тогда $\forall\varepsilon&gt;0$
+$$P\left(\left|\frac{\xi_1+\xi_2+\ldots+\xi_n}{n}-M\xi\right|&lt;\varepsilon\right)\rightarrow 1$$</p>
+<h3 id="toc-id-2">Элементарный исход, событие, относительная частота события, классическая и геометрическая вероятности.</h3>
 <p><strong>Множество элементарных исходов</strong> $\Omega$ - множество, содержащее все возможные результаты эксперимента, из которых в результате происходит ровно один.</p>
 <p><strong>Элементарный исход</strong> - элемент множества элементарных исходов. $\omega\in\Omega$.</p>
 <p><strong>Событие</strong> - подмножество множества элементарных исходов. $A\subset\Omega$.</p>
@@ -8,7 +34,7 @@
 <p><strong>Классическая вероятность события</strong> - отношение количества элементов множества события к количеству элементов в множестве элементарных исходов.</p>
 <p>Пусть $\mu$ - мера множества (длина, площадь, объём или др.). Тогда:
 <strong>Геометрическая вероятность</strong> события $A$ равна отношению $\mu(A)$ к $\mu(\Omega)$.</p>
-<h3 id="toc-id-2">Аксиоматика алгебры событий, аксиомы вероятности. Вероятностное пространство.</h3>
+<h3 id="toc-id-3">Аксиоматика алгебры событий, аксиомы вероятности. Вероятностное пространство.</h3>
 <p>Множество событий называется алгеброй событий, если $\forall A,B\in\mathscr{A}$ выполняются следующие аксиомы:</p>
 <ol>
 <li>$A+B\in\mathscr{A}$;</li>
@@ -24,22 +50,22 @@
 <li>Аксиома непрерывности: если $A_1\supset A_2\supset\ldots A_n\supset\ldots$ и $\prod_1^\infty A_n=\varnothing$, то $\lim_{n\rightarrow\infty}P(A_n)=0$.</li>
 </ol>
 <p>Тройка $(\Omega,\mathscr{A},P)$ называется вероятностным пространством.</p>
-<h3 id="toc-id-3">Условная вероятность, умножение событий. Независимые, несовместные события.</h3>
+<h3 id="toc-id-4">Условная вероятность, умножение событий. Независимые, несовместные события.</h3>
 <p>Пусть $N$ - число опытов; $N_A$ - число опытов, в которых произошло $A$; $N_{AB}$ - число опытов, в которых произошли и $A$, и $B$.
 $$\frac{N_{AB}}{N_A}=\frac{\frac{N_{AB}}{N}}{\frac{N_A}{N}}\Rightarrow P_A(B)=\frac{P(AB)}{P(A)}$$
 Условной вероятностью $P_A(B)$ называется вероятность события $B$ при условии, что произошло событие $A$.</p>
 <p>Теорема об умножении событий:
-$$P(A_1\cdot A_2\cdot\ldots\cdot A_n)=P(A_1)\cdot P_{A_1}(A_2)\cdot P_{A_1A_2}(A_3)\cdot\ldots P_{A_1A_2\ldots A_{n-1}}(A_n)$$
+$$P(A_1\cdot A_2\cdot\ldots\cdot A_n)=P(A_1)\cdot P_{A_1}(A_2)\cdot P_{A_1A_2}(A_3)\cdot\ldots\cdot P_{A_1A_2\ldots A_{n-1}}(A_n)$$
 События $A$ и $B$ называются независимыми, если $A\cdot B=0$.
 События $A$ и $B$ называются несовместными, если $A+B=0$.</p>
-<h3 id="toc-id-4">Полная группа событий, формула полной вероятности. Формула Байеса.</h3>
+<h3 id="toc-id-5">Полная группа событий, формула полной вероятности. Формула Байеса.</h3>
 <p>События $H_1,H_2,\ldots,H_n$ составляют полную группу событий, если они попарно несовместны, а их сумма равна множеству элементарных исходов.</p>
 <p>Формула полной вероятности:
 $$P(A)=\sum_{i=1}^nP(H_i)\cdot P_{H_i}(A)$$
 Формула Байеса:
 $$P_A(H_i)=\frac{P(AH_i)}{P(A)}=\frac{P(H_i)P_{H_i}(A)}{P(H_1)P_{H_1}(A)+\ldots+P(H_n)P_{H_n}(A)}$$</p>
-<h3 id="toc-id-5">Схема Бернулли, теорема Бернулли. Теорема Пуассона.</h3>
-<p>Схема Бернулли - последовательность независимых испытаний, в каждом из которых возможны два исхода - успех и неудача.</p>
+<h3 id="toc-id-6">Схема Бернулли, теорема Бернулли. Теорема Пуассона.</h3>
+<p><strong>Схема Бернулли</strong> - последовательность независимых испытаний, в каждом из которых возможны два исхода - успех и неудача.</p>
 <p>Пусть $n$ - количество испытаний; $p$ - вероятность успеха в одном испытании; $q=1-p$ - вероятность неудачи в одном испытании, $P_n(m)$ - вероятность $m$ успехов в $n$ испытаниях.</p>
 <p>Теорема Бернулли:
 $$P_n(m)=С_n^mp^mq^{n-m}$$
@@ -50,7 +76,7 @@ $$P_n(m)=\frac{\lambda^m}{m!}e^{-\lambda}$$
 $$P_n(m)=С_n^mp^mq^{n-m}=\frac{n!}{m!(n-m)!}\left(\frac{\lambda}{n}\right)^m(1-p)^{(n-m)}=\frac{\lambda^m}{m!}\left(1-\frac{\lambda}{n}\right)^{n-m}\prod\nolimits_{i=n-m+1}^{n}\frac{i}{n}$$
 $$\lim_{n\rightarrow\infty}\left(1-\frac{\lambda}{n}\right)^{n-m}=e^{-\lambda},\quad\lim_{n\rightarrow\infty}\prod\nolimits_{i=n-m+1}^{n}\frac{i}{n}=1$$
 $$\lim_{n\rightarrow\infty}P_n(m)=\frac{\lambda^m}{m!}e^{-\lambda}$$</p>
-<h3 id="toc-id-6">Локальная и интегральная теоремы Муавра-Лапласа. Отклонение относительной частоты.</h3>
+<h3 id="toc-id-7">Локальная и интегральная теоремы Муавра-Лапласа. Отклонение относительной частоты.</h3>
 <p>Локальная теорема Муавра-Лапласа:
 $$\lim_{n\rightarrow\infty}P_n(m)=\frac{1}{\sqrt{npq}}\cdot\varphi(x)$$
 где $\varphi$ - функция Гаусса
@@ -59,7 +85,7 @@ $$\varphi(x)=\frac{1}{\sqrt{2\Pi}}\cdot e^{-\frac{x^2}{2}}$$</p>
 Интегральная теорема Муавра-Лапласа:
 $$P_n(m_1\leq m\leq m_2)\rightarrow\Phi(x_2)-\Phi(x_1)$$
 где $\Phi$ - функция Лапласа
-$$\Phi=\frac{1}{\sqrt{2\Pi}}\int_0^xe^{-\frac{t^2}{2}}dt$$
+$$\Phi(x)=\frac{1}{\sqrt{2\pi}}\int_0^xe^{-\frac{t^2}{2}}dt$$
 Доказательство:
 $$P_n(m_1\leq m\leq m_2)=\sum_{i=m_1}^{m_2}P_n(i)=\sum_{i=m_1}^{m_2}\frac{1}{\sqrt{npq}}\varphi(x_i)+R$$
 При постоянных $n$ и $p$, функция $x(m,n,p)$ - постоянная.
@@ -73,7 +99,7 @@ $$x_1=\frac{m_1-np}{\sqrt{npq}}-\frac{-n\varepsilon}{\sqrt{npq}}=-\varepsilon\sq
 Следствие 2:
 Пусть $P\left(|\frac{m}{n}-p|\leq\varepsilon\right)=\gamma$. Тогда
 $$\varepsilon=\frac{\Phi^{-1}(\frac{\gamma}{2})}{\sqrt{\frac{n}{pq}}}$$</p>
-<h3 id="toc-id-7">Случайная величина. Функция распределения и её свойства. Дискретные и непрерывные случайные величины.</h3>
+<h3 id="toc-id-8">Случайная величина. Функция распределения и её свойства. Дискретные и непрерывные случайные величины.</h3>
 <p>Случайная величина $\xi$ - числовая функция, определённая на множестве элементарных исходов, такая, что событие $\xi(\omega)&lt;x$ принадлежит $\mathscr{A}$ при $x\in\mathbb{R}$.</p>
 <p>Функцией распределения случайной величины $\xi$ называется функция
 $$F(x)=P(\xi&lt;x)$$
@@ -91,32 +117,32 @@ $$\sum_k P(\xi=k)=1$$
 Случайная величина называется абсолютно непрерывной, если существует неотрицательная интегрируемая функция $p(x)$ такая, что
 $$F(x)=\int_{-\infty}^xp(t)dt$$
 $p(x)$ называется плотностью распределения.</p>
-<h3 id="toc-id-8">Некоторые виды распределений: биномиальное, геометрическое, Пуассона, равномерное, показательное, нормальное.</h3>
-<h4 id="toc-id-9">Биномиальное распределение</h4>
+<h3 id="toc-id-9">Некоторые виды распределений: биномиальное, геометрическое, Пуассона, равномерное, показательное, нормальное.</h3>
+<h4 id="toc-id-10">Биномиальное распределение</h4>
 <p>$$P(\xi=k)=C_n^kp^kq^{n-k}$$</p>
 <p>$$M\xi=0\cdot q+1\cdot p=np$$</p>
 <p>$$D\xi=npq$$</p>
-<h4 id="toc-id-10">Геометрическое распределение</h4>
+<h4 id="toc-id-11">Геометрическое распределение</h4>
 <p>$$p(\xi=k)=p\cdot q^{k-1}$$</p>
 <p>$$M\xi=\frac{1}{p}$$</p>
 <p>$$D\xi=\frac{q}{p^2}$$</p>
-<h4 id="toc-id-11">Распределение Пуассона</h4>
+<h4 id="toc-id-12">Распределение Пуассона</h4>
 <p>Распределение Пуассона - последовательность чисел $\frac{\lambda^k}{k!}e^{-\lambda}, k\in\mathbb{N}$.
 $$M\xi=\lambda$$</p>
 <p>$$D\xi=\lambda$$</p>
-<h4 id="toc-id-12">Равномерное распределение</h4>
+<h4 id="toc-id-13">Равномерное распределение</h4>
 <p>$$p(x)=\begin{cases}\frac{1}{b-a},x\in[a;b]\\ 0,x\notin[a;b]\end{cases}$$</p>
 <p>$$M\xi=\frac{a+b}{2}$$</p>
 <p>$$D\xi=\frac{(b-a)^2}{12}$$</p>
-<h4 id="toc-id-13">Показательное распределение</h4>
+<h4 id="toc-id-14">Показательное распределение</h4>
 <p>$$p(x)=\begin{cases}0,x&lt;0\\ \lambda e^{-\lambda x},x\geq0\end{cases}$$</p>
 <p>$$M\xi=\frac{1}{\lambda}$$</p>
 <p>$$D\xi=\frac{1}{\lambda^2}$$</p>
-<h4 id="toc-id-14">Нормальное распределение</h4>
+<h4 id="toc-id-15">Нормальное распределение</h4>
 <p>$$p(x)=\frac{1}{\sigma}\cdot\varphi\left(\frac{x-a}{\sigma}\right)$$</p>
 <p>$$M\xi=a$$</p>
 <p>$$D\xi=\sigma^2$$</p>
-<h3 id="toc-id-15">Функция совместного распределения. Независимость случайных величин.</h3>
+<h3 id="toc-id-16">Функция совместного распределения. Независимость случайных величин.</h3>
 <p>Пусть $\xi$, $\eta$ - случайные величины.
 $$F_{\xi,\eta}=P(\xi&lt;x;;\eta&lt;y)$$
 Утверждение:
@@ -127,7 +153,7 @@ $$F_{\xi,\eta}(x,y)=F_\xi(x)\cdot F_\eta(y)$$
 $$P(\xi=x_i;\eta=y_j)=P(\xi=x_i)P(\eta=y_j)$$
 Утверждение. Для абсолютно непрерывных $\xi$, $\eta$:
 $$p_{\xi,\eta}(x,y)=p_\xi(x)\cdot p_\eta(y)$$</p>
-<h3 id="toc-id-16">Математическое ожидание и его свойства. Математическое ожидание квадрата.</h3>
+<h3 id="toc-id-17">Математическое ожидание и его свойства. Математическое ожидание квадрата.</h3>
 <p>Для дискретной случайной величины $\xi$:
 $$M\xi=\sum_kx_k\cdot p_k$$
 Для абсолютно непрерывной случайной величины $\xi$:
@@ -142,7 +168,7 @@ $$M\xi=\int_{-\infty}^{\infty}x\cdot p(x);dx$$
 </ol>
 <p>Математическое ожидание квадрата:
 $$M\xi^2=\int_{-\infty}^{+\infty}x^2\cdot p_\xi(x);dx$$</p>
-<h3 id="toc-id-17">Дисперсия и её свойства. Ковариация и её свойства. Коэффициент корреляции.</h3>
+<h3 id="toc-id-18">Дисперсия и её свойства. Ковариация и её свойства. Коэффициент корреляции.</h3>
 <p>Дисперсия случайной величины определяется как
 $$D\xi=M(\xi-M\xi)^2$$
 Свойства дисперсии:</p>
@@ -174,7 +200,7 @@ $$r_{\xi,\eta}=\frac{cov(\xi,\eta)}{\sqrt{D\xi}\cdot\sqrt{D\eta}}$$
 <li>Если $\xi$ и $\eta$ независимы, то $r_{\xi,\eta}=0$;</li>
 <li>Если $\eta=a\xi+b$, то $|r_{\xi,\eta}|=1$.</li>
 </ol>
-<h3 id="toc-id-18">Моменты распределения. Уравнение регрессии. Корреляционная матрица.</h3>
+<h3 id="toc-id-19">Моменты распределения. Уравнение регрессии. Корреляционная матрица.</h3>
 <p>Более общей числовой характеристикой являются моменты распределения.</p>
 <ul>
 <li>Начальным моментом порядка $s$ называется $$d_s=M(X^s)$$</li>
@@ -195,8 +221,8 @@ $$r_{\xi,\eta}=\frac{cov(\xi,\eta)}{\sqrt{D\xi}\cdot\sqrt{D\eta}}$$
 $$y=\rho_{y/x}x+(My-\rho_{y/x}Mx)$$</p>
 <p>$$\rho_{y/x}=r_{x,y}\cdot\frac{\sigma_y}{\sigma_x}$$</p>
 <p>Обобщённым понятием дисперсии для случайного вектора $x$ будет корреляционная матрица
-$$K=M\left((x-Mx)(x-Mx)^T\right)=$$</p>
-<p>$$=\begin{pmatrix}\sigma_1^2&amp;k_{12}&amp;k_{13}&amp;\cdots&amp;k_{1n}\\ k_{21}&amp;\sigma_2^2&amp;k_{23}&amp;\cdots&amp;k_{2n}\\ k_{31}&amp;k_{32}&amp;\sigma_3^2&amp;\cdots&amp;k_{3n}\\ \vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\ k_{n1}&amp;k_{n2}&amp;k_{n3}&amp;\cdots&amp;\sigma_n^2\end{pmatrix}$$
+$$K=M\left((x-Mx)(x-Mx)^T\right)=$$
+$$=\begin{pmatrix}\sigma_1^2&amp;k_{12}&amp;k_{13}&amp;\cdots&amp;k_{1n}\\ k_{21}&amp;\sigma_2^2&amp;k_{23}&amp;\cdots&amp;k_{2n}\\ k_{31}&amp;k_{32}&amp;\sigma_3^2&amp;\cdots&amp;k_{3n}\\ \vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\ k_{n1}&amp;k_{n2}&amp;k_{n3}&amp;\cdots&amp;\sigma_n^2\end{pmatrix}$$
 где $Mx$ - вектор математических ожиданий случайных величин.</p>
 <p>Свойства корреляционной матрицы:</p>
 <ol>
@@ -206,7 +232,7 @@ $$K=M\left((x-Mx)(x-Mx)^T\right)=$$</p>
 </ol>
 <p>Если элементы корреляционной матрицы разделить построчно на соответствующие дисперсии, получим нормированную корреляционную матрицу.
 $$\overline{K}=\begin{pmatrix}1&amp;r_{12}&amp;r_{13}&amp;\cdots&amp;r_{1n}\\ r_{21}&amp;1&amp;r_{23}&amp;\cdots&amp;r_{2n}\\ r_{31}&amp;r_{32}&amp;1&amp;\cdots&amp;r_{3n}\\ \vdots&amp;\vdots&amp;\vdots&amp;\ddots&amp;\vdots\\ r_{n1}&amp;r_{n2}&amp;r_{n3}&amp;\cdots&amp;1\end{pmatrix}$$</p>
-<h3 id="toc-id-19">Неравенство Чебышёва. Закон больших чисел.</h3>
+<h3 id="toc-id-20">Неравенство Чебышёва. Закон больших чисел.</h3>
 <p>Утверждение. Пусть $\xi$ - неотрицательная случайная величина. Тогда $\forall\varepsilon&gt;0$
 $$P(\xi&gt;\varepsilon)\leq\frac{M\xi}{\varepsilon}$$
 Доказательство. Для дискретных:
@@ -223,7 +249,7 @@ $$P\left(\left|\frac{\xi_1+\xi_2+\ldots+\xi_n}{n}-M\xi\right|&lt;\varepsilon\rig
 $$D\xi=\frac{1}{n^2}\sum D\xi_i=\frac{\sigma^2}{n}$$
 $$P(|\xi-M\xi|&gt;\varepsilon)\leq\frac{\sigma^2}{n\varepsilon^2}$$
 $$P(|\xi-M\xi|\leq\xi)=1-P(|\xi-M\xi|&gt;\varepsilon)&gt;1-\frac{\sigma^2}{n\varepsilon^2}\longrightarrow 1$$</p>
-<h3 id="toc-id-20">Выборка, оценка параметра. Несмещённые и состоятельные выборки. Выборочное среднее. Выборочная дисперсия. Исправленная дисперсия.</h3>
+<h3 id="toc-id-21">Выборка, оценка параметра. Несмещённые и состоятельные выборки. Выборочное среднее. Выборочная дисперсия. Исправленная дисперсия.</h3>
 <p>Выборкой объёма $n$ называется набор $n$ независимых одинаково распределённых случайных величин $x_1,x_2,\ldots,x_n$.</p>
 <p>Пусть $F(x,\Theta)$ - функция распределения величин $x_1,x_2,\ldots,x_n$; $\Theta_n(x_1,x_2,\ldots,x_n)$ - оценка параметра $\Theta$ (точечная оценка).</p>
 <p>Если $M\Theta_n=\Theta$, то оценка называется несмещённой.</p>
@@ -241,9 +267,9 @@ $$D_в=\frac{1}{n}\sum(x_i-\overline x)^2=\frac{1}{n}\sum(x_i-a-(\overline{x}-a)
 Рассчитаем теперь математическое ожидание:
 $$MD_в=\frac{1}{n}M\left(\sum y_i^2-\left(\frac{\sum y_i}{n}\right)^2\right)=\frac{1}{n}\sum My_i^2-\frac{1}{n^2}M\left(\sum y_i\right)^2=\\ =\sigma^2-\frac{1}{n^2}M(\sum y_i^2+\sum_{i\neq j}y_iy_j)=\sigma^2-\frac{1}{n}\sigma^2-\frac{1}{n^2}\sum_{i\neq j}My_iMy_j=\sigma^2-\frac{\sigma^2}{n}=\frac{n-1}{n}\sigma^2$$
 Следовательно, выборочная дисперсия является смещённой оценкой. И для того, чтобы её исправить, её следует умножить на $\frac{n}{n-1}$.</p>
-<h2 id="toc-id-21">Приложение</h2>
-<h3 id="toc-id-22">Таблица функции Гаусса</h3>
+<h2 id="toc-id-22">Приложение</h2>
+<h3 id="toc-id-23">Таблица функции Гаусса</h3>
 <p><img src="media/pt-0-gauss_table-100.png" alt="" style="--width: 100%;"></p>
-<h3 id="toc-id-23">Таблица функции Лапласа</h3>
+<h3 id="toc-id-24">Таблица функции Лапласа</h3>
 <p><img src="media/pt-0-laplas_table-100.png" alt="" style="--width: 100%;"></p>
 </body></html></article></main></body></html>
