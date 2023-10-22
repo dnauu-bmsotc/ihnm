@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="./ihnm.css">
 		<link rel="icon" type="image/png" href="./favicon32x32.png" sizes="32x32">
 		<link rel="icon" type="image/png" href="./favicon64x64.png" sizes="64x64">
+		<script src="./lib/qrcode.js"></script>
 		<style>
 			#container {
 				max-width: 60em;
@@ -57,6 +58,9 @@
 				left: 0;
 				top: 0;
 			}
+			#qrcode {
+				border: 1px solid var(--ihnm-color-border);
+			}
 		</style>
 		<script>
 			function addLight(id, name, ext) {
@@ -86,22 +90,23 @@
 		<main>
 			<h2>Список страниц</h2>
 			<section id="container"></section>
-			<h3>Неудачные страницы:</h3>
-			<ul>
-				<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
-				<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
-				<li><a href="./archive/angles">Представления углов</a></li>
-				<li><a href="./archive/rivers">Генератор рек и озёр</a></li>
-				<li><a href="./archive/rocks-guess">Угадай камень</a></li>
-				<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
-			</ul>
-			<h3>Сгенерированное нейросетями:</h3>
-			<ul>
-				<li><a href="./archive/ai-generated/gossamer-diagram">Паутинная диаграмма</a></li>
-				<li><a href="./archive/ai-generated/barley-break">Пятнашки</a></li>
-				<li><a href="./archive/ai-generated/landing-page">Landing page</a></li>
-			</ul>
-		</section>
+				<h3>Неудачные страницы:</h3>
+				<ul>
+					<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
+					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
+					<li><a href="./archive/angles">Представления углов</a></li>
+					<li><a href="./archive/rivers">Генератор рек и озёр</a></li>
+					<li><a href="./archive/rocks-guess">Угадай камень</a></li>
+					<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
+				</ul>
+				<h3>Сгенерированное нейросетями:</h3>
+				<ul>
+					<li><a href="./archive/ai-generated/gossamer-diagram">Паутинная диаграмма</a></li>
+					<li><a href="./archive/ai-generated/barley-break">Пятнашки</a></li>
+					<li><a href="./archive/ai-generated/landing-page">Landing page</a></li>
+				</ul>
+			</section>
+			<div id="qrcode"></div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
 		<script>
@@ -154,6 +159,8 @@
 			let styleSheet = document.createElement("style");
 			styleSheet.innerText = style.replace(/(\r\n|\n|\r)/gm, "");
 			document.head.appendChild(styleSheet);
+
+			new QRCode(document.getElementById("qrcode"), window.location.href);
 		</script>
 	</body>
 </html>
