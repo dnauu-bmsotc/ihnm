@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OCR</title>
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+    <link rel="stylesheet" href="../../ihnm.css">
+</head>
+<body>
+    <main>
+    </main>
+    <script>
+        async function tada() {
+            const worker = await Tesseract.createWorker('eng+rus');
+
+            (async () => {
+            const { data: { text } } = await worker.recognize('https://sun9-15.userapi.com/impg/APiB_8w-m1pONYQbE2ltrXYlyb7nyyFMA-ySuQ/woxzOtnhSaI.jpg?size=1242x961&quality=96&sign=ab92063e32587181f9f2f95b11350038&type=album');
+            console.log(text);
+            await worker.terminate();
+            })();
+        }
+        
+        tada();
+    </script>
+</body>
+</html>
