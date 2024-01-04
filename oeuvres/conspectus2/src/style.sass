@@ -4,20 +4,23 @@
     --background-color: white
     --background-color2: #ececec
     --color: black
-    --a-color: black
-    --a-hover-color: black
     --strong-color: #3f3fff
-    --em-color: #3f3fff
+    --em-color: #000042
+    --a-color: #0090c9
+    --a-hover-color: black
 
 @media (prefers-color-scheme: dark)
     :root
         --background-color: #1b1b1b
         --background-color2: #262626
         --color: white
-        --a-color: white
-        --a-hover-color: white
         --strong-color: #9d9dff
-        --em-color: #9d9dff
+        --em-color: #bebeff
+        --a-color: #669bff
+        --a-hover-color: white
+
+html
+    scroll-behavior: smooth
     
 body
     padding: 4px
@@ -25,17 +28,16 @@ body
     font-size: 90%
     background-color: var(--background-color)
     color: var(--color)
-    a
-        text-decoration: none
-        cursor: pointer
-        color: var(--a-color)
-        &:hover
-            text-decoration: underline
-            color: var(--a-hover-color)
     strong
         color: var(--strong-color)
     em
         color: var(--em-color)
+    a
+        text-decoration: underline
+        cursor: pointer
+        color: var(--a-color)
+        &:hover
+            color: var(--a-hover-color)
 
 
 #conspect

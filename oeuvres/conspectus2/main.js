@@ -115,6 +115,14 @@ function tryMarkdown(d) {
             const width = img.src.match(/(\d+).[^\.]+$/)[1];
             img.style.setProperty("--width", width + "%");
         }
+
+        // fix anchors
+        for (let a of dom.window.document.querySelectorAll("a")) {
+            if (a.href.includes("/src/conspects")) {
+                a.href = a.href.replace("/src/conspects", "/ihnm/oeuvres/conspectus2/dest");
+                a.href = a.href.replace("/markdown.md", "");
+            }
+        }
         
         const pageHTML = pugIndex({
             title: d.disciplineName,

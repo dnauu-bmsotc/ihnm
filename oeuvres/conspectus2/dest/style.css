@@ -313,10 +313,10 @@ template {
   --background-color: white;
   --background-color2: #ececec;
   --color: black;
-  --a-color: black;
-  --a-hover-color: black;
   --strong-color: #3f3fff;
-  --em-color: #3f3fff;
+  --em-color: #000042;
+  --a-color: #0090c9;
+  --a-hover-color: black;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -324,12 +324,16 @@ template {
     --background-color: #1b1b1b;
     --background-color2: #262626;
     --color: white;
-    --a-color: white;
-    --a-hover-color: white;
     --strong-color: #9d9dff;
-    --em-color: #9d9dff;
+    --em-color: #bebeff;
+    --a-color: #669bff;
+    --a-hover-color: white;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   padding: 4px;
   font-family: Arial, Helvetica, sans-serif;
@@ -337,20 +341,19 @@ body {
   background-color: var(--background-color);
   color: var(--color);
 }
-body a {
-  text-decoration: none;
-  cursor: pointer;
-  color: var(--a-color);
-}
-body a:hover {
-  text-decoration: underline;
-  color: var(--a-hover-color);
-}
 body strong {
   color: var(--strong-color);
 }
 body em {
   color: var(--em-color);
+}
+body a {
+  text-decoration: underline;
+  cursor: pointer;
+  color: var(--a-color);
+}
+body a:hover {
+  color: var(--a-hover-color);
 }
 
 #conspect {
