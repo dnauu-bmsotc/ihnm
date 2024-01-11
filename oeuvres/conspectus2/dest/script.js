@@ -1,5 +1,5 @@
 (function() {
-  var katexOptions, scrollTo;
+  var href, id, katexOptions, scrollTo;
 
   katexOptions = {
     delimiters: [
@@ -29,5 +29,11 @@
   document.getElementById("toc").onclick = function(e) {
     return scrollTo(document.getElementById(e.target.dataset.id));
   };
+
+  if (window.location.href.indexOf("#") > -1) {
+    href = decodeURI(window.location.href);
+    id = href.slice(href.indexOf("#") + 1);
+    document.getElementById(id).style.backgroundColor = "red";
+  }
 
 }).call(this);
