@@ -5,6 +5,7 @@
     --ihnm-color-bg2-transparent: rgb(244, 244, 244, .9);
     --ihnm-color-text: black;
     --ihnm-color-pink: pink;
+    --ihnm-color-yellow: rgb(248, 236, 64);
     --ihnm-color-shadow: rgb(222, 222, 222);
     --ihnm-color-border: gray;
     --ihnm-color-a-hover: brown;
@@ -21,6 +22,7 @@
         --ihnm-color-bg2-transparent: rgb(22, 22, 22, .9);
         --ihnm-color-text: white;
         --ihnm-color-pink: #672733;
+        --ihnm-color-yellow: rgb(204, 190, 0);
         --ihnm-color-shadow: rgb(55, 55, 55);
         --ihnm-color-border: lightgray;
         --ihnm-color-a-hover: darksalmon;

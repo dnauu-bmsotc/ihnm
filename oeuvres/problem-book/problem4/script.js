@@ -9,6 +9,8 @@ register("Почему одинаковые формулы", _ => {
     <img src="./problem4/wiki.png"></img>
     `;
 
+    p.dom.sketch.hidden = true;
+
     p.dom.solution.innerHTML = `
     <img src="./problem4/solution.png"></img>
     Так, AK соответствует расстоянию до корабля; OM - расстоянию между точками на берегу;

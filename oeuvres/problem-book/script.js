@@ -13,6 +13,12 @@ function register(name, callback) {
     btn.textContent = name;
     
     btn.addEventListener("click", function() {
+        document.querySelector("main").innerHTML = `
+            <section id="condition"></section>
+            <section id="sketch"></section>
+            <section id="solution"></section>
+        `;
+
         callback({
             error: function(error="") {
                 console.log("There was an error, problem restarted. " + error);
@@ -40,8 +46,6 @@ class Problem {
         
 
         this.ns = "http://www.w3.org/2000/svg";
-
-        this.dom.sketch.hidden = true;
         this.mouseout = true;
 
         Problem.currentProblem = this;
@@ -59,6 +63,10 @@ class Problem {
         return `fill:var(--ihnm-color-pink); stroke:red; stroke-width: ${this.sketchScale}`;
     }
 
+    get stdsYellow() {
+        return `fill:var(--ihnm-color-yellow); stroke:black; stroke-width: ${this.sketchScale}`;
+    }
+
     createSVGSketch(minx=-50, miny=-50, width=100, height=100) {
         this.dom.sketchSVG = document.createElementNS(this.ns, "svg");
         this.dom.sketchSVG.setAttributeNS(null, "width", "100%");
@@ -70,7 +78,6 @@ class Problem {
         this.dom.sketch.append(this.dom.sketchSVGWrap);
 
         this.sketchScale = Math.min(width, height) * .003;
-        this.dom.sketch.hidden = false;
 
         return this.dom.sketchSVG;
     }

@@ -54,7 +54,7 @@ function htmlName(item) {
 }
 
 function htmlSecondName(item) {
-    return `<span class="second-name">${item.secondName}</span>`;
+    return `<span class="second-name">(${item.secondName})</span>`;
 }
 
 function fromHTML(htmlString) {
