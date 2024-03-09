@@ -38,6 +38,11 @@
                 "date": "2022 осень/зима"
             },
             {
+                "path": "./media/original7.jpg",
+                "description": "А5, тушь. Каракули школьного дневника. Отпечатки не были задуманы",
+                "date": "2023-08-30; идея < 2018"
+            },
+            {
                 "name": "Шесть крыс",
                 "path": "./media/sixrats.jpg",
                 "date": "2023-08-17 - 2023-08-19",
@@ -46,9 +51,11 @@
                 "sensitiveContent": true
             },
             {
-                "path": "./media/original7.jpg",
-                "description": "А5, тушь. Каракули школьного дневника. Отпечатки ",
-                "date": "2023-08-30; идея < 2018"
+                "name": "Презревшие",
+                "secondName": "To an early grave",
+                "path": "./media/scorners.jpg",
+                "description": "А4, гуашь, карандаши.",
+                "date": "2023-03-09"
             }
         ]
     },
