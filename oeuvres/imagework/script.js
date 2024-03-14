@@ -145,6 +145,10 @@
         getEl("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
     }
 
+    function fileExtension(filename) {
+        return filename.split('.').pop().toLowerCase();
+    }
+
     async function loadImages(files) {
         layout.images = [];
 
@@ -160,6 +164,10 @@
                 });
             }
             else {
+                if (file.name && (fileExtension(file.name) === "heic")) {
+                    file = await heic2any({ blob: file, toType: "image/jpeg" });
+                }
+
                 const blob = URL.createObjectURL(file);
                 const image = new Image();
                 image.src = blob;
