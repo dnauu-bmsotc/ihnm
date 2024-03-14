@@ -32,9 +32,13 @@
     content: "Добавьте изображения";
 }
 
-#collage-photo .result {
+#collage-photo .result-image, #collage-photo .result-canvas {
     display: block;
     margin: 2em;
     width: calc(100% - 4em);
     border: 1px solid var(--ihnm-color-border);
+}
+
+#collage-photo [hidden] {
+    display: none;
 }

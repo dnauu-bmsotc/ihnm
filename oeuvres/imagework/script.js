@@ -95,10 +95,18 @@
     function createIdCheck(id) {
         return function() {
             if (id !== layout.id) {
-                console.log();
                 throw new InputsChangedError();
             }
         }
+    }
+
+    function clear() {
+        getEl("result-image").src = "";
+
+        canvas = getEl("result-canvas");
+        canvas.width = 100;
+        canvas.height = 100;
+        canvas.getContext('2d').clearRect(0, 0, 100, 100);
     }
 
     async function startProcessing(files) {
@@ -107,8 +115,8 @@
         layout.id = timestamp;
 
         try {
-            checkId();
-            getEl("result").src = "";
+            clear();
+            setOutputVariant("image");
 
             if (files) {
                 await loadImages(files);
@@ -126,9 +134,7 @@
 
             calculateImages();
 
-            const url = await imagesToUrl();
-            checkId();
-            getEl("result").src = url;
+            await render(checkId);
         }
         catch (error) {
             if (error instanceof InputsChangedError) {
@@ -209,7 +215,21 @@
         };
     }
 
-    async function imagesToUrl() {
+    function setOutputVariant(variant) {
+        switch (variant) {
+            case "image":
+                getEl("result-image").hidden = false;
+                getEl("result-canvas").hidden = true;
+                break;
+        
+            case "canvas":
+                getEl("result-image").hidden = true;
+                getEl("result-canvas").hidden = false;
+                break;
+        }
+    }
+
+    async function render(checkId) {
         const hasGifs = resetGifImagesReadParameters();
         if (hasGifs) {
             const gif = new GIF({workerScript: "./lib/gif.worker.js"});
@@ -220,10 +240,20 @@
                 });
                 gif.render();
             });
-            return url;
+
+            checkId();
+            setOutputVariant("image");
+            getEl("result-image").src = url;
         }
         else {
-            return drawImagesToCanvas().toDataURL('image/png');
+            const canvas = drawImagesToCanvas();
+            const res = getEl("result-canvas");
+            
+            checkId();
+            setOutputVariant("canvas");
+            res.width = canvas.width;
+            res.height = canvas.height;
+            res.getContext("2d").drawImage(canvas, 0, 0);
         }
     }
 
