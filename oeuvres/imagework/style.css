@@ -32,6 +32,12 @@
     content: "Добавьте изображения";
 }
 
+#collage-photo .settings {
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+}
+
 #collage-photo .result-image, #collage-photo .result-canvas {
     display: block;
     margin: 2em;

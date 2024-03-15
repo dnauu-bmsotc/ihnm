@@ -20,17 +20,26 @@
                 <input type="file" class="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
                 <div class="image-drop"></div>
                 <div class="settings">
-                    <span>Количество</span>
-                    <select class="rowcol-select">
-                        <option value="cols">столбцов</option>
-                        <option value="rows">строк</option>
-                    </select>
-                    <input type="number" class="rowcol-input" min="1">
-                    <span>Заполнение по</span>
-                    <select class="dir-select">
-                        <option value="horizontal">горизонтали</option>
-                        <option value="vertical">вертикали</option>
-                    </select>
+                    <div>
+                        <span>Количество</span>
+                        <select class="rowcol-select">
+                            <option value="cols">столбцов</option>
+                            <option value="rows">строк</option>
+                        </select>
+                        <span>:</span>
+                        <input type="number" class="rowcol-input" min="1">
+                    </div>
+                    <div>
+                        <span>Заполнение по</span>
+                        <select class="dir-select">
+                            <option value="horizontal">горизонтали</option>
+                            <option value="vertical">вертикали</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Ограничивать размер <input type="checkbox" class="size-limited" checked></label>
+                        <input type="number" class="size-limit" min="64" value="2048">
+                    </div>
                 </div>
                 <img class="result-image" title="Загрузка..."></img>
                 <canvas class="result-canvas"></canvas>

@@ -35,7 +35,7 @@
         // 
         id: null,
         // array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
-        // where x y w h - parameters for drawing on canvas
+        // where x, y, width, height are parameters for drawing on canvas
         // frames is list of blobs of GIF frames
         images: null,
         // way of ordering images, "horizontal" or "vertical"
@@ -295,11 +295,25 @@
     }
 
     function drawImagesToCanvas() {
+        if (getEl("size-limited").checked) {
+            const limit = parseInt(getEl("size-limit").value);
+            const [w, h] = [calcWidth(), calcHeight()];
+            const k = (w > h ? w : h) / limit;
+            if (k > 1) {
+                for (let image of layout.images) {
+                    image.width = Math.floor(image.width / k);
+                    image.height = Math.floor(image.height / k);
+                    image.x = Math.floor(image.x / k);
+                    image.y = Math.floor(image.y / k);
+                }
+            }
+        }
+
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         
-        canvas.width = getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
-        canvas.height = getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+        canvas.width = calcWidth();
+        canvas.height = calcHeight();
 
         for (let img of l.images) {
             if (img.el) {
@@ -373,6 +387,14 @@
             matrix.transpose();
         }
         return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
+    }
+
+    function calcWidth() {
+        return getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+    }
+
+    function calcHeight() {
+        return getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
     }
 
     class Matrix {
