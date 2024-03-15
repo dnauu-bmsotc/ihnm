@@ -64,7 +64,7 @@
         get secondCoor() {return this._horver("y", "x")},
     },
     l = layout;
-    
+
     // adding listeners
     document.addEventListener("DOMContentLoaded", function() {
         getEl("image-drop").addEventListener("drop", e => {
@@ -84,6 +84,17 @@
         if (useTestImages) {
             loadTestImages().then(r => startProcessing(r));
         }
+
+        getEl("download-btn").addEventListener("click", _ => {
+            switch (setOutputVariant.variant) {
+                case "image":
+                    download(getEl("result-image").src, "collage");
+                    break;
+                case "canvas":
+                    download(getEl("result-canvas").toDataURL(), "collage");
+                    break;
+            }
+        });
     });
 
     function getEl(classname) {
@@ -216,6 +227,7 @@
     }
 
     function setOutputVariant(variant) {
+        setOutputVariant.variant = variant;
         switch (variant) {
             case "image":
                 getEl("result-image").hidden = false;
@@ -315,7 +327,7 @@
         canvas.width = calcWidth();
         canvas.height = calcHeight();
 
-        getEl("size-warning").hidden = (canvas.width*canvas.height < 100);
+        getEl("size-warning").hidden = (canvas.width*canvas.height < 4096*4096);
 
         for (let img of l.images) {
             if (img.el) {
@@ -443,4 +455,3 @@
         }
     };
 })();
-
