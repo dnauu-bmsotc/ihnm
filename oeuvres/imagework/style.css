@@ -48,3 +48,7 @@
 #collage-photo [hidden] {
     display: none;
 }
+
+#collage-photo .size-warning {
+    color: var(--ihnm-color-red);
+}

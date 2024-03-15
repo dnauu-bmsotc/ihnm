@@ -315,6 +315,8 @@
         canvas.width = calcWidth();
         canvas.height = calcHeight();
 
+        getEl("size-warning").hidden = (canvas.width*canvas.height < 100);
+
         for (let img of l.images) {
             if (img.el) {
                 ctx.drawImage(img.el, img.x, img.y, img.width, img.height);

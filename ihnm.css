@@ -4,6 +4,7 @@
     --ihnm-color-bg-transparent: rgb(255, 255, 255, .9);
     --ihnm-color-bg2-transparent: rgb(244, 244, 244, .9);
     --ihnm-color-text: black;
+    --ihnm-color-red: rgb(155, 19, 42);
     --ihnm-color-pink: pink;
     --ihnm-color-yellow: rgb(248, 236, 64);
     --ihnm-color-shadow: rgb(222, 222, 222);
@@ -21,6 +22,7 @@
         --ihnm-color-bg-transparent: rgb(0, 0, 0, .9);
         --ihnm-color-bg2-transparent: rgb(22, 22, 22, .9);
         --ihnm-color-text: white;
+        --ihnm-color-red: rgb(226, 89, 112);
         --ihnm-color-pink: #672733;
         --ihnm-color-yellow: rgb(204, 190, 0);
         --ihnm-color-shadow: rgb(55, 55, 55);
