@@ -61,6 +61,9 @@
 			#qrcode {
 				border: 1px solid var(--ihnm-color-border);
 			}
+			.secret {
+				display: none;
+			}
 		</style>
 		<script>
 			function addLight(id, name, ext) {
@@ -90,24 +93,29 @@
 		<main>
 			<h2>Список страниц</h2>
 			<section id="container"></section>
-				<h3>Неудачные страницы:</h3>
-				<ul>
-					<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
-					<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
-					<li><a href="./archive/angles">Представления углов</a></li>
-					<li><a href="./archive/rivers">Генератор рек и озёр</a></li>
-					<li><a href="./archive/rocks-guess">Угадай камень</a></li>
-					<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
-				</ul>
-				<h3>Сгенерированное нейросетями:</h3>
-				<ul>
-					<li><a href="./archive/ai-generated/gossamer-diagram">Паутинная диаграмма</a></li>
-					<li><a href="./archive/ai-generated/barley-break">Пятнашки</a></li>
-					<li><a href="./archive/ai-generated/landing-page">Landing page</a></li>
-				</ul>
-			</section>
+			<h3 class="secret">Неудачные страницы:</h3>
+			<ul class="secret">
+				<li><a href="./archive/november2021/trigonometry">Тригонометрия</a></li>
+				<li><a href="./archive/gconsole">Геодезическая консоль</a></li>
+				<li><a href="./archive/angles">Представления углов</a></li>
+				<li><a href="./archive/rivers">Генератор рек и озёр</a></li>
+				<li><a href="./archive/rocks-guess">Угадай камень</a></li>
+				<li><a href="./archive/november2021/questions">Генератор случайных вопросов</a></li>
+			</ul>
+			<h3>Сгенерированное нейросетями:</h3>
+			<ul>
+				<li><a href="./archive/ai-generated/gossamer-diagram">Паутинная диаграмма</a></li>
+				<li><a href="./archive/ai-generated/barley-break">Пятнашки</a></li>
+				<li><a href="./archive/ai-generated/landing-page">Landing page</a></li>
+			</ul>
 			<div id="qrcode"></div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
+			<div>
+				<span>Раскрыть секреты:</span>
+				<input id="code-input">
+				<button onclick="checkCode()">проверить</button>
+				<span id="code-status"></span>
+			</div>
 		</main>
 		<script>
 			pages = [
@@ -122,7 +130,7 @@
 				{href: "./oeuvres/barley-break", name: "Пятнашки", extra: ["dark"]},
 				{href: "./oeuvres/material-points", name: "Материальные точки", extra: ["gif"]},
 				{href: "./oeuvres/gallery/drawings", name: "Рисунки", extra: ["dark"]},
-				{href: "./oeuvres/gallery/photos", name: "Фотографии", extra: ["dark"]},
+				{href: "./oeuvres/gallery/photos", name: "Фотографии", extra: ["dark"], secret: true},
 				{href: "./oeuvres/conspectus2/dest", name: "Конспекты 2", preview: "conspectus2"},
 				{href: "./oeuvres/imagework", name: "Коллаж из фото"},
 				{href: "./oeuvres/rivers2", name: "Генератор рек 2", extra: ["gif"]},
@@ -135,7 +143,7 @@
 				const cell = document.createElement("a");
 				document.getElementById("container").appendChild(cell);
 				cell.outerHTML = `
-					<a class="cell" href="${pages[i].href}">
+					<a class="cell ${pages[i].secret?"secret":""}" href="${pages[i].href}">
 						<div class="cell-name">${pages[i].name}</div>
 						<div class="images" id="cell-${i}">
 							<div class="img-placeholder"></div>
@@ -162,6 +170,37 @@
 			document.head.appendChild(styleSheet);
 
 			new QRCode(document.getElementById("qrcode"), window.location.href);
+		</script>
+		<script>
+			function checkCode() {
+				try {
+					const key = 2024;
+					const inp = parseInt(document.getElementById("code-input").value);
+					if ((key ^ inp) === 20030845) {
+    					localStorage.setItem("ihnm-secrets-unveiled", "yes");
+						document.getElementById("code-status").innerText = "Секреты раскрыты.";
+						unveil();
+					}
+					else {
+    					localStorage.setItem("ihnm-secrets-unveiled", null);
+						throw new Error();
+					}
+				} catch (error) {
+					document.getElementById("code-status").innerText = "Не удалось.";
+				}
+			}
+
+			function secretsAreUnveiled() {
+				return localStorage.getItem("ihnm-secrets-unveiled") === "yes";
+			}
+
+			function unveil() {
+				document.querySelectorAll(".secret").forEach(el => {
+					el.classList.remove("secret");
+				});
+			}
+			
+			if (secretsAreUnveiled()) unveil();
 		</script>
 	</body>
 </html>
