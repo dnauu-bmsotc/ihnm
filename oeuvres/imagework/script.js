@@ -1,8 +1,9 @@
 
 (function() {
+    // set tool for starter
     document.addEventListener("DOMContentLoaded", function() {
         hydrateNavigation();
-        activateTab(document.getElementById("collage-photo"));
+        activateTab(document.getElementById("invert-photo"));
     });
     
     // collect h2 headers from tabs and add it to navigation element
@@ -29,10 +30,11 @@
 })();
 
 
+// Collage script, IIFE
 (function(useTestImages=true, nTestImages=3, testImagesExt="gif") {
 
     const layout = {
-        // 
+        // timestamp of the start of the current process
         id: null,
         // array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
         // where x, y, width, height are parameters for drawing on canvas
@@ -454,4 +456,51 @@
             console.log(rows.join(';\n') + '.')
         }
     };
+})();
+
+
+// Invert script, IIFE
+(function() {
+    const s = {
+        currentId: null
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        getEl("image-drop").addEventListener("drop", e => {
+            startProcessing([...e.dataTransfer.files]);
+            e.preventDefault();
+        });
+        getEl("image-drop").addEventListener("dragover", e => {
+            e.preventDefault()
+        });
+        getEl("image-input").addEventListener("change", e => {
+            startProcessing([...e.target.files]);
+        });
+        // getEl("settings").addEventListener("change", _ => {
+        //     startProcessing();
+        // });
+    });
+
+    function getEl(classname) {
+        return document.querySelector("#invert-photo ." + classname);
+    }
+
+    class InputsChangedError extends Error {}
+
+    function createIdCheck(id) {
+        return function() {
+            if (id !== layout.id) {
+                throw new InputsChangedError();
+            }
+        }
+    }
+
+    function startProcessing(files) {
+        const timestamp = Date.now();
+        const checkId = createIdCheck(timestamp);
+        s.id = timestamp;
+
+
+        console.log(files);
+    }
 })();
