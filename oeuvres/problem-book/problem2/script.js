@@ -1,11 +1,14 @@
-register("Пятиугольный паркет", _ => {
+register("Пятиугольный паркет", async _ => {
     const p = new Problem();
+
+    const KaleidoscopePageInfo = ihnmGetPageById(await ihnmPagesInfo(), "13");
 
     p.dom.condition.innerHTML = `
     <p>Пятиугольный паркет — в геометрии: замощение, составленное из выпуклых
     пятиугольников. Предполагается, что существует всего 15 классов пятиугольников,
     бесконечные паркеты из которых могут замостить плоскость [www.wikipedia.org, 2023].
-    Один из таких пятиугольных паркетов используется на странице "Калейдоскоп".</p>
+    Один из таких пятиугольных паркетов используется на странице
+    "<a href="${ihnmGetPageAbsolutePath(KaleidoscopePageInfo)}">${KaleidoscopePageInfo.name}</a>".</p>
 
     <img src="./problem2/tiling.png"></img>
 

@@ -1,10 +1,13 @@
-register("Прикреплённая к курсору пластинка", function(opt) {
+register("Прикреплённая к курсору пластинка", async function(opt) {
     const p = new Problem();
+
+    const barleyBreakPageInfo = ihnmGetPageById(await ihnmPagesInfo(), "17");
 
     p.dom.condition.innerHTML = `
     <p>Описать, как движется пластинка, прикреплённая верхней частью к курсору мыши на
     вращающееся соединение. Курсор свободно перемещается по плоскости.
-    Такая задача возникла при создании страницы "Пятнашки".</p>
+    Такая задача возникла при создании страницы
+    "<a href="${ihnmGetPageAbsolutePath(barleyBreakPageInfo)}">${barleyBreakPageInfo.name}</a>".</p>
     `;
 
     // 1x1 meters

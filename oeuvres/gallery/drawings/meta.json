@@ -10,7 +10,8 @@
             {
                 "path": "./media/original1.jpg",
                 "date": "2021 октябрь",
-                "description": "А5, гуашь"
+                "description": "А5, гуашь",
+                "secret": true
             },
             {
                 "path": "./media/original2.jpg",
@@ -24,34 +25,35 @@
             },
             {
                 "path": "./media/original4.jpg",
-                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах. Задумывалось, что в небе будут нарисованы планеты, но по подсказке одногруппника они были заменены на подобие глаз.",
+                "description": "A5, карандаши Мульти-Пульти.",
                 "date": "2022 осень/зима"
             },
             {
                 "path": "./media/original5.jpg",
-                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах.",
+                "description": "A5, карандаши Мульти-Пульти.",
                 "date": "2022 осень/зима"
             },
             {
                 "path": "./media/original6.jpg",
-                "description": "A5, карандаши Мульти-Пульти. Рисовалось на скучных парах.",
+                "description": "A5, карандаши Мульти-Пульти.",
                 "date": "2022 осень/зима"
             },
             {
                 "path": "./media/original7.jpg",
-                "description": "А5, тушь. Каракули школьного дневника. Отпечатки не были задуманы",
-                "date": "2023-08-30; идея < 2018"
+                "description": "А5, тушь.",
+                "date": "2023-08-30; идея < 2018",
+                "secret": true
             },
             {
                 "path": "./media/sunflowers.jpg",
                 "description": "А5, гуашь.",
-                "date": "2024-03-14"
+                "date": "2024-03-14",
+                "secret": true
             },
             {
                 "name": "Шесть крыс",
                 "path": "./media/sixrats.jpg",
                 "date": "2023-08-17 - 2023-08-19",
-                "secondName": "Язва желудка",
                 "description": "А4, акварель, цветные карандаши, карандаши Мульти-Пульти.",
                 "sensitiveContent": true
             },
@@ -82,27 +84,31 @@
             {
                 "path": "./media/starsetstratosphere.jpg",
                 "description": "А4, цветные карандаши. Значок песни STRATOSPHERE",
-                "date": "2021/2022"
+                "date": "2021/2022",
+                "secret": true
             },
             {
                 "path": "./media/starsetwtse.jpg",
                 "description": "А4, цветные карандаши. Значок песни WHERE THE SKIES END",
-                "date": "2022"
+                "date": "2022",
+                "secret": true
             },
             {
                 "path": "./media/starset5.jpg",
-                "description": "А5, акварель. Приклеено к листу А4. Под впечатлением от обложки альбома \"Horizons\"",
+                "description": "А5, акварель. Приклеено к листу А4.",
                 "date": "2022"
             },
             {
                 "path": "./media/starset6.jpg",
-                "description": "А5, акварель. Под впечатлением от обложки альбома \"Horizons\"",
-                "date": "2022"
+                "description": "А5, акварель.",
+                "date": "2022",
+                "secret": true
             },
             {
                 "path": "./media/starset7.jpg",
-                "description": "А5, акварель. Под впечатлением от обложки альбома \"Horizons\"",
-                "date": "2022"
+                "description": "А5, акварель.",
+                "date": "2022",
+                "secret": true
             }
         ]
     },
@@ -119,13 +125,15 @@
                 "name": "Незаконченный фон 2",
                 "path": "./media/unlightedvessel2.jpg",
                 "description": "Krita. Под впечатлением от клипа \"Telepathic (Acoustic)\".",
-                "date": "< 2020"
+                "date": "< 2020",
+                "secret": true
             },
             {
                 "name": "Незаконченный фон 3",
                 "path": "./media/unlightedvessel3.jpg",
                 "description": "Krita.",
-                "date": "< 2020"
+                "date": "< 2020",
+                "secret": true
             }
         ]
     },
@@ -136,7 +144,8 @@
                 "path": "./media/daragon.jpg",
                 "name": "Daragon",
                 "description": "Blender.",
-                "date": "< 2020"
+                "date": "< 2020",
+                "secret": true
             },
             {
                 "path": "./media/daragon.mp4",

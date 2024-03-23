@@ -93,3 +93,20 @@ h2, p {
         width: 20% !important;
     }
 }
+
+#text img {
+    width: 100%;
+}
+
+#note[hidden], #error[hidden] {
+    display: block;
+    visibility: hidden;
+}
+
+#note {
+    color: var(--ihnm-color-shadow);
+}
+
+#error {
+    color: var(--ihnm-color-red);
+}

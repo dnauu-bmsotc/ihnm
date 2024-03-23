@@ -8,7 +8,7 @@ function degrees(r, d=0) {
     return round(r * 180 / Math.PI, d);
 }
 
-function register(name, callback) {
+async function register(name, callback) {
     const btn = document.createElement("button");
     btn.textContent = name;
     

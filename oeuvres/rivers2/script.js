@@ -5,23 +5,28 @@ const g = {
 const settings = {};
 
 document.addEventListener("DOMContentLoaded", async function() {
-    const model = await tf.loadLayersModel('./generator/model.json');
-    const params = await (await fetch("./generator/info.json", {cache: "no-store"})).json();
-
-    g.loaded = true;
-    g.model = model;
-    g.latentDim = params.latent_dim;
-    g.nClasses = params.n_classes;
-    g.imageSize = params.image_size;
-    g.nChannels = params.n_channels;
-    g.mean = params.mean;
-    g.stdDev = params.std_dev;
-    g.outputMinApprox = params.output_min;
-    g.outputMaxApprox = params.output_max;
-    g.classList = params.class_list,
-
-    fillBackground();
-    enableGIFGeneration();
+    try {
+        const model = await tf.loadLayersModel('./generator/model.json');
+        const params = await (await fetch("./generator/info.json", {cache: "no-store"})).json();
+    
+        g.loaded = true;
+        g.model = model;
+        g.latentDim = params.latent_dim;
+        g.nClasses = params.n_classes;
+        g.imageSize = params.image_size;
+        g.nChannels = params.n_channels;
+        g.mean = params.mean;
+        g.stdDev = params.std_dev;
+        g.outputMinApprox = params.output_min;
+        g.outputMaxApprox = params.output_max;
+        g.classList = params.class_list,
+    
+        fillBackground();
+        enableGIFGeneration();
+    }
+    catch (error) {
+        document.getElementById("error").hidden = false;
+    }
 });
 
 function createNoise(n=1, seed) {
@@ -205,20 +210,27 @@ function enableGIFGeneration() {
     document.getElementById("settings").addEventListener("input", updateSettings);
 
     document.getElementById("create-gif-btn").addEventListener("click", async _ => {
-        setImageSrc("");
-        await new Promise(resolve => setTimeout(resolve, 20));
-        
-        const label1 = createLabel(settings.intCl1 === -1 ? null : [settings.intCl1], 1);
-        const label2 = createLabel(settings.intCl2 === -1 ? null : [settings.intCl2], 1);
-
-        const noise1 = createNoise(1, settings.seed1 === 0 ? randomSeed("seed1-input") : 0);
-        const noise2 = createNoise(1, settings.seed2 === 0 ? randomSeed("seed2-input") : 0);
-
-        const frames = interpolate(
-            label1, label2, noise1, noise2, settings.nInterpolations);
-
-        const data_url = await framesToGIF(frames, settings.fps, 128);
-        
-        setImageSrc(data_url);
+        try {
+            setImageSrc("");
+            await new Promise(resolve => setTimeout(resolve, 20));
+            
+            const label1 = createLabel(settings.intCl1 === -1 ? null : [settings.intCl1], 1);
+            const label2 = createLabel(settings.intCl2 === -1 ? null : [settings.intCl2], 1);
+    
+            const noise1 = createNoise(1, settings.seed1 === 0 ? randomSeed("seed1-input") : 0);
+            const noise2 = createNoise(1, settings.seed2 === 0 ? randomSeed("seed2-input") : 0);
+    
+            const frames = interpolate(
+                label1, label2, noise1, noise2, settings.nInterpolations);
+    
+            const data_url = await framesToGIF(frames, settings.fps, 128);
+            
+            setImageSrc(data_url);
+    
+            document.getElementById("note").hidden = true;
+        }
+        catch (error) {
+            document.getElementById("error").hidden = false;
+        }
     });
 }
