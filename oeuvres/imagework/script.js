@@ -29,7 +29,7 @@
 })();
 
 
-(function(useTestImages=true, nTestImages=3, testImagesExt="gif") {
+(function(useTestImages=true, nTestImages=5, testImagesExt="png") {
 
     const layout = {
         // 
