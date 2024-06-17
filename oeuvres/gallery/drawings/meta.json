@@ -109,6 +109,12 @@
                 "description": "А5, акварель.",
                 "date": "2022",
                 "secret": true
+            },
+            {
+                "path": "./media/wtse_drill.jpg",
+                "description": "А5, акварель, ручка.",
+                "date": "2024-06-16",
+                "secret": true
             }
         ]
     },
