@@ -3,7 +3,7 @@
     {"id": "01", "href": "./archive/gconsole", "name": "Геодезическая консоль", "deprecated": true},
     {"id": "02", "href": "./archive/angles", "name": "Представления углов", "deprecated": true},
     {"id": "03", "href": "./archive/rivers", "name": "Генератор рек и озёр", "deprecated": true},
-    {"id": "04", "href": "./archive/rocks-guess", "name": "Угадай камень", "deprecated": true},
+    {"id": "04", "href": "./archive/rocks-guess", "name": "Угадай камень", "deprecated": true}, 
     {"id": "05", "href": "./archive/november2021/questions", "name": "Генератор случайных вопросов", "deprecated": true},
     {"id": "06", "href": "./archive/ai-generated/gossamer-diagram", "name": "Паутинная диаграмма", "ai": true},
     {"id": "07", "href": "./archive/ai-generated/barley-break", "name": "Пятнашки", "ai": true},
@@ -19,7 +19,7 @@
     {"id": "17", "href": "./oeuvres/barley-break", "name": "Пятнашки", "extra": ["dark"]},
     {"id": "18", "href": "./oeuvres/material-points", "name": "Материальные точки", "extra": ["gif"]},
     {"id": "19", "href": "./oeuvres/gallery/drawings", "name": "Рисунки", "extra": ["dark"]},
-    {"id": "20", "href": "./oeuvres/gallery/photos", "name": "Фотографии", "extra": ["dark"], "secret": true},
+    {"id": "20", "href": "./oeuvres/gallery/photos", "name": "Фотографии", "extra": ["dark"]},
     {"id": "21", "href": "./oeuvres/conspectus2/dest", "name": "Конспекты 2", "preview": "conspectus2"},
     {"id": "22", "href": "./oeuvres/imagework", "name": "Коллаж из фото"},
     {"id": "23", "href": "./oeuvres/rivers2", "name": "Генератор рек 2", "extra": ["gif"]}

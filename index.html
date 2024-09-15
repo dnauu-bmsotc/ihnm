@@ -8,7 +8,6 @@
 		<link rel="icon" type="image/png" href="./favicon32x32.png" sizes="32x32">
 		<link rel="icon" type="image/png" href="./favicon64x64.png" sizes="64x64">
 		<script src="./lib/qrcode.js"></script>
-		<script src="./ihnm.js"></script>
 		<style>
 			#container {
 				max-width: 50em;
@@ -62,9 +61,6 @@
 			#qrcode {
 				border: 1px solid var(--ihnm-color-border);
 			}
-			.secret {
-				display: none;
-			}
 		</style>
 		<script>
 			function addLight(id, name, ext) {
@@ -94,18 +90,12 @@
 		<main>
 			<h2>Список страниц</h2>
 			<section id="container"></section>
-			<h3 class="secret">Неудачные страницы:</h3>
-			<ul id="container-deprecated" class="secret"></ul>
+			<h3>Неудачные страницы:</h3>
+			<ul id="container-deprecated"></ul>
 			<h3>Сгенерированное нейросетями:</h3>
 			<ul id="container-ai"></ul>
 			<div id="qrcode"></div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
-			<div>
-				<span>Раскрыть секреты:</span>
-				<input id="code-input">
-				<button onclick="checkCode()">проверить</button>
-				<span id="code-status"></span>
-			</div>
 		</main>
 		<script>
 			document.addEventListener('DOMContentLoaded', async function() {
@@ -132,7 +122,7 @@
 						const cell = document.createElement("a");
 						document.getElementById("container").appendChild(cell);
 						cell.outerHTML = `
-							<a class="cell ${pages[i].secret?"secret":""}" href="${pages[i].href}">
+							<a class="cell" href="${pages[i].href}">
 								<div class="cell-name">${pages[i].name}</div>
 								<div class="images" id="cell-${i}">
 									<div class="img-placeholder"></div>
@@ -160,34 +150,7 @@
 				document.head.appendChild(styleSheet);
 
 				new QRCode(document.getElementById("qrcode"), window.location.href);
-				
-				if (ihnmSecretsAreUnveiled()) unveil();
 			});
-		</script>
-		<script>
-			function checkCode() {
-				try {
-					const key = 2024;
-					const inp = parseInt(document.getElementById("code-input").value);
-					if ((key ^ inp) === 20030845) {
-    					localStorage.setItem("ihnm-secrets-unveiled", "yes");
-						document.getElementById("code-status").innerText = "Секреты раскрыты.";
-						unveil();
-					}
-					else {
-    					localStorage.setItem("ihnm-secrets-unveiled", null);
-						throw new Error();
-					}
-				} catch (error) {
-					document.getElementById("code-status").innerText = "Не удалось.";
-				}
-			}
-
-			function unveil() {
-				document.querySelectorAll(".secret").forEach(el => {
-					el.classList.remove("secret");
-				});
-			}
 		</script>
 	</body>
 </html>

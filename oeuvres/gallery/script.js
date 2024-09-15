@@ -10,7 +10,6 @@ window.addEventListener("load", async function() {
 
         for (let item of chapter.list) {
             const itemEl = fromHTML(`<div class="item"></div>`);
-            item.secret && !ihnmSecretsAreUnveiled() && (itemEl.classList.add("secret"));
             chapter.el.append(itemEl);
 
             itemEl.append(fromHTML(htmlMedia(item)));
