@@ -12,47 +12,45 @@
         <script src="./lib/heic2any.min.js"></script>
         <script src="./lib/download.min.js"></script>
         <script src="./lib/Sortable.min.js"></script>
+        <!-- <script src="./lib/jquery.ui.touch-punch.min.js"></script> -->
 		<script src="./script.js"></script>
     </head>
     <body>
         <main>
-            <ul id="images">
-                <li>item 1</li>
-                <li>item 2</li>
-                <li>item 3</li>
-            </ul>
+            <h2>Collage</h2>
 
-        </main>
-        <!-- <main>
-            <h2>Коллаж из фоток</h2>
             <input type="file" id="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
-            <div id="image-drop"></div>
+
+            <ul id="images" class="sortable"></ul>
+
+            <ul id="images-buffer" class="sortable"></ul>
+
+            <h3>Settings</h3>
             <div id="settings">
                 <div>
-                    <span>Количество</span>
+                    <span>Amount of</span>
                     <select id="rowcol-select">
-                        <option value="cols">столбцов</option>
-                        <option value="rows">строк</option>
+                        <option value="cols">columns</option>
+                        <option value="rows">rows</option>
                     </select>
                     <span>:</span>
                     <input type="number" id="rowcol-input" min="1">
                 </div>
                 <div>
-                    <span>Заполнение по</span>
+                    <span>Fill direction is</span>
                     <select id="dir-select">
-                        <option value="horizontal">горизонтали</option>
-                        <option value="vertical">вертикали</option>
+                        <option value="horizontal">horizontal</option>
+                        <option value="vertical">vertical</option>
                     </select>
                 </div>
                 <div>
-                    <label>Ограничивать размер <input type="checkbox" id="size-limited" checked></label>
+                    <label>Limit pixel size <input type="checkbox" id="size-limited" checked></label>
                     <input type="number" id="size-limit" min="64" value="2048">
-                    <span id="size-warning">Большие изображения могут не отображаться на некоторых устройствах</span>
+                    <span id="size-warning">Big images may not be processed correctly on some devices</span>
                 </div>
             </div>
-            <img id="result-image" title="Загрузка..."></img>
-            <canvas id="result-canvas"></canvas>
-            <button id="download-btn">Скачать</button>
-        </main> -->
+
+            <img id="result">
+        </main>
     </body>
 </html>

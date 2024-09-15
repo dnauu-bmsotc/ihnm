@@ -1,7 +1,70 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const images = new Sortable(document.getElementById("images"), {animation:150});
+
+    initSortable();
+
+    implementImageDrop();
+
+    implementPaste();
+
+    implementBrowseButtonInput();
 });
 
+
+function initSortable() {
+    Sortable.create(document.getElementById("images"), {
+        group: "images",
+        animation: 150,
+    });
+    Sortable.create(document.getElementById("images-buffer"), {
+        group: "images",
+        animation: 150,
+    });
+}
+
+
+function addImages(files, to_buffer=false) {
+    function isIterable(obj) {
+        return typeof obj[Symbol.iterator] === "function";
+    }
+
+    if (!isIterable(files)) {
+        files = [files];
+    }
+
+    for (let file of [...files]) {
+        const li = document.createElement("li");
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        li.append(img);
+        document.getElementById(to_buffer ? "images-buffer" : "images").append(li);
+    }
+
+}
+
+
+function implementImageDrop() {
+    document.addEventListener("drop", e => {
+        addImages(e.dataTransfer.files);
+        e.preventDefault();
+    });
+    document.addEventListener("dragover", e => {
+        e.preventDefault()
+    });
+}
+
+
+function implementPaste() {
+    document.addEventListener("paste", e => {
+        addImages(e.clipboardData.files);
+    });
+}
+
+
+function implementBrowseButtonInput() {
+    document.getElementById("image-input").addEventListener("change", e => {
+        addImages(e.target.files);
+    });
+}
 
 
 
