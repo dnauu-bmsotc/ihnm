@@ -14,47 +14,36 @@
 		<script src="./script.js"></script>
     </head>
     <body>
-        <nav id="navigation"></nav>
         <main>
-            <section class="tab" id="collage-photo">
-                <h2>Коллаж из фоток</h2>
-                <input type="file" class="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
-                <div class="image-drop"></div>
-                <div class="settings">
-                    <div>
-                        <span>Количество</span>
-                        <select class="rowcol-select">
-                            <option value="cols">столбцов</option>
-                            <option value="rows">строк</option>
-                        </select>
-                        <span>:</span>
-                        <input type="number" class="rowcol-input" min="1">
-                    </div>
-                    <div>
-                        <span>Заполнение по</span>
-                        <select class="dir-select">
-                            <option value="horizontal">горизонтали</option>
-                            <option value="vertical">вертикали</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Ограничивать размер <input type="checkbox" class="size-limited" checked></label>
-                        <input type="number" class="size-limit" min="64" value="2048">
-                        <span class="size-warning">Большие изображения могут не отображаться на некоторых устройствах</span>
-                    </div>
+            <h2>Коллаж из фоток</h2>
+            <input type="file" id="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
+            <div id="image-drop"></div>
+            <div id="settings">
+                <div>
+                    <span>Количество</span>
+                    <select id="rowcol-select">
+                        <option value="cols">столбцов</option>
+                        <option value="rows">строк</option>
+                    </select>
+                    <span>:</span>
+                    <input type="number" id="rowcol-input" min="1">
                 </div>
-                <img class="result-image" title="Загрузка..."></img>
-                <canvas class="result-canvas"></canvas>
-                <button class="download-btn">Скачать</button>
-            </section>
-
-            <!-- <section class="tab" id="noise-photo">
-                <h2>Наложить шум на фото</h2>
-            </section> -->
-            
-            <!-- <section class="tab" id="invert-photo">
-                <h2>Инвертировать фото</h2>
-            </section> -->
+                <div>
+                    <span>Заполнение по</span>
+                    <select id="dir-select">
+                        <option value="horizontal">горизонтали</option>
+                        <option value="vertical">вертикали</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Ограничивать размер <input type="checkbox" id="size-limited" checked></label>
+                    <input type="number" id="size-limit" min="64" value="2048">
+                    <span id="size-warning">Большие изображения могут не отображаться на некоторых устройствах</span>
+                </div>
+            </div>
+            <img id="result-image" title="Загрузка..."></img>
+            <canvas id="result-canvas"></canvas>
+            <button id="download-btn">Скачать</button>
         </main>
     </body>
 </html>

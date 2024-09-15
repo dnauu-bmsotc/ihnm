@@ -1,24 +1,11 @@
-#navigation {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 1.5em;
-    padding: 2em 1em;
-    background-color: var(--ihnm-color-bg2);
-}
-
-.tab {
-    display: none;
+main {
     width: 80%;
     min-width: 20em;
     max-width: 40em;
     margin: 2em auto;
 }
 
-.tab.active {
-    display: block;
-}
-
-.image-drop {
+#image-drop {
     border: 3px dashed var(--ihnm-color-text);
     height: 8em;
     margin: 2em 6em;
@@ -26,29 +13,27 @@
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
+    width: 100%;
 }
 
-.image-drop::before {
+#image-drop::before {
     content: "Добавьте изображения";
 }
 
-#collage-photo .settings {
+#settings {
     display: flex;
     flex-flow: column;
     gap: 1em;
+    align-self: start;
 }
 
-#collage-photo .result-image, #collage-photo .result-canvas {
+#result-image, #result-canvas {
     display: block;
     margin: 2em;
     width: calc(100% - 4em);
     border: 1px solid var(--ihnm-color-border);
 }
 
-#collage-photo [hidden] {
-    display: none;
-}
-
-#collage-photo .size-warning {
+#size-warning {
     color: var(--ihnm-color-red);
 }
