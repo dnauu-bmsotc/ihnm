@@ -92,8 +92,6 @@
 			<section id="container"></section>
 			<h3>Неудачные страницы:</h3>
 			<ul id="container-deprecated"></ul>
-			<h3>Сгенерированное нейросетями:</h3>
-			<ul id="container-ai"></ul>
 			<div id="qrcode"></div>
 			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
 		</main>
@@ -113,9 +111,6 @@
 						a.innerText = pages[i].name;
 						if (pages[i].deprecated) {
 							document.getElementById("container-deprecated").appendChild(l);
-						}
-						if (pages[i].ai) {
-							document.getElementById("container-ai").appendChild(l);
 						}
 					}
 					else {
