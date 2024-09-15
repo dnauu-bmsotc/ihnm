@@ -1,4 +1,25 @@
 main {
+    border: 1px solid blue;
+    width: 80%;
+    min-width: 20em;
+    max-width: 40em;
+    margin: 2em auto;
+}
+
+#images {
+    border: 1px solid gray;
+    width: 100%;
+    padding: 1em;
+}
+
+#images li {
+    display: inline-block;
+    border: 1px solid red;
+    margin: .5em;
+}
+
+
+/* main {
     width: 80%;
     min-width: 20em;
     max-width: 40em;
@@ -36,4 +57,4 @@ main {
 
 #size-warning {
     color: var(--ihnm-color-red);
-}
+} */

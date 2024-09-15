@@ -11,10 +11,19 @@
         <script src="./lib/gif.worker.js"></script>
         <script src="./lib/heic2any.min.js"></script>
         <script src="./lib/download.min.js"></script>
+        <script src="./lib/Sortable.min.js"></script>
 		<script src="./script.js"></script>
     </head>
     <body>
         <main>
+            <ul id="images">
+                <li>item 1</li>
+                <li>item 2</li>
+                <li>item 3</li>
+            </ul>
+
+        </main>
+        <!-- <main>
             <h2>Коллаж из фоток</h2>
             <input type="file" id="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
             <div id="image-drop"></div>
@@ -44,6 +53,6 @@
             <img id="result-image" title="Загрузка..."></img>
             <canvas id="result-canvas"></canvas>
             <button id="download-btn">Скачать</button>
-        </main>
+        </main> -->
     </body>
 </html>
