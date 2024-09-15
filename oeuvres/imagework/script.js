@@ -88,9 +88,8 @@ function clear() {
 }
 
 async function startProcessing(files) {
-    const timestamp = Date.now();
-    const checkId = createIdCheck(timestamp);
-    layout.id = timestamp;
+    layout.id = Symbol();
+    const checkId = createIdCheck(layout.id);
 
     try {
         clear();
