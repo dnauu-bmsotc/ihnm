@@ -18,8 +18,8 @@
     {"id": "16", "href": "./archive/rose-diagram", "name": "Роза-диаграмма", "extra": ["dark"], "deprecated": true},
     {"id": "17", "href": "./oeuvres/barley-break", "name": "Пятнашки", "extra": ["dark"]},
     {"id": "18", "href": "./oeuvres/material-points", "name": "Материальные точки", "extra": ["gif"]},
-    {"id": "19", "href": "./oeuvres/gallery/drawings", "name": "Рисунки", "extra": ["dark"]},
-    {"id": "20", "href": "./oeuvres/gallery/photos", "name": "Фотографии", "extra": ["dark"]},
+    {"id": "19", "href": "./oeuvres/gallery/drawings", "name": "Рисунки", "extra": ["dark"], "deprecated": true},
+    {"id": "20", "href": "./oeuvres/gallery/photos", "name": "Фотографии", "extra": ["dark"], "deprecated": true},
     {"id": "21", "href": "./oeuvres/conspectus2/dest", "name": "Конспекты 2", "preview": "conspectus2"},
     {"id": "22", "href": "./oeuvres/imagework", "name": "Коллаж из фото"},
     {"id": "23", "href": "./oeuvres/rivers2", "name": "Генератор рек 2", "extra": ["gif"]}
