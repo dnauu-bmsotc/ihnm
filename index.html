@@ -13,7 +13,7 @@
 				max-width: 50em;
 				display: flex;
 				flex-wrap: wrap;
-				margin: auto;
+				margin: 2em auto 4em auto;
 				align-items: center;
 				justify-content: center;
 				--cell-width: 10em;
@@ -88,12 +88,13 @@
 	</head>
 	<body>
 		<main>
-			<h2>Список страниц</h2>
 			<section id="container"></section>
-			<h3>Неудачные страницы:</h3>
-			<ul id="container-deprecated"></ul>
+
+			<h3 hidden>Неудачные страницы:</h3>
+			<ul hidden id="container-deprecated"></ul>
+
 			<div id="qrcode"></div>
-			<p>Исходники: <a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a></p>
+			<a href="https://github.com/dnauu-bmsotc/ihnm">https://github.com/dnauu-bmsotc/ihnm</a>
 		</main>
 		<script>
 			document.addEventListener('DOMContentLoaded', async function() {
