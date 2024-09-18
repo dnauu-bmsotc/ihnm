@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     implementBrowseButtonInput(callback);
 
-    loadExampleImages();
+    loadExampleImages(callback);
 
 });
 
@@ -104,14 +104,41 @@ function limitRowcolInputValues(numberOfImages) {
 }
 
 
-function loadExampleImages() {
-//     const testImages = [];
-//     for (let i = 0; i < nTestImages; i++) {
-//         const url = `./testimages/test${i}.${testImagesExt}`;
-//         const resp = await fetch(url);
-//         testImages.push(await resp.blob());
-//     }
-//     return testImages;
+function loadExampleImages(callback) {
+    const test_images = [
+        "./testimages/test0.png",
+        "./testimages/test1.png",
+        "./testimages/test2.png",
+        "./testimages/test3.png",
+        "./testimages/test4.png",
+        "./testimages/test5.png",
+        "./testimages/test6.png",
+        "./testimages/test7.png",
+        "./testimages/test8.png",
+        "./testimages/test9.png",
+        // "./testimages/test0.gif",
+        // "./testimages/test1.gif",
+        // "./testimages/test2.gif",
+        // "./testimages/test3.gif",
+        // "./testimages/test4.gif",
+        // "./testimages/test5.gif",
+        // "./testimages/test6.gif",
+        // "./testimages/test7.gif",
+        // "./testimages/test8.gif",
+        // "./testimages/test9.gif",
+        // "./testimages/test0.heic",
+        // "./testimages/test1.heic",
+        // "./testimages/test2.heic",
+        // "./testimages/test3.heic",
+        // "./testimages/test4.heic",
+    ];
+
+    const promises = test_images.map(fname => fetch(fname).then(r => r.blob()));
+
+    Promise.all(promises).then(blobs => {
+        addImages(blobs);
+        callback();
+    });
 }
 
 
@@ -169,9 +196,9 @@ class Collager {
             this.l.rows = this.l._horver(w, v);
             this.l.cols = this.l._horver(v, w);
 
-            // calculateImages();
+            this.calculateImages();
 
-            // await render(checkId);
+            await this.render(checkId);
         }
         catch (error) {
             if (error instanceof Collager.InputsChangedError)
@@ -182,7 +209,7 @@ class Collager {
 
     static Matrix = class {
         constructor(rows, cols, arr) {
-            this.r, this.c, this.a = rows, cols, arr.slice();
+            [this.r, this.c, this.a] = [rows, cols, arr.slice()];
         }
         set(row, col, val) {
             const i = row * this.c + col;
@@ -279,7 +306,7 @@ class Collager {
                     } break;
 
                 default:
-                    console.log(`unsupported file type ${blob.type}`);
+                    console.error(`unsupported file type ${blob.type}`);
                     break;
             }
         }
@@ -408,14 +435,14 @@ class Collager {
     }
 
     calculateImages() {
-        l = this.layout;
+        const l = this.layout;
 
         l.images[0].x = l.images[0].y = 0;
         l.images[0].width = l.images[0].height = 0;
 
         for (let i = 0; i < l.firstDim; i++) {
-            const line = getImageLine(l.secondAxis, i);
-            const prevLine = getImageLine(l.secondAxis, Math.max(0, i-1));
+            const line = this.getImageLine(l.secondAxis, i);
+            const prevLine = this.getImageLine(l.secondAxis, Math.max(0, i-1));
             line[0][l.firstCoor] = prevLine[0][l.firstCoor] + prevLine[0][l.firstSize];
             line[0][l.secondCoor] = 0;
 
@@ -447,22 +474,25 @@ class Collager {
     }
 
     getImageLine(axis, n) {
-        const matrix = this.l.fillDirection === "vertical"
-            ? new Matrix(this.l.cols, this.l.rows, this.l.images)
-            : new Matrix(this.l.rows, this.l.cols, this.l.images);
+        const l = this.layout;
+
+        const matrix = l.fillDirection === "vertical"
+            ? new Collager.Matrix(l.cols, l.rows, l.images)
+            : new Collager.Matrix(l.rows, l.cols, l.images);
 
         // prevent last row/col being empty
-        const cond1 = this.l.fillDirection == this.l.secondAxis;
-        const cond2 = this.l.rows * this.l.cols - this.l.secondDim >= this.l.images.length;
+        const cond1 = l.fillDirection == l.secondAxis;
+        const cond2 = l.rows * l.cols - l.secondDim >= l.images.length;
         if (cond1 && cond2) {
-            for (i = 0; i < this.l.firstDim - this.l.images.length % this.l.firstDim; i++) {
-                matrix.a.splice(this.l.images.length - i, 0, null);
+            for (i = 0; i < l.firstDim - l.images.length % l.firstDim; i++) {
+                matrix.a.splice(l.images.length - i, 0, null);
             }
         }
 
-        if (this.l.fillDirection === "vertical") {
+        if (l.fillDirection === "vertical") {
             matrix.transpose();
         }
+        
         return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
     }
 

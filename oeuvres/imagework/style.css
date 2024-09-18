@@ -8,18 +8,18 @@ main {
 ul.sortable {
     border: 1px solid var(--ihnm-color-text);
     width: 100%;
-    padding: .2em;
+    padding: .25em;
 }
 
 ul.sortable li {
     display: inline-block;
     border: 1px solid var(--ihnm-color-text);
-    margin: .2em;
+    margin: .25em;
 }
 
 ul.sortable li img {
-    width: 3em;
-    height: 3em;
+    width: 5em;
+    height: 5em;
 }
 
 #images {
