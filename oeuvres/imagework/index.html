@@ -11,50 +11,69 @@
         <script src="./lib/gif.worker.js"></script>
         <script src="./lib/heic2any.min.js"></script>
         <script src="./lib/download.min.js"></script>
+        <script src="./lib/Sortable.min.js"></script>
 		<script src="./script.js"></script>
     </head>
     <body>
-        <nav id="navigation"></nav>
         <main>
-            <section class="tab" id="collage-photo">
-                <h2>Коллаж из фоток</h2>
-                <input type="file" class="image-input" multiple accept=".jpg, .jpeg, .png, .gif">
-                <div class="image-drop"></div>
-                <div class="settings">
-                    <div>
-                        <span>Количество</span>
-                        <select class="rowcol-select">
-                            <option value="cols">столбцов</option>
-                            <option value="rows">строк</option>
-                        </select>
-                        <span>:</span>
-                        <input type="number" class="rowcol-input" min="1">
-                    </div>
-                    <div>
-                        <span>Заполнение по</span>
-                        <select class="dir-select">
-                            <option value="horizontal">горизонтали</option>
-                            <option value="vertical">вертикали</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Ограничивать размер <input type="checkbox" class="size-limited" checked></label>
-                        <input type="number" class="size-limit" min="64" value="2048">
-                        <span class="size-warning">Большие изображения могут не отображаться на некоторых устройствах</span>
-                    </div>
-                </div>
-                <img class="result-image" title="Загрузка..."></img>
-                <canvas class="result-canvas"></canvas>
-                <button class="download-btn">Скачать</button>
-            </section>
+            <h2>Collage</h2>
 
-            <!-- <section class="tab" id="noise-photo">
-                <h2>Наложить шум на фото</h2>
-            </section> -->
-            
-            <!-- <section class="tab" id="invert-photo">
-                <h2>Инвертировать фото</h2>
-            </section> -->
+            <h3>Input</h3>
+            <div>
+                <input type="file" id="image-input" accept=".jpg, .jpeg, .png, .gif, .heic, .webp" multiple>
+                <button id="clear-btn">Clear</button>
+            </div>
+
+            <ul id="images" class="sortable"></ul>
+
+            <ul id="images-buffer" class="sortable"></ul>
+
+            <h3>Settings</h3>
+            <div id="settings">
+                <div>
+                    <span>Amount of</span>
+                    <select id="rowcol-select">
+                        <option value="cols">columns</option>
+                        <option value="rows">rows</option>
+                    </select>
+                    <span>:</span>
+                    <input type="number" id="rowcol-input" min="1" size="2">
+                </div>
+                <div>
+                    <span>Fill direction is</span>
+                    <select id="dir-select">
+                        <option value="horizontal">horizontal</option>
+                        <option value="vertical">vertical</option>
+                    </select>
+                </div>
+                <div class="settings-separator"></div>
+                <div>
+                    <label>Limit size to<input type="checkbox" id="size-limited" checked></label>
+                    <input type="number" id="size-limit" min="64" value="1024" size="5">
+                    <span>pxl</span>
+                    <span id="size-warning" style="display: none;">Big images may not be processed correctly on some devices</span>
+                </div>
+                <div>
+                    <label>Minimal size<input type="checkbox" id="size-based"></label>
+                    <input type="number" id="size-base" min="1" max="1024" value="256" size="5">
+                    <span>pxl</span>
+                </div>
+                <div class="settings-separator"></div>
+                <div>
+                    <label>Borders<input type="checkbox" id="border-check"></label>
+                    <input type="number" id="border-size" min="1" max="999" value="10" size="3">
+                    <span>pxl</span>
+                    <input type="color" id="border-color">
+                </div>
+            </div>
+
+            <h3>Output</h3>
+            <div id="progress-bar">
+                <div id="progress-bar-bar"></div>
+                <div id="progress-bar-text"></div>
+            </div>
+            <img id="result">
+            <button id="send-above">Send to above</button>
         </main>
     </body>
 </html>
