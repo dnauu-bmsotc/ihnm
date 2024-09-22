@@ -22,12 +22,13 @@ document.addEventListener("DOMContentLoaded", function() {
         const fillDirection = document.getElementById("dir-select").value;
         const firstAxis = document.getElementById("rowcol-select").value === "cols" ? "horizontal" : "vertical";
         const sizeLimit = document.getElementById("size-limited").checked ? parseInt(document.getElementById("size-limit").value) : 0;
+        const baseSize = document.getElementById("size-based").checked ? parseInt(document.getElementById("size-base").value) : 0;
         // create check for a case of an input while processing
         const id = Symbol();
         currentCollageId = id;
         // start processing
         const collager = new Collager(_ => id == currentCollageId,
-            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit
+            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit, baseSize
         );
         const url = await collager.collage(images, progress => setProgress(progress, `${progress}%`));
         // show result
@@ -146,30 +147,9 @@ function watchSettings(callback) {
 
 function loadExampleImages(callback) {
     const test_images = [
-        // "./testimages/test0.png",
-        // "./testimages/test1.png",
-        // "./testimages/test2.png",
-        // "./testimages/test3.png",
-        // "./testimages/test4.png",
-        // "./testimages/test5.png",
-        // "./testimages/test6.png",
-        // "./testimages/test7.png",
-        // "./testimages/test8.png",
-        // "./testimages/test9.png",
-        // "./testimages/test0.gif",
-        // "./testimages/test1.gif",
-        // "./testimages/test2.gif",
-        // "./testimages/test3.gif",
-        // "./testimages/test4.gif",
-        // "./testimages/test5.gif",
-        // "./testimages/test6.gif",
-        // "./testimages/test7.gif",
-        // "./testimages/test8.gif",
-        // "./testimages/test9.gif",
-        // "./testimages/test0.heic",
-        // "./testimages/test1.heic",
+        "./testimages/test2.gif",
         "./testimages/test0.webp",
-        "./testimages/test1.webp",
+        "./testimages/test6.gif",
     ];
 
     const promises = test_images.map(fname => fetch(fname).then(r => r.blob()));
@@ -208,12 +188,12 @@ function setProgress(percentage, text) {
 
 
 class Collager {
-    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit) {
+    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit, sizeBase) {
         // fillDirection specifies the way of ordering images, "horizontal" or "vertical".
         // firstAxis is perpendicular to orientation of straight lines.
         // "horizontal" if images align into straight cols, "vertical" for rows.
-        [this.realityCheck, this.fillDirection, this.firstAxis, this.sizeLimit] = 
-            [realityCheck, fillDirection, firstAxis, sizeLimit];
+        [this.realityCheck, this.fillDirection, this.firstAxis, this.sizeLimit, this.sizeBase] = 
+            [realityCheck, fillDirection, firstAxis, sizeLimit, sizeBase];
 
         // derivative properties
         this.secondAxis = this.horver("vertical", "horizontal");
@@ -421,6 +401,19 @@ class Collager {
     }
 
     drawImagesToCanvas() {
+        if (this.sizeBase) {
+            const [w, h] = [this.calcWidth(), this.calcHeight()];
+            const k = (w < h ? w : h) / this.sizeBase;
+            if (k < 1) {
+                for (let image of this.images) {
+                    image.width = Math.floor(image.width / k);
+                    image.height = Math.floor(image.height / k);
+                    image.x = Math.floor(image.x / k);
+                    image.y = Math.floor(image.y / k);
+                }
+            }
+        }
+
         if (this.sizeLimit) {
             const [w, h] = [this.calcWidth(), this.calcHeight()];
             const k = (w > h ? w : h) / this.sizeLimit;

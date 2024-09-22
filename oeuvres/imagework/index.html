@@ -47,9 +47,15 @@
                     </select>
                 </div>
                 <div>
-                    <label>Limit pixel size <input type="checkbox" id="size-limited" checked></label>
-                    <input type="number" id="size-limit" min="64" value="2048">
+                    <label>Limit size to<input type="checkbox" id="size-limited" checked></label>
+                    <input type="number" id="size-limit" min="64" value="1024">
+                    <span>pxl</span>
                     <span id="size-warning" style="display: none;">Big images may not be processed correctly on some devices</span>
+                </div>
+                <div>
+                    <label>Minimal size<input type="checkbox" id="size-based" checked></label>
+                    <input type="number" id="size-base" min="1" max="1024" value="256">
+                    <span>pxl</span>
                 </div>
             </div>
 
