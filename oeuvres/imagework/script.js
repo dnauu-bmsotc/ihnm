@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // callback used on user input.
     const callback = async function() {
+        clearOutput();
         // get images
         const imgEls = document.querySelectorAll("#images li img");
         const images = Array.from(imgEls).map(img => img.src);
@@ -28,10 +29,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const collager = new Collager(_ => id == currentCollageId,
             fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit
         );
-        const url = await collager.collage(images);
+        const url = await collager.collage(images, progress => setProgress(progress, `${progress}%`));
         // show result
         if (id == currentCollageId) {
             document.getElementById("result").src = url;
+            setProgress(100, "done.");
         }
         else {
             console.log("inputs changed before processing finished.");
@@ -51,6 +53,10 @@ document.addEventListener("DOMContentLoaded", function() {
     limitRowColInputValues();
 
     watchSettings(callback);
+
+    bigImagesWarning();
+
+    clearBtn();
 
 });
 
@@ -176,6 +182,32 @@ function loadExampleImages(callback) {
 }
 
 
+function bigImagesWarning() {
+    document.getElementById("size-limited").addEventListener("change", e => {
+        document.getElementById("size-warning").style.display = e.target.checked ? "none" : "block";
+    });
+}
+
+
+function clearBtn() {
+    document.getElementById("clear-btn").addEventListener("click", _ => {
+        document.getElementById("images").innerHTML = "";
+        clearOutput();
+    });
+}
+
+
+function clearOutput() {
+    document.getElementById("result").src = "";
+    setProgress(0, "");
+}
+
+function setProgress(percentage, text) {
+    document.getElementById("progress-bar-text").textContent = text;
+    document.getElementById("progress-bar-bar").style.width = `${percentage}%`;
+}
+
+
 class Collager {
     constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit) {
         // fillDirection specifies the way of ordering images, "horizontal" or "vertical".
@@ -207,16 +239,21 @@ class Collager {
         this.images = [];
     }
 
-    async collage(blobs) {
+    async collage(blobs, updateProgress) {
         await this.loadImages(blobs);
 
         if (!this.realityCheck()) return;
+        updateProgress(30);
 
         this.calculateImages();
 
         if (!this.realityCheck()) return;
+        updateProgress(35);
 
-        return await this.render();
+        const result_url = await this.render();
+        updateProgress(90);
+
+        return result_url;
     }
 
     static Matrix = class {

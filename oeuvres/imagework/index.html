@@ -12,14 +12,17 @@
         <script src="./lib/heic2any.min.js"></script>
         <script src="./lib/download.min.js"></script>
         <script src="./lib/Sortable.min.js"></script>
-        <!-- <script src="./lib/jquery.ui.touch-punch.min.js"></script> -->
 		<script src="./script.js"></script>
     </head>
     <body>
         <main>
             <h2>Collage</h2>
 
-            <input type="file" id="image-input" accept=".jpg, .jpeg, .png, .gif, .heic" multiple>
+            <h3>Input</h3>
+            <div>
+                <input type="file" id="image-input" accept=".jpg, .jpeg, .png, .gif, .heic" multiple>
+                <button id="clear-btn">Clear</button>
+            </div>
 
             <ul id="images" class="sortable"></ul>
 
@@ -46,10 +49,15 @@
                 <div>
                     <label>Limit pixel size <input type="checkbox" id="size-limited" checked></label>
                     <input type="number" id="size-limit" min="64" value="2048">
-                    <span id="size-warning">Big images may not be processed correctly on some devices</span>
+                    <span id="size-warning" style="display: none;">Big images may not be processed correctly on some devices</span>
                 </div>
             </div>
 
+            <h3>Output</h3>
+            <div id="progress-bar">
+                <div id="progress-bar-bar"></div>
+                <div id="progress-bar-text"></div>
+            </div>
             <img id="result">
         </main>
     </body>
