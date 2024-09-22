@@ -146,16 +146,16 @@ function watchSettings(callback) {
 
 function loadExampleImages(callback) {
     const test_images = [
-        "./testimages/test0.png",
-        "./testimages/test1.png",
-        "./testimages/test2.png",
-        "./testimages/test3.png",
-        "./testimages/test4.png",
-        "./testimages/test5.png",
-        "./testimages/test6.png",
-        "./testimages/test7.png",
-        "./testimages/test8.png",
-        "./testimages/test9.png",
+        // "./testimages/test0.png",
+        // "./testimages/test1.png",
+        // "./testimages/test2.png",
+        // "./testimages/test3.png",
+        // "./testimages/test4.png",
+        // "./testimages/test5.png",
+        // "./testimages/test6.png",
+        // "./testimages/test7.png",
+        // "./testimages/test8.png",
+        // "./testimages/test9.png",
         // "./testimages/test0.gif",
         // "./testimages/test1.gif",
         // "./testimages/test2.gif",
@@ -168,9 +168,8 @@ function loadExampleImages(callback) {
         // "./testimages/test9.gif",
         // "./testimages/test0.heic",
         // "./testimages/test1.heic",
-        // "./testimages/test2.heic",
-        // "./testimages/test3.heic",
-        // "./testimages/test4.heic",
+        "./testimages/test0.webp",
+        "./testimages/test1.webp",
     ];
 
     const promises = test_images.map(fname => fetch(fname).then(r => r.blob()));
@@ -309,8 +308,9 @@ class Collager {
             blob = await fetch(blob).then(r => r.blob());
 
             switch (blob.type) {
+                case "image/png":
                 case "image/jpeg":
-                case "image/png": {
+                case "image/webp": {
                     const image = new Image();
                     image.src = URL.createObjectURL(blob);
                     await image.decode();
