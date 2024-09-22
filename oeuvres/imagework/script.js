@@ -1,13 +1,29 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    collager = new Collager();
+    let currentCollageId = null;
 
+    // callback used on user input.
     const callback = async function() {
+        // get images
         const imgEls = document.querySelectorAll("#images li img");
         const images = Array.from(imgEls).map(img => img.src);
-        clear_outut();
-        limitRowcolInputValues(images.length);
-        await collager.collage(images);
+        // get settings
+        const firstRowcolSize = parseInt(document.getElementById("rowcol-input").value);
+        const secondRowcolSize = Math.ceil(images.length / firstRowcolSize);
+        const fillDirection = document.getElementById("dir-select").value;
+        const firstAxis = document.getElementById("rowcol-select").value === "cols" ? "horizontal" : "vertical";
+        // create check for a case of an input while processing
+        const id = Symbol();
+        currentCollageId = id;
+        // start processing
+        const collager = new Collager(_ => id == currentCollageId,
+            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize
+        );
+        const collage = collager.collage(images);
+        // show result
+        if (id == currentCollageId) {
+            console.log('collaged');
+        }
     }
 
     initSortables();
@@ -18,7 +34,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     implementBrowseButtonInput(callback);
 
+    limitRowColInputValues();
+
     loadExampleImages(callback);
+
+    watchSettings(callback);
 
 });
 
@@ -88,19 +108,22 @@ function implementBrowseButtonInput(callback) {
 }
 
 
-function clear_outut() {
-    // document.getElementById("result-image").src = "";
+function limitRowColInputValues() {
+    const observer = new MutationObserver(_ => {
+        const numberOfImages = document.getElementById("images").childElementCount;
+        document.getElementById("rowcol-input").max = numberOfImages;
+        document.getElementById("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
+    });
 
-    // canvas = document.getElementById("result-canvas");
-    // canvas.width = 100;
-    // canvas.height = 100;
-    // canvas.getContext('2d').clearRect(0, 0, 100, 100);
+    observer.observe(
+        document.getElementById("images"),
+        { childList: true }
+    );
 }
 
 
-function limitRowcolInputValues(numberOfImages) {
-    document.getElementById("rowcol-input").max = numberOfImages;
-    document.getElementById("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
+function watchSettings(callback) {
+    document.getElementById("settings").addEventListener("change", callback);
 }
 
 
@@ -143,68 +166,46 @@ function loadExampleImages(callback) {
 
 
 class Collager {
-    constructor() {
-        this.layout = {
-            // Symbol used if input was changed while processing so deprecated results
-            // do not replace the newer ones.
-            id: null,
-            // array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
-            // where x, y, width, height are parameters for drawing on canvas
-            // frames is list of blobs of GIF frames.
-            images: null,
-            // way of ordering images, "horizontal" or "vertical".
-            fillDirection: null,
-            // firstAxis is perpendicular to orientation of straight lines
-            // "horizontal" if images align into straight cols, "vertical" for rows.
-            firstAxis: null,
-            // inverse of firstAxis, corresponds to straight lines orientation.
-            get secondAxis() {return this._horver("vertical", "horizontal")},
-            // numbers of rows and cols into which images are placed.
-            rows: null,
-            cols: null,
-            // alias.
-            _horver(hor, ver) {return this.firstAxis === "horizontal" ? hor : ver},
-            // 
-            get firstDim() {return this._horver(this.cols, this.rows)},
-            get secondDim() {return this._horver(this.rows, this.cols)},
-            //
-            get firstSize() {return this._horver("width", "height")},
-            get secondSize() {return this._horver("height", "width")},
-            //
-            get firstNaturalSize() {return this._horver("naturalWidth", "naturalHeight")},
-            get secondNaturalSize() {return this._horver("naturalHeight", "naturalWidth")},
-            //
-            get firstCoor() {return this._horver("x", "y")},
-            get secondCoor() {return this._horver("y", "x")},
-        };
-        this.l = this.layout;
+    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize) {
+        // fillDirection specifies the way of ordering images, "horizontal" or "vertical".
+        // firstAxis is perpendicular to orientation of straight lines.
+        // "horizontal" if images align into straight cols, "vertical" for rows.
+        [this.realityCheck, this.fillDirection, this.firstAxis] = 
+            [realityCheck, fillDirection, firstAxis];
+
+        // derivative properties
+        this.secondAxis = this.horver("vertical", "horizontal");
+
+        this.firstDim = this.horver(this.cols, this.rows);
+        this.secondDim = this.horver(this.rows, this.cols);
+
+        this.firstSize = this.horver("width", "height");
+        this.secondSize = this.horver("height", "width");
+        
+        this.firstNaturalSize = this.horver("naturalWidth", "naturalHeight");
+        this.secondNaturalSize = this.horver("naturalHeight", "naturalWidth");
+        
+        this.firstCoor = this.horver("x", "y");
+        this.secondCoor = this.horver("y", "x");
+
+        this.rows = this.horver(secondRowcolSize, firstRowcolSize);
+        this.cols = this.horver(firstRowcolSize, secondRowcolSize);
+
+        // this.images is an array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
+        // where x, y, width, height are parameters for drawing on canvas. frames is list of blobs of GIF frames.
+        this.images = [];
     }
 
     async collage(blobs) {
-        this.l.id = Symbol();
-        const checkId = this.createIdCheck(this.l.id);
+        await this.loadImages(blobs);
 
-        try {
-            await this.loadImages(blobs);
-            checkId();
+        if (!this.realityCheck()) return;
 
-            const v = parseInt(document.getElementById("rowcol-input").value);
-            const w = Math.ceil(this.l.images.length / v);
+        this.calculateImages();
 
-            this.l.fillDirection = document.getElementById("dir-select").value;
-            this.l.firstAxis = document.getElementById("rowcol-select").value === "cols" ? "horizontal" : "vertical";
-            this.l.rows = this.l._horver(w, v);
-            this.l.cols = this.l._horver(v, w);
+        if (!this.realityCheck()) return;
 
-            this.calculateImages();
-
-            await this.render(checkId);
-        }
-        catch (error) {
-            if (error instanceof Collager.InputsChangedError)
-                console.log("inputs changed before they were processed");
-            else throw error;
-        }
+        await this.render();
     }
 
     static Matrix = class {
@@ -251,19 +252,11 @@ class Collager {
         }
     }
 
-    static InputsChangedError = class extends Error {}
-
-    createIdCheck(id) {
-        return function() {
-            if (id !== this.l.id) {
-                throw new this.InputsChangedError();
-            }
-        }.bind(this);
+    horver(hor, ver) {
+        this.firstAxis === "horizontal" ? hor : ver;
     }
 
     async loadImages(blobs) {
-        this.l.images = [];
-
         for (let blob of blobs) {
             blob = await fetch(blob).then(r => r.blob());
 
@@ -273,7 +266,7 @@ class Collager {
                     const image = new Image();
                     image.src = URL.createObjectURL(blob);
                     await image.decode();
-                    this.l.images.push({
+                    this.images.push({
                         file: blob,
                         el: image,
                         naturalWidth: image.naturalWidth,
@@ -286,7 +279,7 @@ class Collager {
                     const from_heic = await heic2any({ blob: blob, toType: "image/jpeg" });
                     image.src = URL.createObjectURL(from_heic);
                     await image.decode();
-                    this.l.images.push({
+                    this.images.push({
                         file: blob,
                         el: image,
                         naturalWidth: image.naturalWidth,
@@ -296,10 +289,12 @@ class Collager {
 
                 case "image/gif": {
                         const gif = await this.gifFileToFrames(blob);
-                        this.l.images.push({
+                        this.images.push({
                             file: blob,
                             frames: gif.frames,
                             reader: gif.reader,
+                            currentFrameIdx: 0,
+                            nextFrameTime: gif.reader.frameInfo(0).delay,
                             naturalWidth: gif.reader.width,
                             naturalHeight: gif.reader.height,
                         });
@@ -309,6 +304,8 @@ class Collager {
                     console.error(`unsupported file type ${blob.type}`);
                     break;
             }
+
+            if (!this.realityCheck()) return;
         }
     }
 
@@ -330,8 +327,8 @@ class Collager {
     }
 
     async render(checkId) {
-        // const hasGifs = resetGifImagesReadParameters();
-        // if (hasGifs) {
+
+        // if (this.initGifImagesData()) {
         //     const gif = new GIF({workerScript: "./lib/gif.worker.js"});
         //     addFramesToGif(gif);
         //     const url = await new Promise((resolve, reject) => {
@@ -355,18 +352,6 @@ class Collager {
         //     res.height = canvas.height;
         //     res.getContext("2d").drawImage(canvas, 0, 0);
         // }
-    }
-
-    resetGifImagesReadParameters() {
-        let hasGifs = false;
-        for (let image of this.l.images) {
-            if (image.type == "image/gif") {
-                hasGifs = true;
-                image.currentFrameIdx = 0;
-                image.nextFrameTime = image.reader.frameInfo(0).delay;
-            }
-        }
-        return hasGifs;
     }
 
     addFramesToGif(gif) {
@@ -435,61 +420,57 @@ class Collager {
     }
 
     calculateImages() {
-        const l = this.layout;
+        this.images[0].x = this.images[0].y = 0;
+        this.images[0].width = this.images[0].height = 0;
 
-        l.images[0].x = l.images[0].y = 0;
-        l.images[0].width = l.images[0].height = 0;
-
-        for (let i = 0; i < l.firstDim; i++) {
-            const line = this.getImageLine(l.secondAxis, i);
-            const prevLine = this.getImageLine(l.secondAxis, Math.max(0, i-1));
-            line[0][l.firstCoor] = prevLine[0][l.firstCoor] + prevLine[0][l.firstSize];
-            line[0][l.secondCoor] = 0;
+        for (let i = 0; i < this.firstDim; i++) {
+            const line = this.getImageLine(this.secondAxis, i);
+            const prevLine = this.getImageLine(this.secondAxis, Math.max(0, i-1));
+            line[0][this.firstCoor] = prevLine[0][this.firstCoor] + prevLine[0][this.firstSize];
+            line[0][this.secondCoor] = 0;
 
             // resize according to first element in current row/column.
-            line[0][l.firstSize] = line[0][l.firstNaturalSize];
-            line[0][l.secondSize] = line[0][l.secondNaturalSize];
-            for (let j = 1; j < l.secondDim; j++) {
+            line[0][this.firstSize] = line[0][this.firstNaturalSize];
+            line[0][this.secondSize] = line[0][this.secondNaturalSize];
+            for (let j = 1; j < this.secondDim; j++) {
                 if (line[j]) {
-                    const ratio = line[0][l.firstSize] / line[j][l.firstNaturalSize];
-                    line[j][l.firstSize] = line[0][l.firstSize];
-                    line[j][l.secondSize] = line[j][l.secondNaturalSize] * ratio;
-                    line[j][l.firstCoor] = line[0][l.firstCoor];
-                    line[j][l.secondCoor] = line[j-1][l.secondCoor] + line[j-1][l.secondSize];
+                    const ratio = line[0][this.firstSize] / line[j][this.firstNaturalSize];
+                    line[j][this.firstSize] = line[0][this.firstSize];
+                    line[j][this.secondSize] = line[j][this.secondNaturalSize] * ratio;
+                    line[j][this.firstCoor] = line[0][this.firstCoor];
+                    line[j][this.secondCoor] = line[j-1][this.secondCoor] + line[j-1][this.secondSize];
                 }
             }
 
             // resize according to previous row/column.
-            const naturalSumm = line.reduce((acc, val) => acc + val[l.secondSize], 0);
-            const neededSumm = prevLine.reduce((acc, val) => acc + val[l.secondSize], 0);
+            const naturalSumm = line.reduce((acc, val) => acc + val[this.secondSize], 0);
+            const neededSumm = prevLine.reduce((acc, val) => acc + val[this.secondSize], 0);
             const ratio = neededSumm / naturalSumm;
-            for (let j = 0; j < l.secondDim; j++) {
+            for (let j = 0; j < this.secondDim; j++) {
                 if (line[j]) {
-                    line[j][l.firstSize] = Math.ceil(line[j][l.firstSize] * ratio);
-                    line[j][l.secondSize] = Math.ceil(line[j][l.secondSize] * ratio);
-                    line[j][l.secondCoor] = Math.ceil(line[j][l.secondCoor] * ratio);
+                    line[j][this.firstSize] = Math.ceil(line[j][this.firstSize] * ratio);
+                    line[j][this.secondSize] = Math.ceil(line[j][this.secondSize] * ratio);
+                    line[j][this.secondCoor] = Math.ceil(line[j][this.secondCoor] * ratio);
                 }
             }
         }
     }
 
     getImageLine(axis, n) {
-        const l = this.layout;
-
-        const matrix = l.fillDirection === "vertical"
-            ? new Collager.Matrix(l.cols, l.rows, l.images)
-            : new Collager.Matrix(l.rows, l.cols, l.images);
+        const matrix = this.fillDirection === "vertical"
+            ? new Collager.Matrix(this.cols, this.rows, this.images)
+            : new Collager.Matrix(this.rows, this.cols, this.images);
 
         // prevent last row/col being empty
-        const cond1 = l.fillDirection == l.secondAxis;
-        const cond2 = l.rows * l.cols - l.secondDim >= l.images.length;
+        const cond1 = this.fillDirection == this.secondAxis;
+        const cond2 = this.rows * this.cols - this.secondDim >= this.images.length;
         if (cond1 && cond2) {
-            for (i = 0; i < l.firstDim - l.images.length % l.firstDim; i++) {
-                matrix.a.splice(l.images.length - i, 0, null);
+            for (i = 0; i < this.firstDim - this.images.length % this.firstDim; i++) {
+                matrix.a.splice(this.images.length - i, 0, null);
             }
         }
 
-        if (l.fillDirection === "vertical") {
+        if (this.fillDirection === "vertical") {
             matrix.transpose();
         }
         
