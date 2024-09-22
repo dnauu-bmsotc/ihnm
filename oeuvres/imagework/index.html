@@ -46,6 +46,7 @@
                         <option value="vertical">vertical</option>
                     </select>
                 </div>
+                <div class="settings-separator"></div>
                 <div>
                     <label>Limit size to<input type="checkbox" id="size-limited" checked></label>
                     <input type="number" id="size-limit" min="64" value="1024" size="5">
@@ -53,9 +54,16 @@
                     <span id="size-warning" style="display: none;">Big images may not be processed correctly on some devices</span>
                 </div>
                 <div>
-                    <label>Minimal size<input type="checkbox" id="size-based" checked></label>
+                    <label>Minimal size<input type="checkbox" id="size-based"></label>
                     <input type="number" id="size-base" min="1" max="1024" value="256" size="5">
                     <span>pxl</span>
+                </div>
+                <div class="settings-separator"></div>
+                <div>
+                    <label>Borders<input type="checkbox" id="border-check"></label>
+                    <input type="number" id="border-size" min="1" max="999" value="10" size="3">
+                    <span>pxl</span>
+                    <input type="color" id="border-color">
                 </div>
             </div>
 

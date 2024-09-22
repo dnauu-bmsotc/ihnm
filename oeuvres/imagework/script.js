@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // get images
         const imgEls = document.querySelectorAll("#images li img");
         const images = Array.from(imgEls).map(img => img.src);
-        // get settings
+        // get layout settings
         if (!document.getElementById("rowcol-input").value) {
             const numberOfImages = document.getElementById("images").childElementCount;
             document.getElementById("rowcol-input").max = numberOfImages;
@@ -21,14 +21,19 @@ document.addEventListener("DOMContentLoaded", function() {
         const secondRowcolSize = Math.ceil(images.length / firstRowcolSize);
         const fillDirection = document.getElementById("dir-select").value;
         const firstAxis = document.getElementById("rowcol-select").value === "cols" ? "horizontal" : "vertical";
+        // get sizes settings
         const sizeLimit = document.getElementById("size-limited").checked ? parseInt(document.getElementById("size-limit").value) : 0;
         const baseSize = document.getElementById("size-based").checked ? parseInt(document.getElementById("size-base").value) : 0;
+        // get borders settings
+        const borderSize = document.getElementById("border-check").checked ? parseInt(document.getElementById("border-size").value) : 0;
+        const borderColor = document.getElementById("border-color").value;
         // create check for a case of an input while processing
         const id = Symbol();
         currentCollageId = id;
         // start processing
         const collager = new Collager(_ => id == currentCollageId,
-            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit, baseSize
+            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize,
+            sizeLimit, baseSize, borderSize, borderColor
         );
         const url = await collager.collage(images, progress => setProgress(progress, `${progress}%`));
         // show result
@@ -152,6 +157,16 @@ function loadExampleImages(callback) {
     const test_images = [
         "./testimages/test1.webp",
         "./testimages/test0.webp",
+        // "./testimages/test0.png",
+        // "./testimages/test1.png",
+        // "./testimages/test2.png",
+        // "./testimages/test3.png",
+        // "./testimages/test4.png",
+        // "./testimages/test5.png",
+        // "./testimages/test6.png",
+        // "./testimages/test7.png",
+        // "./testimages/test8.png",
+        // "./testimages/test9.png",
     ];
 
     const promises = test_images.map(fname => fetch(fname).then(r => r.blob()));
@@ -199,12 +214,12 @@ function setProgress(percentage, text) {
 
 
 class Collager {
-    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit, sizeBase) {
+    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit, sizeBase, borderSize, borderColor) {
         // fillDirection specifies the way of ordering images, "horizontal" or "vertical".
         // firstAxis is perpendicular to orientation of straight lines.
         // "horizontal" if images align into straight cols, "vertical" for rows.
-        [this.realityCheck, this.fillDirection, this.firstAxis, this.sizeLimit, this.sizeBase] = 
-            [realityCheck, fillDirection, firstAxis, sizeLimit, sizeBase];
+        [this.realityCheck, this.fillDirection, this.firstAxis, this.sizeLimit, this.sizeBase, this.borderSize, this.borderColor] = 
+            [realityCheck, fillDirection, firstAxis, sizeLimit, sizeBase, borderSize, borderColor];
 
         // derivative properties
         this.secondAxis = this.horver("vertical", "horizontal");
@@ -440,10 +455,15 @@ class Collager {
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-        
+
         canvas.width = this.calcWidth();
         canvas.height = this.calcHeight();
 
+        if (this.borderSize) {
+            ctx.fillStyle = this.borderColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
         for (let img of this.images) {
             if (img.el) {
                 ctx.drawImage(img.el, img.x, img.y, img.width, img.height);
@@ -496,6 +516,17 @@ class Collager {
                 }
             }
         }
+
+        // adjust positions for borders
+        for (let i = 0; i < this.firstDim; i++) {
+            const line = this.getImageLine(this.secondAxis, i);
+            for (let j = 0; j < this.secondDim; j++) {
+                if (line[j]) {
+                    line[j][this.firstCoor] += (i + 1) * this.borderSize;
+                    line[j][this.secondCoor] += (j + 1) * this.borderSize;
+                }
+            }
+        }
     }
 
     getImageLine(axis, n) {
@@ -520,11 +551,13 @@ class Collager {
     }
 
     calcWidth() {
-        return this.getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+        const imagesWidth = this.getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+        return imagesWidth + this.borderSize * (this.firstDim + 1);
     }
 
     calcHeight() {
-        return this.getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+        const imagesHeight = this.getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+        return imagesHeight + this.borderSize * (this.secondDim + 1);
     }
 
 }

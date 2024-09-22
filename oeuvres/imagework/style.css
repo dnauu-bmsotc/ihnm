@@ -50,6 +50,7 @@ ul.sortable li img {
     flex-flow: column;
     gap: 1em;
     align-self: start;
+    width: 100%;
 }
 
 #size-warning {
@@ -79,4 +80,17 @@ ul.sortable li img {
     vertical-align: middle;
     line-height: 2em;
     font-size: .9em;
+}
+
+.settings-separator {
+    width: 80%;
+    height: 1px;
+    background-color: var(--ihnm-color-bg2);
+    margin: .5em auto;
+}
+
+#border-color {
+    width: 3em;
+    height: 2em;
+    vertical-align: middle;
 }
