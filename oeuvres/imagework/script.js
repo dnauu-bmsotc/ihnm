@@ -1,3 +1,6 @@
+"use strict"
+
+
 document.addEventListener("DOMContentLoaded", function() {
 
     let currentCollageId = null;
@@ -8,21 +11,30 @@ document.addEventListener("DOMContentLoaded", function() {
         const imgEls = document.querySelectorAll("#images li img");
         const images = Array.from(imgEls).map(img => img.src);
         // get settings
+        if (!document.getElementById("rowcol-input").value) {
+            const numberOfImages = document.getElementById("images").childElementCount;
+            document.getElementById("rowcol-input").max = numberOfImages;
+            document.getElementById("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
+        }
         const firstRowcolSize = parseInt(document.getElementById("rowcol-input").value);
         const secondRowcolSize = Math.ceil(images.length / firstRowcolSize);
         const fillDirection = document.getElementById("dir-select").value;
         const firstAxis = document.getElementById("rowcol-select").value === "cols" ? "horizontal" : "vertical";
+        const sizeLimit = document.getElementById("size-limited").checked ? parseInt(document.getElementById("size-limit").value) : 0;
         // create check for a case of an input while processing
         const id = Symbol();
         currentCollageId = id;
         // start processing
         const collager = new Collager(_ => id == currentCollageId,
-            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize
+            fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit
         );
-        const collage = collager.collage(images);
+        const url = await collager.collage(images);
         // show result
         if (id == currentCollageId) {
-            console.log('collaged');
+            document.getElementById("result").src = url;
+        }
+        else {
+            console.log("inputs changed before processing finished.");
         }
     }
 
@@ -34,9 +46,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     implementBrowseButtonInput(callback);
 
-    limitRowColInputValues();
-
     loadExampleImages(callback);
+
+    limitRowColInputValues();
 
     watchSettings(callback);
 
@@ -112,7 +124,6 @@ function limitRowColInputValues() {
     const observer = new MutationObserver(_ => {
         const numberOfImages = document.getElementById("images").childElementCount;
         document.getElementById("rowcol-input").max = numberOfImages;
-        document.getElementById("rowcol-input").value = Math.ceil(Math.sqrt(numberOfImages));
     });
 
     observer.observe(
@@ -166,15 +177,18 @@ function loadExampleImages(callback) {
 
 
 class Collager {
-    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize) {
+    constructor(realityCheck, fillDirection, firstAxis, firstRowcolSize, secondRowcolSize, sizeLimit) {
         // fillDirection specifies the way of ordering images, "horizontal" or "vertical".
         // firstAxis is perpendicular to orientation of straight lines.
         // "horizontal" if images align into straight cols, "vertical" for rows.
-        [this.realityCheck, this.fillDirection, this.firstAxis] = 
-            [realityCheck, fillDirection, firstAxis];
+        [this.realityCheck, this.fillDirection, this.firstAxis, this.sizeLimit] = 
+            [realityCheck, fillDirection, firstAxis, sizeLimit];
 
         // derivative properties
         this.secondAxis = this.horver("vertical", "horizontal");
+
+        this.rows = this.horver(secondRowcolSize, firstRowcolSize);
+        this.cols = this.horver(firstRowcolSize, secondRowcolSize);
 
         this.firstDim = this.horver(this.cols, this.rows);
         this.secondDim = this.horver(this.rows, this.cols);
@@ -187,9 +201,6 @@ class Collager {
         
         this.firstCoor = this.horver("x", "y");
         this.secondCoor = this.horver("y", "x");
-
-        this.rows = this.horver(secondRowcolSize, firstRowcolSize);
-        this.cols = this.horver(firstRowcolSize, secondRowcolSize);
 
         // this.images is an array of {file, image, x, y, width, height, naturalWidth, naturalHeight, frames}
         // where x, y, width, height are parameters for drawing on canvas. frames is list of blobs of GIF frames.
@@ -205,7 +216,7 @@ class Collager {
 
         if (!this.realityCheck()) return;
 
-        await this.render();
+        return await this.render();
     }
 
     static Matrix = class {
@@ -253,7 +264,7 @@ class Collager {
     }
 
     horver(hor, ver) {
-        this.firstAxis === "horizontal" ? hor : ver;
+        return this.firstAxis === "horizontal" ? hor : ver;
     }
 
     async loadImages(blobs) {
@@ -289,6 +300,7 @@ class Collager {
 
                 case "image/gif": {
                         const gif = await this.gifFileToFrames(blob);
+                        this.hasGifs = true;
                         this.images.push({
                             file: blob,
                             frames: gif.frames,
@@ -326,39 +338,30 @@ class Collager {
         };
     }
 
-    async render(checkId) {
-
-        // if (this.initGifImagesData()) {
-        //     const gif = new GIF({workerScript: "./lib/gif.worker.js"});
-        //     addFramesToGif(gif);
-        //     const url = await new Promise((resolve, reject) => {
-        //         gif.on('finished', function(blob) {
-        //             resolve(URL.createObjectURL(blob));
-        //         });
-        //         gif.render();
-        //     });
-
-        //     checkId();
-        //     setOutputVariant("image");
-        //     document.getElementById("result-image").src = url;
-        // }
-        // else {
-        //     const canvas = drawImagesToCanvas();
-        //     const res = document.getElementById("result-canvas");
-            
-        //     checkId();
-        //     setOutputVariant("canvas");
-        //     res.width = canvas.width;
-        //     res.height = canvas.height;
-        //     res.getContext("2d").drawImage(canvas, 0, 0);
-        // }
+    async render() {
+        if (this.hasGifs) {
+            const gif = new GIF({workerScript: "./lib/gif.worker.js"});
+            this.addFramesToGif(gif);
+            const url = await new Promise((resolve, reject) => {
+                gif.on('finished', function(blob) {
+                    resolve(URL.createObjectURL(blob));
+                });
+                gif.render();
+            });
+            return url;
+        }
+        else {
+            const canvas = this.drawImagesToCanvas()
+            const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+            return URL.createObjectURL(blob);
+        }
     }
 
     addFramesToGif(gif) {
         let time = 0;
         while(true) {
             let minDelay = null;
-            for (let image of layout.images.filter(img => img.frames)) {
+            for (let image of this.images.filter(img => img.frames)) {
                 if (image.currentFrameIdx + 1 < image.reader.numFrames()) {
                     if (time >= image.nextFrameTime) {
                         image.currentFrameIdx += 1;
@@ -374,49 +377,47 @@ class Collager {
             if (minDelay === null) {
                 break;
             }
-            gif.addFrame(drawImagesToCanvas(), {delay: minDelay});
+            const canvas = this.drawImagesToCanvas();
+            gif.addFrame(canvas, {delay: minDelay});
             time += minDelay;
         }
     }
 
     drawImagesToCanvas() {
-        // if (document.getElementById("size-limited").checked) {
-        //     const limit = parseInt(document.getElementById("size-limit").value);
-        //     const [w, h] = [calcWidth(), calcHeight()];
-        //     const k = (w > h ? w : h) / limit;
-        //     if (k > 1) {
-        //         for (let image of layout.images) {
-        //             image.width = Math.floor(image.width / k);
-        //             image.height = Math.floor(image.height / k);
-        //             image.x = Math.floor(image.x / k);
-        //             image.y = Math.floor(image.y / k);
-        //         }
-        //     }
-        // }
+        if (this.sizeLimit) {
+            const [w, h] = [this.calcWidth(), this.calcHeight()];
+            const k = (w > h ? w : h) / this.sizeLimit;
+            if (k > 1) {
+                for (let image of this.images) {
+                    image.width = Math.floor(image.width / k);
+                    image.height = Math.floor(image.height / k);
+                    image.x = Math.floor(image.x / k);
+                    image.y = Math.floor(image.y / k);
+                }
+            }
+        }
 
-        // const canvas = document.createElement("canvas");
-        // const ctx = canvas.getContext("2d");
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
         
-        // canvas.width = calcWidth();
-        // canvas.height = calcHeight();
+        canvas.width = this.calcWidth();
+        canvas.height = this.calcHeight();
 
-        // document.getElementById("size-warning").hidden = (canvas.width*canvas.height < 4096*4096);
+        for (let img of this.images) {
+            if (img.el) {
+                ctx.drawImage(img.el, img.x, img.y, img.width, img.height);
+            }
+            if (img.frames) {
+                const data = img.frames[img.currentFrameIdx];
+                const renderer = document.createElement('canvas');
+                renderer.width = img.naturalWidth;
+                renderer.height = img.naturalHeight;
+                renderer.getContext('2d').putImageData(data, 0, 0);
+                ctx.drawImage(renderer, img.x, img.y, img.width, img.height);
+            }
+        }
 
-        // for (let img of l.images) {
-        //     if (img.el) {
-        //         ctx.drawImage(img.el, img.x, img.y, img.width, img.height);
-        //     }
-        //     if (img.frames) {
-        //         const data = img.frames[img.currentFrameIdx];
-        //         const renderer = document.createElement('canvas');
-        //         renderer.width = img.naturalWidth;
-        //         renderer.height = img.naturalHeight;
-        //         renderer.getContext('2d').putImageData(data, 0, 0);
-        //         ctx.drawImage(renderer, img.x, img.y, img.width, img.height);
-        //     }
-        // }
-
-        // return canvas;
+        return canvas;
     }
 
     calculateImages() {
@@ -473,53 +474,16 @@ class Collager {
         if (this.fillDirection === "vertical") {
             matrix.transpose();
         }
-        
+
         return axis === "horizontal" ? matrix.getRow(n) : matrix.getCol(n);
     }
 
     calcWidth() {
-        return getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
+        return this.getImageLine("horizontal", 0).reduce((acc, val) => acc + val.width, 0);
     }
 
     calcHeight() {
-        return getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
+        return this.getImageLine("vertical", 0).reduce((acc, val) => acc + val.height, 0);
     }
 
 }
-
-
-
-
-
-
-
-
-// // adding listeners
-// document.addEventListener("DOMContentLoaded", function() {
-//     document.getElementById("download-btn").addEventListener("click", _ => {
-//         switch (setOutputVariant.variant) {
-//             case "image":
-//                 download(document.getElementById("result-image").src, "collage");
-//                 break;
-//             case "canvas":
-//                 download(document.getElementById("result-canvas").toDataURL(), "collage");
-//                 break;
-//         }
-//     });
-// });
-
-
-// setOutputVariant(variant) {
-//     setOutputVariant.variant = variant;
-//     switch (variant) {
-//         case "image":
-//             document.getElementById("result-image").hidden = false;
-//             document.getElementById("result-canvas").hidden = true;
-//             break;
-    
-//         case "canvas":
-//             document.getElementById("result-image").hidden = true;
-//             document.getElementById("result-canvas").hidden = false;
-//             break;
-//     }
-// }
