@@ -37,7 +37,7 @@
                         <option value="rows">rows</option>
                     </select>
                     <span>:</span>
-                    <input type="number" id="rowcol-input" min="1">
+                    <input type="number" id="rowcol-input" min="1" size="2">
                 </div>
                 <div>
                     <span>Fill direction is</span>
@@ -48,13 +48,13 @@
                 </div>
                 <div>
                     <label>Limit size to<input type="checkbox" id="size-limited" checked></label>
-                    <input type="number" id="size-limit" min="64" value="1024">
+                    <input type="number" id="size-limit" min="64" value="1024" size="5">
                     <span>pxl</span>
                     <span id="size-warning" style="display: none;">Big images may not be processed correctly on some devices</span>
                 </div>
                 <div>
                     <label>Minimal size<input type="checkbox" id="size-based" checked></label>
-                    <input type="number" id="size-base" min="1" max="1024" value="256">
+                    <input type="number" id="size-base" min="1" max="1024" value="256" size="5">
                     <span>pxl</span>
                 </div>
             </div>
@@ -65,6 +65,7 @@
                 <div id="progress-bar-text"></div>
             </div>
             <img id="result">
+            <button id="send-above">Send to above</button>
         </main>
     </body>
 </html>

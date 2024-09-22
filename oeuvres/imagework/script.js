@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // show result
         if (id == currentCollageId) {
             document.getElementById("result").src = url;
+            document.getElementById("send-above").disabled = false;
             setProgress(100, "done.");
         }
         else {
@@ -58,6 +59,8 @@ document.addEventListener("DOMContentLoaded", function() {
     bigImagesWarning();
 
     clearBtn();
+
+    sendAboveBtn();
 
 });
 
@@ -147,9 +150,8 @@ function watchSettings(callback) {
 
 function loadExampleImages(callback) {
     const test_images = [
-        "./testimages/test2.gif",
+        "./testimages/test1.webp",
         "./testimages/test0.webp",
-        "./testimages/test6.gif",
     ];
 
     const promises = test_images.map(fname => fetch(fname).then(r => r.blob()));
@@ -176,10 +178,19 @@ function clearBtn() {
 }
 
 
+function sendAboveBtn() {
+    document.getElementById("send-above").addEventListener("click", async e => {
+        await addImages(await (await fetch(document.getElementById("result").src)).blob(), true);
+    })
+}
+
+
 function clearOutput() {
     document.getElementById("result").src = "";
+    document.getElementById("send-above").disabled = true;
     setProgress(0, "");
 }
+
 
 function setProgress(percentage, text) {
     document.getElementById("progress-bar-text").textContent = text;
