@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    initSortables();
+    initSortables(callback);
 
     implementImageDrop(callback);
 
@@ -70,10 +70,11 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-function initSortables() {
+function initSortables(callback) {
     Sortable.create(document.getElementById("images"), {
         group: "images",
         animation: 150,
+        onSort: callback,
     });
     Sortable.create(document.getElementById("images-buffer"), {
         group: "images",
@@ -110,8 +111,10 @@ async function addImages(files, to_buffer=false) {
 function implementImageDrop(callback) {
     document.addEventListener("drop", async e => {
         e.preventDefault();
-        await addImages(e.dataTransfer.files);
-        callback();
+        if (e.dataTransfer.files.length) {
+            await addImages(e.dataTransfer.files);
+            callback();
+        }
     });
     document.addEventListener("dragover", e => {
         e.preventDefault();
